@@ -68,5 +68,15 @@ export default [{
       title: 'Успешное изменение пароля'
     },
     component: () => import('@/pages/Auth/ChangePasswordSuccess.vue')
+  },
+  {
+    path: '/*',
+    name: 'NotFoundPage',
+    meta: {
+      layout: 'form',
+      notRequiresAuth: true,
+      title: 'Ошибка! Кажется, Вы заблудились...'
+    },
+    component: () => import('@/pages/NotFoundPage.vue')
   }
 ]

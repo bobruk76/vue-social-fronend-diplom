@@ -54,7 +54,7 @@ export default {
           root: true
         })
       }).catch(error => {
-        commit('setStatus', 'error')
+        commit('setStatus', error)
         localStorage.removeItem('user-token')
       })
     },

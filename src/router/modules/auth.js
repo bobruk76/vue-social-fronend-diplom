@@ -70,7 +70,7 @@ export default [{
     component: () => import('@/pages/Auth/ChangePasswordSuccess.vue')
   },
   {
-    path: '/*',
+    path: '/404',
     name: 'NotFoundPage',
     meta: {
       layout: 'form',

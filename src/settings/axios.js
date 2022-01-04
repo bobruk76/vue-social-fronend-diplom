@@ -10,7 +10,7 @@ switch (NODE_ENV) {
     axios.defaults.baseURL =  'http://localhost:8081/api/v1/';
     break;
   case 'production':
-    axios.defaults.baseURL =  'http://localhost:8086/api/v1/';
+    axios.defaults.baseURL =  window.location.origin + '/api/v1/';
     break;
   default:
     axios.defaults.baseURL =  'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';

@@ -22,20 +22,21 @@ export default {
   },
   actions: {
     async apiInfo({
-      commit,
-      dispatch
-    }) {
+                    commit,
+                    dispatch
+                  }) {
       await axios({
         url: 'users/me',
         method: 'GET'
       }).then(async response => {
         commit('setInfo', response.data.data)
-      }).catch(error => {})
+      }).catch(error => {
+      })
     },
     async apiChangeInfo({
-      commit,
-      dispatch
-    }, user) {
+                          commit,
+                          dispatch
+                        }, user) {
       console.log("TCL: user", user)
       await axios({
         url: 'users/me',
@@ -50,13 +51,23 @@ export default {
           root: true
         })
         commit('setInfo', response.data.data)
-      }).catch(error => {})
+      }).catch(error => {
+        console.log(error.response);
+        dispatch('global/alert/setAlert', {
+          status: 'success',
+          text: 'Не удалось обновить информацию((('
+        }, {
+          root: true
+        })
+      })
     },
     async deleteInfo() {
       await axios({
         url: 'users/me',
         method: 'DELETE'
-      }).then(response => {}).catch(error => {})
+      }).then(response => {
+      }).catch(error => {
+      })
     }
   }
 }

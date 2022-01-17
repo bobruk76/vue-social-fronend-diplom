@@ -3,6 +3,7 @@ import store from '@/store'
 
 const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 
+// axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
 axios.defaults.headers['content-type'] = 'application/json';
 axios.defaults.withCredentials = true;
 switch (NODE_ENV) {
@@ -13,7 +14,8 @@ switch (NODE_ENV) {
     axios.defaults.baseURL =  window.location.origin + '/api/v1/';
     break;
   default:
-    axios.defaults.baseURL =  'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';
+    axios.defaults.baseURL =  'https://zerone-2022-develop.herokuapp.com';
+    // axios.defaults.baseURL =  'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';
 }
 
 const token = localStorage.getItem('user-token')

@@ -108,8 +108,8 @@ export default {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
     submitHandler() {
-      if (!this.src) return
-      this.apiStorage(this.photo).then(() => {
+      // if (!this.src) return
+      // this.apiStorage(this.photo).then(() => {
         this.apiChangeInfo({
           photo_id: this.getStorage && this.getStorage.id,
           first_name: this.name,
@@ -117,10 +117,10 @@ export default {
           birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
           phone: this.phoneNumber,
           about: this.about,
-          country: this.country,
-          city: this.city
+          country: this.country.id,
+          city: this.city.id
         })
-      })
+      // })
     },
     processFile(event) {
       this.photo = event.target.files[0]

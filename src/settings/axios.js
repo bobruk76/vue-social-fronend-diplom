@@ -14,7 +14,7 @@ switch (NODE_ENV) {
     axios.defaults.baseURL =  window.location.origin + '/api/v1/';
     break;
   default:
-    axios.defaults.baseURL =  'https://zerone-2022-develop.herokuapp.com';
+    axios.defaults.baseURL =  'https://zerone-2022-develop.herokuapp.com/api/v1/';
     // axios.defaults.baseURL =  'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';
 }
 

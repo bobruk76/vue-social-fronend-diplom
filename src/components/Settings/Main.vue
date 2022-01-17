@@ -3,8 +3,8 @@
     user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="name" )
     user-info-form-block(label="Фамилия:" placeholder="Введите фамилию" v-model="lastName" )
     user-info-form-block(label="Телефон:" placeholder="Введите телефон" v-model="phone" phone)
-    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country")
-    user-info-form-block(label="Город:" placeholder="Введите город" v-model="city")
+    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="countryTitle")
+    user-info-form-block(label="Город:" placeholder="Введите город" v-model="cityTitle")
     .user-info-form__block
       span.user-info-form__label Дата рождения:
       .user-info-form__wrap
@@ -35,38 +35,39 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import moment from 'moment'
 import UserInfoFormBlock from '@/components/Settings/UserInfoForm/Block.vue'
+
 export default {
   name: 'SettingsMain',
-  components: { UserInfoFormBlock },
+  components: {UserInfoFormBlock},
   data: () => ({
     name: '',
     lastName: '',
     phone: '',
     about: '',
     day: 1,
-    month: { val: 1, text: 'Января' },
+    month: {val: 1, text: 'Января'},
     year: 2000,
     months: [
-      { val: 1, text: 'Января' },
-      { val: 2, text: 'Февраля' },
-      { val: 3, text: 'Марта' },
-      { val: 4, text: 'Апреля' },
-      { val: 5, text: 'Мая' },
-      { val: 6, text: 'Июня' },
-      { val: 7, text: 'Июля' },
-      { val: 8, text: 'Августа' },
-      { val: 9, text: 'Сентября' },
-      { val: 10, text: 'Октября' },
-      { val: 11, text: 'Ноября' },
-      { val: 12, text: 'Декабря' }
+      {val: 1, text: 'Января'},
+      {val: 2, text: 'Февраля'},
+      {val: 3, text: 'Марта'},
+      {val: 4, text: 'Апреля'},
+      {val: 5, text: 'Мая'},
+      {val: 6, text: 'Июня'},
+      {val: 7, text: 'Июля'},
+      {val: 8, text: 'Августа'},
+      {val: 9, text: 'Сентября'},
+      {val: 10, text: 'Октября'},
+      {val: 11, text: 'Ноября'},
+      {val: 12, text: 'Декабря'}
     ],
     photo: null,
     src: '',
-    country: '',
-    city: ''
+    country: null,
+    city: null
   }),
   computed: {
     ...mapGetters('global/storage', ['getStorage']),
@@ -75,7 +76,7 @@ export default {
       return this.phone.replace(/\D+/g, '')
     },
     years() {
-      return Array.from({ length: 60 }, (value, index) => 1970 + index)
+      return Array.from({length: 60}, (value, index) => 1970 + index)
     },
     days() {
       return this.month.val === 2
@@ -83,7 +84,25 @@ export default {
           ? 28
           : 29
         : 30 + ((this.month.val + (this.month.val >> 3)) & 1)
-    }
+    },
+    countryTitle: {
+      get() {
+        return this.country.title || ''
+      },
+      set(value) {
+        this.country.id = 0;
+        this.country.title = value;
+      }
+    },
+    cityTitle: {
+      get() {
+        return this.city.title || ''
+      },
+      set(value) {
+        this.city.id = 0;
+        this.city.title = value;
+      }
+    },
   },
   methods: {
     ...mapActions('global/storage', ['apiStorage']),

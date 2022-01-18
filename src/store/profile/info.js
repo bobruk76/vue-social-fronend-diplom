@@ -54,7 +54,7 @@ export default {
       }).catch(error => {
         console.log(error.response);
         dispatch('global/alert/setAlert', {
-          status: 'success',
+          status: 'error',
           text: 'Не удалось обновить информацию((('
         }, {
           root: true

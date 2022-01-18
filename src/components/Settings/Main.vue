@@ -87,7 +87,7 @@ export default {
     },
     countryTitle: {
       get() {
-        return this.country.title || ''
+        return (this.country) ? this.country.title : ''
       },
       set(value) {
         this.country.id = 0;
@@ -96,7 +96,7 @@ export default {
     },
     cityTitle: {
       get() {
-        return this.city.title || ''
+        return (this.city) ? this.city.title : ''
       },
       set(value) {
         this.city.id = 0;
@@ -108,18 +108,20 @@ export default {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
     submitHandler() {
-      // if (!this.src) return
+      if (!this.src) return
       // this.apiStorage(this.photo).then(() => {
-        this.apiChangeInfo({
-          photo_id: this.getStorage && this.getStorage.id,
-          first_name: this.name,
-          last_name: this.lastName,
-          birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
-          phone: this.phoneNumber,
-          about: this.about,
-          country: this.country.id,
-          city: this.city.id
-        })
+      this.apiChangeInfo({
+        // photo_id: this.getStorage && this.getStorage.id,
+
+        first_name: this.name,
+        last_name: this.lastName,
+        birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
+        phone: this.phoneNumber,
+        about: this.about,
+        country: this.country.title,
+        city: this.city.id.title,
+        photo: this.photo
+      })
       // })
     },
     processFile(event) {

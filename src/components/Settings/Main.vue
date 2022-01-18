@@ -18,11 +18,11 @@
       span.user-info-form__label Фотография:
       .user-info-form__wrap
         .user-info-form__photo-wrap
-          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*")
+          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*" disabled="true")
           label.user-info-form__input.user-info-form__input--photo(for="photo")
-            span.setting-main__photo-delete(v-if="photo") {{photo.name}}
+            span.setting-main__photo-delete(v-if="photo") {{photo}}
               simple-svg(:filepath="'/static/img/delete.svg'" @click.native.prevent="deletePhoto")
-          button-hover(variant="fill" bordered @click.native="loadPhoto") Загрузить
+          button-hover(variant="fill" bordered @click.native="loadPhoto" disable) Загрузить
         .user-info-form__photo-pic(v-if="photo && src")
           img(:src="src" :alt="photo.name")
     user-info-form-block(label="О себе:" v-model="about" about)
@@ -118,8 +118,8 @@ export default {
         birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
         phone: this.phoneNumber,
         about: this.about,
-        country: this.country.title,
-        city: this.city.id.title,
+        country: this.country,
+        city: this.city,
         photo: this.photo
       })
       // })
@@ -134,13 +134,14 @@ export default {
       this.$refs.photo.click()
     },
     deletePhoto() {
-      this.photo = null
-      this.src = ''
+      // this.photo = null
+      // this.src = ''
     },
     setInfo() {
       this.name = this.getInfo.first_name
       this.lastName = this.getInfo.last_name
       this.src = this.getInfo.photo
+      this.photo = this.getInfo.photo
       this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
       if (this.getInfo.birth_date) {
         this.day = moment(this.getInfo.birth_date).date()
@@ -183,5 +184,8 @@ export default {
 
 .settings-main__back {
   margin-left: 20px;
+}
+.user-info-form__input-photo {
+  cursor default;
 }
 </style>

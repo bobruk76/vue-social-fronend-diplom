@@ -33,11 +33,11 @@
       .news-block__actions(v-if="!deffered && !admin")
         .news-block__actions-block
           like-comment(
-            :quantity="info.likes" 
-            width="16px" 
-            height="16px" 
+            :quantity="info.likes"
+            width="16px"
+            height="16px"
             font-size="15px"
-            @liked="likeAction" 
+            @liked="likeAction"
             :active="info.my_like"
             :id="info.id"
           )
@@ -45,10 +45,10 @@
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
         comments(
-          :admin="admin" 
-          :info="info.comments" 
+          :admin="admin"
+          :info="info.comments"
           :id="info.id"
-          :edit="edit" 
+          :edit="edit"
           :deleted="deleted"
         )
 </template>
@@ -57,7 +57,7 @@
 import AddForm from '@/components/News/AddForm'
 import { mapActions, mapGetters } from 'vuex'
 import moment from 'moment'
-import Comments from '@/components/Comments'
+import Comments from '@/components/Comments/Main.vue'
 import LikeComment from '@/components/LikeComment'
 import AddTags from '@/components/News/AddTags'
 export default {

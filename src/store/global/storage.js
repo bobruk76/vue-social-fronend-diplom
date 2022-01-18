@@ -26,7 +26,9 @@ export default {
         }
       }).then(response => {
         commit('setStorage', response.data.data)
-      }).catch(() => {})
+      }).catch((error) => {
+        console.log(error.response)
+      })
     },
   }
 }

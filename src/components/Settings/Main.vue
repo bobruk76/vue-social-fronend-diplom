@@ -3,8 +3,8 @@
     user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="name" )
     user-info-form-block(label="Фамилия:" placeholder="Введите фамилию" v-model="lastName" )
     user-info-form-block(label="Телефон:" placeholder="Введите телефон" v-model="phone" phone)
-    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country")
-    user-info-form-block(label="Город:" placeholder="Введите город" v-model="city")
+    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="countryTitle")
+    user-info-form-block(label="Город:" placeholder="Введите город" v-model="cityTitle")
     .user-info-form__block
       span.user-info-form__label Дата рождения:
       .user-info-form__wrap
@@ -18,11 +18,11 @@
       span.user-info-form__label Фотография:
       .user-info-form__wrap
         .user-info-form__photo-wrap
-          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*")
+          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*" disabled="true")
           label.user-info-form__input.user-info-form__input--photo(for="photo")
-            span.setting-main__photo-delete(v-if="photo") {{photo.name}}
+            span.setting-main__photo-delete(v-if="photo") {{photo}}
               simple-svg(:filepath="'/static/img/delete.svg'" @click.native.prevent="deletePhoto")
-          button-hover(variant="fill" bordered @click.native="loadPhoto") Загрузить
+          button-hover(variant="fill" bordered @click.native="loadPhoto" disable) Загрузить
         .user-info-form__photo-pic(v-if="photo && src")
           img(:src="src" :alt="photo.name")
     user-info-form-block(label="О себе:" v-model="about" about)
@@ -35,38 +35,39 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import moment from 'moment'
 import UserInfoFormBlock from '@/components/Settings/UserInfoForm/Block.vue'
+
 export default {
   name: 'SettingsMain',
-  components: { UserInfoFormBlock },
+  components: {UserInfoFormBlock},
   data: () => ({
     name: '',
     lastName: '',
     phone: '',
     about: '',
     day: 1,
-    month: { val: 1, text: 'Января' },
+    month: {val: 1, text: 'Января'},
     year: 2000,
     months: [
-      { val: 1, text: 'Января' },
-      { val: 2, text: 'Февраля' },
-      { val: 3, text: 'Марта' },
-      { val: 4, text: 'Апреля' },
-      { val: 5, text: 'Мая' },
-      { val: 6, text: 'Июня' },
-      { val: 7, text: 'Июля' },
-      { val: 8, text: 'Августа' },
-      { val: 9, text: 'Сентября' },
-      { val: 10, text: 'Октября' },
-      { val: 11, text: 'Ноября' },
-      { val: 12, text: 'Декабря' }
+      {val: 1, text: 'Января'},
+      {val: 2, text: 'Февраля'},
+      {val: 3, text: 'Марта'},
+      {val: 4, text: 'Апреля'},
+      {val: 5, text: 'Мая'},
+      {val: 6, text: 'Июня'},
+      {val: 7, text: 'Июля'},
+      {val: 8, text: 'Августа'},
+      {val: 9, text: 'Сентября'},
+      {val: 10, text: 'Октября'},
+      {val: 11, text: 'Ноября'},
+      {val: 12, text: 'Декабря'}
     ],
     photo: null,
     src: '',
-    country: '',
-    city: ''
+    country: null,
+    city: null
   }),
   computed: {
     ...mapGetters('global/storage', ['getStorage']),
@@ -75,7 +76,7 @@ export default {
       return this.phone.replace(/\D+/g, '')
     },
     years() {
-      return Array.from({ length: 60 }, (value, index) => 1970 + index)
+      return Array.from({length: 60}, (value, index) => 1970 + index)
     },
     days() {
       return this.month.val === 2
@@ -83,25 +84,45 @@ export default {
           ? 28
           : 29
         : 30 + ((this.month.val + (this.month.val >> 3)) & 1)
-    }
+    },
+    countryTitle: {
+      get() {
+        return (this.country) ? this.country.title : ''
+      },
+      set(value) {
+        this.country.id = 0;
+        this.country.title = value;
+      }
+    },
+    cityTitle: {
+      get() {
+        return (this.city) ? this.city.title : ''
+      },
+      set(value) {
+        this.city.id = 0;
+        this.city.title = value;
+      }
+    },
   },
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
     submitHandler() {
       if (!this.src) return
-      this.apiStorage(this.photo).then(() => {
-        this.apiChangeInfo({
-          photo_id: this.getStorage && this.getStorage.id,
-          first_name: this.name,
-          last_name: this.lastName,
-          birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
-          phone: this.phoneNumber,
-          about: this.about,
-          country: this.country,
-          city: this.city
-        })
+      // this.apiStorage(this.photo).then(() => {
+      this.apiChangeInfo({
+        // photo_id: this.getStorage && this.getStorage.id,
+
+        first_name: this.name,
+        last_name: this.lastName,
+        birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
+        phone: this.phoneNumber,
+        about: this.about,
+        country: this.country,
+        city: this.city,
+        photo: this.photo
       })
+      // })
     },
     processFile(event) {
       this.photo = event.target.files[0]
@@ -113,13 +134,14 @@ export default {
       this.$refs.photo.click()
     },
     deletePhoto() {
-      this.photo = null
-      this.src = ''
+      // this.photo = null
+      // this.src = ''
     },
     setInfo() {
       this.name = this.getInfo.first_name
       this.lastName = this.getInfo.last_name
       this.src = this.getInfo.photo
+      this.photo = this.getInfo.photo
       this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
       if (this.getInfo.birth_date) {
         this.day = moment(this.getInfo.birth_date).date()
@@ -162,5 +184,8 @@ export default {
 
 .settings-main__back {
   margin-left: 20px;
+}
+.user-info-form__input-photo {
+  cursor default;
 }
 </style>

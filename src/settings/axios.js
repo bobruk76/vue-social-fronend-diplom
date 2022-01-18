@@ -7,15 +7,15 @@ const NODE_ENV = process.env.NODE_ENV ? process.env.NODE_ENV : 'development';
 axios.defaults.headers['content-type'] = 'application/json';
 axios.defaults.withCredentials = true;
 switch (NODE_ENV) {
-  // case 'development':
-  //   axios.defaults.baseURL =  'http://localhost:8081/api/v1/';
-  //   break;
+  case 'development':
+    axios.defaults.baseURL = 'https://zerone-2022-develop.herokuapp.com/api/v1/';
+    // axios.defaults.baseURL =  'http://localhost:8081/api/v1/';
+    break;
   case 'production':
-    axios.defaults.baseURL =  window.location.origin + '/api/v1/';
+    axios.defaults.baseURL = window.location.origin + '/api/v1/';
     break;
   default:
-    axios.defaults.baseURL =  'https://zerone-2022-develop.herokuapp.com/api/v1/';
-    // axios.defaults.baseURL =  'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';
+    axios.defaults.baseURL = 'https://virtserver.swaggerhub.com/andrewleykin/social/1.0.4/api/v1/';
 }
 
 const token = localStorage.getItem('user-token')

@@ -3,8 +3,8 @@
     user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="name" )
     user-info-form-block(label="Фамилия:" placeholder="Введите фамилию" v-model="lastName" )
     user-info-form-block(label="Телефон:" placeholder="Введите телефон" v-model="phone" phone)
-    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="countryTitle")
-    user-info-form-block(label="Город:" placeholder="Введите город" v-model="cityTitle")
+    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country.Country")
+    user-info-form-block(label="Город:" placeholder="Введите город" v-model="city.City")
     .user-info-form__block
       span.user-info-form__label Дата рождения:
       .user-info-form__wrap
@@ -66,8 +66,8 @@ export default {
     ],
     photo: null,
     src: '',
-    country: null,
-    city: null
+    country: {},
+    city: {}
   }),
   computed: {
     ...mapGetters('global/storage', ['getStorage']),
@@ -85,24 +85,22 @@ export default {
           : 29
         : 30 + ((this.month.val + (this.month.val >> 3)) & 1)
     },
-    countryTitle: {
-      get() {
-        return (this.country) ? this.country.title : ''
-      },
-      set(value) {
-        this.country.id = 0;
-        this.country.title = value;
-      }
-    },
-    cityTitle: {
-      get() {
-        return (this.city) ? this.city.title : ''
-      },
-      set(value) {
-        this.city.id = 0;
-        this.city.title = value;
-      }
-    },
+    // countryTitle: {
+    //   get() {
+    //     return (this.country) ? this.country.Country : ''
+    //   },
+    //   set(newValue) {
+    //     this.country.id = {id: 0, Country: newValue};
+    //   }
+    // },
+    // cityTitle: {
+    //   get() {
+    //     return (this.city) ? this.city.City : ''
+    //   },
+    //   set(newValue) {
+    //     this.city = {id: 0, City: newValue};
+    //   }
+    // },
   },
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
@@ -118,8 +116,8 @@ export default {
         birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
         phone: this.phoneNumber,
         about: this.about,
-        country: this.country,
-        city: this.city,
+        country: this.country.Country,
+        city: this.city.City,
         photo: this.photo
       })
       // })
@@ -185,6 +183,7 @@ export default {
 .settings-main__back {
   margin-left: 20px;
 }
+
 .user-info-form__input-photo {
   cursor default;
 }

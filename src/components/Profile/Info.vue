@@ -23,7 +23,7 @@
         a.profile-info__val(v-else) не заполнено
       .profile-info__block
         span.profile-info__title Страна, город:
-        span.profile-info__val(v-if="info.country") {{info.country}}, {{info.city}}
+        span.profile-info__val(v-if="info.country") {{info.country.Country}}, {{info.city.City}}
         span.profile-info__val(v-else) не заполнено
       .profile-info__block
         span.profile-info__title О себе:

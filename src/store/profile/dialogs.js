@@ -82,8 +82,20 @@ export default {
         method: 'GET'
       })
         .then(response => {
-          commit('setDialogs', response.data.data)
-          commit('dialogsLoaded')
+          const dialogs = response.data.data.map((item) => {
+            const last_message = Object.assign(item.last_message, ({
+              ...item.last_message,
+              recipient: item.last_message.recipient_id || item.last_message.recipient,
+            }));
+            const newItem = Object.assign(item, ({
+              ...item,
+              last_message: last_message,
+            }));
+            return newItem;
+          });
+
+          commit('setDialogs', response.data.data);
+          commit('dialogsLoaded');
         })
         .catch(error => {
           console.error(error)

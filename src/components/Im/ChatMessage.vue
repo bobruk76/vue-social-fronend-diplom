@@ -41,10 +41,6 @@ export default {
   width: 100%;
 }
 
-//.m-chat__message-block-my {
-//  justify-content: flex-end;
-//}
-
 .im-chat__message-block {
   display: flex;
   align-items: center;

@@ -18,11 +18,11 @@
       span.user-info-form__label Фотография:
       .user-info-form__wrap
         .user-info-form__photo-wrap
-          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*" disabled="true")
+          input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*")
           label.user-info-form__input.user-info-form__input--photo(for="photo")
             span.setting-main__photo-delete(v-if="photo") {{photo}}
               simple-svg(:filepath="'/static/img/delete.svg'" @click.native.prevent="deletePhoto")
-          button-hover(variant="fill" bordered @click.native="loadPhoto" disable) Загрузить
+          button-hover(variant="fill" bordered @click.native="loadPhoto") Загрузить
         .user-info-form__photo-pic(v-if="photo && src")
           img(:src="src" :alt="photo.name")
     user-info-form-block(label="О себе:" v-model="about" about)
@@ -85,22 +85,6 @@ export default {
           : 29
         : 30 + ((this.month.val + (this.month.val >> 3)) & 1)
     },
-    // countryTitle: {
-    //   get() {
-    //     return (this.country) ? this.country.Country : ''
-    //   },
-    //   set(newValue) {
-    //     this.country.id = {id: 0, Country: newValue};
-    //   }
-    // },
-    // cityTitle: {
-    //   get() {
-    //     return (this.city) ? this.city.City : ''
-    //   },
-    //   set(newValue) {
-    //     this.city = {id: 0, City: newValue};
-    //   }
-    // },
   },
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
@@ -110,10 +94,10 @@ export default {
       // this.apiStorage(this.photo).then(() => {
       this.apiChangeInfo({
         // photo_id: this.getStorage && this.getStorage.id,
-
         first_name: this.name,
         last_name: this.lastName,
-        birth_date: moment([this.year, this.month.val - 1, this.day]).unix(),
+        // birth_date: moment([this.year, this.month.val - 1, this.day]).valueOf(),
+        birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
         phone: this.phoneNumber,
         about: this.about,
         country: this.country.Country,
@@ -132,8 +116,8 @@ export default {
       this.$refs.photo.click()
     },
     deletePhoto() {
-      // this.photo = null
-      // this.src = ''
+      this.photo = null
+      this.src = ''
     },
     setInfo() {
       this.name = this.getInfo.first_name
@@ -184,7 +168,4 @@ export default {
   margin-left: 20px;
 }
 
-.user-info-form__input-photo {
-  cursor default;
-}
 </style>

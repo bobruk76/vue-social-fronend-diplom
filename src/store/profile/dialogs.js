@@ -1,13 +1,13 @@
 import axios from 'axios'
 import moment from 'moment'
-import { sort } from 'semver'
+import {sort} from 'semver'
 
-const mergeIncomingMessages = ({ commit, state }, response) => {
+const mergeIncomingMessages = ({commit, state}, response) => {
   const fromServerNewFirst = response.data.data
   fromServerNewFirst.forEach(m => (m.sid = '' + m.id))
   const onlyNewMessages = fromServerNewFirst.filter(msgServer => !state.messages.some(m => m.id === msgServer.id))
   if (onlyNewMessages.length > 0) {
-    commit('addMessages', { messages: onlyNewMessages, total: response.data.total })
+    commit('addMessages', {messages: onlyNewMessages, total: response.data.total})
   }
 }
 
@@ -42,7 +42,7 @@ export default {
     setUnreadedMessages: (s, unread) => (s.unreadedMessages = unread),
     setDialogs: (s, dialogs) => (s.dialogs = dialogs),
     dialogsLoaded: s => (s.dialogsLoaded = true),
-    addMessages: (s, { messages, total }) => {
+    addMessages: (s, {messages, total}) => {
       s.messages = [...s.messages, ...messages]
       s.messages.sort((a, b) => a.time - b.time)
       s.total = total
@@ -55,11 +55,11 @@ export default {
     markEndOfHistory: s => (s.isHistoryEndReached = true)
   },
   actions: {
-    closeDialog({ commit }) {
+    closeDialog({commit}) {
       commit('selectDialog', null)
     },
 
-    async switchDialog({ state, getters, commit, dispatch }, dialogId) {
+    async switchDialog({state, getters, commit, dispatch}, dialogId) {
       if (!state.dialogsLoaded) {
         await dispatch('apiLoadAllDialogs')
       }
@@ -71,27 +71,25 @@ export default {
       }
     },
 
-    async apiLoadAllDialogs({ commit }, payload) {
+    async apiLoadAllDialogs({commit}, payload) {
       let query = []
       payload &&
-        Object.keys(payload).map(el => {
-          payload[el] && query.push(`${el}=${payload[el]}`)
-        })
+      Object.keys(payload).map(el => {
+        payload[el] && query.push(`${el}=${payload[el]}`)
+      })
       await axios({
         url: `dialogs?${query.join('&')}`,
         method: 'GET'
       })
         .then(response => {
           const dialogs = response.data.data.map((item) => {
-            const last_message = Object.assign(item.last_message, ({
-              ...item.last_message,
-              recipient: item.last_message.recipient_id || item.last_message.recipient,
-            }));
             const newItem = Object.assign(item, ({
               ...item,
-              last_message: last_message,
+              last_message: Object.assign(item.last_message, ({
+                ...item.last_message,
+                recipient: item.last_message.recipient_id || item.last_message.recipient,
+              })),
             }));
-            return newItem;
           });
 
           commit('setDialogs', response.data.data);
@@ -101,7 +99,7 @@ export default {
           console.error(error)
         })
     },
-    async createDialogWithUser({ dispatch, commit }, userId) {
+    async createDialogWithUser({dispatch, commit}, userId) {
       await axios({
         url: 'dialogs',
         method: 'POST',
@@ -118,7 +116,7 @@ export default {
           console.error(error)
         })
     },
-    async loadFreshMessages({ commit, state, dispatch }, id) {
+    async loadFreshMessages({commit, state, dispatch}, id) {
       await axios({
         url: `dialogs/${id}/messages`,
         method: 'GET',
@@ -127,7 +125,7 @@ export default {
         }
       })
         .then(response => {
-          mergeIncomingMessages({ commit, state }, response)
+          mergeIncomingMessages({commit, state}, response)
           if (state.chaseHistoryUnitilMessageId !== null) {
             // dispatch('')
           }
@@ -136,7 +134,7 @@ export default {
           console.error(error)
         })
     },
-    async loadOlderMessages({ commit, getters, state }) {
+    async loadOlderMessages({commit, getters, state}) {
       await axios({
         url: `dialogs/${getters.activeDialogId}/messages`,
         params: {
@@ -147,7 +145,7 @@ export default {
         method: 'GET'
       })
         .then(response => {
-          mergeIncomingMessages({ commit, state }, response)
+          mergeIncomingMessages({commit, state}, response)
           if (response.data.data.length == 0) {
             commit('markEndOfHistory')
           }
@@ -156,7 +154,7 @@ export default {
           console.error(error)
         })
     },
-    async postMessage({ dispatch }, payload) {
+    async postMessage({dispatch}, payload) {
       await axios({
         url: `dialogs/${payload.id}/messages`,
         method: 'POST',
@@ -171,7 +169,7 @@ export default {
           console.error(error)
         })
     },
-    async apiUnreadedMessages({ commit }) {
+    async apiUnreadedMessages({commit}) {
       await axios({
         url: 'dialogs/unreaded',
         method: 'GET'

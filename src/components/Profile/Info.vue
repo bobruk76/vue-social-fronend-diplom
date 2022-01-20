@@ -8,7 +8,7 @@
         button-hover.profile-info__add(:variant="btnVariantInfo.variant" bordered  @click.native="profileAction") {{btnVariantInfo.text}}
     .profile-info__main
       router-link.edit(v-if="me" :to="{name: 'Settings'}")
-        simple-svg(:filepath="'/static/img/edit.svg'")
+        simple-svg(:filepath="info.photo")
       span.profile-info__blocked(:class="{blocked}" v-else @click="blockedUser") {{blockedText}}
       .profile-info__header
         h1.profile-info__name {{info.fullName}}

@@ -28,12 +28,12 @@
 <script>
 import moment from 'moment'
 import Vue from 'vue'
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import ChatMessage from '@/components/Im/ChatMessage'
 import VirtualList from 'vue-virtual-scroll-list'
 
 const makeHeader = msgDate => {
-  return { sid: `group-${msgDate}`, stubDate: true, date: msgDate }
+  return {sid: `group-${msgDate}`, stubDate: true, date: msgDate}
 }
 export default {
   name: 'ImChat',
@@ -57,6 +57,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters('profile/info', ['getInfo']),
     statusText() {
       return this.online
         ? 'Онлайн'
@@ -66,7 +67,10 @@ export default {
       let groups = []
       let headerDate = null
 
-      for (const msg of this.messages) {
+      for (const msg of this.messages.map((item) => ({
+        ...item,
+        isSentByMe: this.getInfo.id === item.author.id,
+      }))) {
         let msgDate = moment(msg.time).format('YYYY-MM-DD')
         if (msgDate !== headerDate) {
           headerDate = msgDate
@@ -81,7 +85,7 @@ export default {
     ...mapActions('profile/dialogs', ['postMessage', 'loadOlderMessages']),
     ...mapGetters('profile/dialogs', ['isHistoryEndReached']),
     onSubmitMessage() {
-      this.postMessage({ id: this.info.id, message_text: this.mes })
+      this.postMessage({id: this.info.id, message_text: this.mes})
       this.mes = ''
     },
     async onScrollToTop() {
@@ -209,11 +213,13 @@ export default {
 
 .im-chat__loader {
   padding: 1em;
+
   .finished {
     font-size: 14px;
     text-align: center;
     color: #bfbfbf;
   }
+
   .spinner {
     font-size: 10px;
     margin: 0px auto;
@@ -227,6 +233,7 @@ export default {
     animation: load3 1.4s infinite linear;
     transform: translateZ(0);
   }
+
   .spinner:before {
     width: 50%;
     height: 50%;
@@ -237,6 +244,7 @@ export default {
     left: 0;
     content: '';
   }
+
   .spinner:after {
     background: #f8fafd;
     width: 75%;
@@ -250,6 +258,7 @@ export default {
     bottom: 0;
     right: 0;
   }
+
   @-webkit-keyframes load3 {
     0% {
       transform: rotate(0deg);

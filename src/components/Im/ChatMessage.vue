@@ -3,8 +3,8 @@
   // or it will glitter on scroll
   h5.im-chat__message-title(v-if='source.stubDate') {{source.date | moment('DD MMMM YYYY')}}
   .im-chat__message-block(v-else :class="{me: source.isSentByMe}")
-      p.im-chat__message-text {{source.message_text}}
-      span.im-chat__message-time {{source.time | moment('YYYY-MM-DD hh:mm')}}
+    p.im-chat__message-text {{source.message_text}}
+    span.im-chat__message-time {{source.time | moment('YYYY-MM-DD hh:mm')}}
 </template>
 
 <script>
@@ -28,7 +28,7 @@ export default {
 
 
 .im-chat__message-day {
-  &+& {
+  & + & {
     margin-top: 50px;
   }
 }
@@ -41,12 +41,16 @@ export default {
   width: 100%;
 }
 
+//.m-chat__message-block-my {
+//  justify-content: flex-end;
+//}
+
 .im-chat__message-block {
   display: flex;
   align-items: center;
-  max-width: 460px;
+  width: 460px;
 
-  &+& {
+  & + & {
     margin-top: 20px;
   }
 
@@ -57,7 +61,7 @@ export default {
   &.me {
     flex-direction: row-reverse;
     max-width: 450px;
-    margin-left: auto;
+    margin-right: auto;
 
     .im-chat__message-text {
       background-color: eucalypt;

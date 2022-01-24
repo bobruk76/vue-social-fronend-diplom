@@ -131,8 +131,8 @@ export default {
         this.year = moment(this.getInfo.birth_date).year()
       }
       this.about = this.getInfo.about
-      this.country = this.getInfo.country
-      this.city = this.getInfo.city
+      this.country = this.getInfo.country || {Country: ""}
+      this.city = this.getInfo.city || {City: ""}
     }
   },
   watch: {

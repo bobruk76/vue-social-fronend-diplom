@@ -12,7 +12,7 @@ export default {
       let result = {
         ...state.info
       }
-      result.fullName = result.first_name + ' ' + result.last_name
+      result.fullName = (result.first_name && result.last_name) ? result.first_name + ' ' + result.last_name : '';
       result.ages = moment().diff(result.birth_date, 'years')
       return result
     }
@@ -37,13 +37,13 @@ export default {
                           commit,
                           dispatch
                         }, user) {
-      console.log("TCL: user", user)
+      // console.log("TCL: user", user)
       await axios({
         url: 'users/me',
         method: 'PUT',
         data: user
       }).then(response => {
-        console.log("TCL: apiChangeInfo -> response", response)
+        console.log("TCL: apiChangeInfo -> response", response.data.data)
         dispatch('global/alert/setAlert', {
           status: 'success',
           text: 'Информация обновлена'

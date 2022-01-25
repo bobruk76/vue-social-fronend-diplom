@@ -1,6 +1,6 @@
 <template lang="pug">
   .settings-main
-    user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="name" )
+    user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="firstName" )
     user-info-form-block(label="Фамилия:" placeholder="Введите фамилию" v-model="lastName" )
     user-info-form-block(label="Телефон:" placeholder="Введите телефон" v-model="phone" phone)
     user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country.Country")
@@ -43,7 +43,7 @@ export default {
   name: 'SettingsMain',
   components: {UserInfoFormBlock},
   data: () => ({
-    name: '',
+    firstName: '',
     lastName: '',
     phone: '',
     about: '',
@@ -89,21 +89,27 @@ export default {
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
+
     submitHandler() {
-      if (!this.src) return
-      // this.apiStorage(this.photo).then(() => {
+      // if (!this.src) return
+      if (this.photo) {
+        this.apiStorage(this.photo);
+      }
+      ;
+
+      //
       this.apiChangeInfo({
-        // photo_id: this.getStorage && this.getStorage.id,
-        first_name: this.name,
+        first_name: this.firstName,
         last_name: this.lastName,
-        birth_date_timestamp: moment([this.year, this.month.val - 1, this.day]).valueOf(),
-        birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
+        birth_date: moment([this.year, this.month.val - 1, this.day]).valueOf(),
+        // birth_date: moment([this.year, this.month.val - 1, this.day]).format(),
         phone: this.phoneNumber,
         about: this.about,
         country: this.country.Country,
         city: this.city.City,
-        photo: this.photo
+        // photo: this.src,
       })
+      this.setInfo();
       // })
     },
     processFile(event) {
@@ -120,19 +126,21 @@ export default {
       this.src = ''
     },
     setInfo() {
-      this.name = this.getInfo.first_name
-      this.lastName = this.getInfo.last_name
-      this.src = this.getInfo.photo
-      // this.photo = this.getInfo.photo
-      this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
-      if (this.getInfo.birth_date) {
-        this.day = moment(this.getInfo.birth_date).date()
-        this.month = this.months[moment(this.getInfo.birth_date).month()]
-        this.year = moment(this.getInfo.birth_date).year()
+      if (this.getInfo) {
+        this.firstName = this.getInfo.first_name;
+        this.lastName = this.getInfo.last_name;
+        this.src = this.getInfo.photo;
+        // this.photo = this.getInfo.photo
+        this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
+        if (this.getInfo.birth_date) {
+          this.day = moment(this.getInfo.birth_date).date()
+          this.month = this.months[moment(this.getInfo.birth_date).month()]
+          this.year = moment(this.getInfo.birth_date).year()
+        }
+        this.about = this.getInfo.about
+        this.country = this.getInfo.country || {Country: ""}
+        this.city = this.getInfo.city || {City: ""}
       }
-      this.about = this.getInfo.about
-      this.country = this.getInfo.country || {Country: ""}
-      this.city = this.getInfo.city || {City: ""}
     }
   },
   watch: {
@@ -141,8 +149,9 @@ export default {
       this.setInfo()
     }
   },
-  mounted() {
-    if (this.getInfo) this.setInfo()
+
+  beforeMount() {
+    this.setInfo();
   }
 }
 </script>

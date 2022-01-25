@@ -20,11 +20,11 @@
         .user-info-form__photo-wrap
           input.user-info-form__input-photo(type="file" ref="photo" id="photo"  @change="processFile($event)" accept="image/*")
           label.user-info-form__input.user-info-form__input--photo(for="photo")
-            span.setting-main__photo-delete(v-if="photo") {{photo}}
+            span.setting-main__photo-delete(v-if="photo") {{photo.name}}
               simple-svg(:filepath="'/static/img/delete.svg'" @click.native.prevent="deletePhoto")
           button-hover(variant="fill" bordered @click.native="loadPhoto") Загрузить
-        .user-info-form__photo-pic(v-if="photo && src")
-          img(:src="src" :alt="photo.name")
+        .user-info-form__photo-pic
+          img(:src="src" :alt="src")
     user-info-form-block(label="О себе:" v-model="about" about)
     .user-info-form__block.user-info-form__block--actions
       span.user-info-form__label
@@ -107,10 +107,10 @@ export default {
       // })
     },
     processFile(event) {
-      this.photo = event.target.files[0]
-      const reader = new window.FileReader()
-      reader.onload = e => (this.src = e.target.result)
-      reader.readAsDataURL(this.photo)
+      this.photo = event.target.files[0];
+      const reader = new window.FileReader();
+      reader.onload = e => (this.src = e.target.result);
+      reader.readAsDataURL(this.photo);
     },
     loadPhoto() {
       this.$refs.photo.click()
@@ -123,7 +123,7 @@ export default {
       this.name = this.getInfo.first_name
       this.lastName = this.getInfo.last_name
       this.src = this.getInfo.photo
-      this.photo = this.getInfo.photo
+      // this.photo = this.getInfo.photo
       this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
       if (this.getInfo.birth_date) {
         this.day = moment(this.getInfo.birth_date).date()

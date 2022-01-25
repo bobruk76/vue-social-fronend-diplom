@@ -89,15 +89,9 @@ export default {
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
+    ...mapActions('profile/info', ['apiInfo']),
 
     submitHandler() {
-      // if (!this.src) return
-      if (this.photo) {
-        this.apiStorage(this.photo);
-      }
-      ;
-
-      //
       this.apiChangeInfo({
         first_name: this.firstName,
         last_name: this.lastName,
@@ -107,10 +101,11 @@ export default {
         about: this.about,
         country: this.country.Country,
         city: this.city.City,
-        // photo: this.src,
+      }).then(() => {
+        if (this.photo) {
+          this.apiStorage(this.photo);
+        }
       })
-      this.setInfo();
-      // })
     },
     processFile(event) {
       this.photo = event.target.files[0];
@@ -129,7 +124,8 @@ export default {
       if (this.getInfo) {
         this.firstName = this.getInfo.first_name;
         this.lastName = this.getInfo.last_name;
-        this.src = this.getInfo.photo;
+        if (!this.photo)
+          this.src = this.getInfo.photo;
         // this.photo = this.getInfo.photo
         this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
         if (this.getInfo.birth_date) {
@@ -147,7 +143,11 @@ export default {
     getInfo(value) {
       if (!value) return
       this.setInfo()
-    }
+    },
+    getStorage(value) {
+      if (!value) return
+      this.apiInfo()
+    },
   },
 
   beforeMount() {

@@ -45,9 +45,10 @@
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
         comments(
+          v-for="(comment,index) in info.comments" :key="index"
           :admin="admin"
-          :info="info.comments"
-          :id="info.id"
+          :info="comment"
+          :id="comment.id"
           :edit="edit"
           :deleted="deleted"
         )
@@ -55,14 +56,15 @@
 
 <script>
 import AddForm from '@/components/News/AddForm'
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
 import LikeComment from '@/components/LikeComment'
 import AddTags from '@/components/News/AddTags'
+
 export default {
   name: 'NewsBlock',
-  components: { Comments, LikeComment, AddForm },
+  components: {Comments, LikeComment, AddForm},
   props: {
     info: {
       type: Object,
@@ -73,7 +75,9 @@ export default {
         time: 1559751301818,
         likes: 44,
         id: 1,
-        tags: ['tag1']
+        tags: ['tag1'],
+        comments: [{}],
+
       })
     },
     edit: Boolean,
@@ -94,9 +98,9 @@ export default {
       this.info.comments.map(el => {
         !el.is_deleted && result++
         el.sub_comments &&
-          el.sub_comments.map(subEl => {
-            !subEl.is_deleted && result++
-          })
+        el.sub_comments.map(subEl => {
+          !subEl.is_deleted && result++
+        })
       })
       return result
     }
@@ -116,8 +120,8 @@ export default {
     },
     likeAction(active) {
       active
-        ? this.deleteLike({ item_id: this.info.id, type: 'Post' })
-        : this.putLike({ item_id: this.info.id, type: 'Post' })
+        ? this.deleteLike({item_id: this.info.id, type: 'Post'})
+        : this.putLike({item_id: this.info.id, type: 'Post'})
     },
     toggleEditNews() {
       this.isEditNews = !this.isEditNews
@@ -159,7 +163,7 @@ export default {
     }
   }
 
-  &+& {
+  & + & {
     margin-top: 30px;
   }
 
@@ -319,7 +323,7 @@ export default {
 }
 
 .news-block__actions-block {
-  &+& {
+  & + & {
     margin-left: 30px;
   }
 }

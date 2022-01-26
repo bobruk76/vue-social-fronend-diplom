@@ -20,9 +20,9 @@
             a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
             like-comment(
               fill
-              :active="info.my_like"
               :id="info.id"
               @liked="likeAction"
+              :active="info.my_like"
               :quantity="info.likes"
               )
 </template>

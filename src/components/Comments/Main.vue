@@ -64,6 +64,7 @@ export default {
   display: flex;
   font-size: 13px;
   position: relative;
+  padding-bottom: 26px;
 }
 
 .comment-main__pic {

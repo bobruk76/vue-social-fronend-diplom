@@ -44,7 +44,7 @@
         .news-block__actions-block
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
-        span.news-block__comments-quantity Комментарии ({{ commentsLength }})
+        //p.news-block__comments-quantity Комментарии ({{ commentsLength }})
         comments(
           v-for="(comment,index) in info.comments" :key="index"
           :admin="admin"
@@ -147,7 +147,7 @@ export default {
 .news-block {
   background: #FFFFFF;
   box-shadow: standart-boxshadow;
-  padding: 30px 40px 0;
+  padding: 30px 40px 10px 30px;
   position: relative;
 
   &.deffered {
@@ -169,7 +169,7 @@ export default {
   }
 
   @media (max-width: breakpoint-xxl) {
-    padding: 20px 30px 0;
+    padding: 20px 30px 10px 20px;
   }
 }
 
@@ -321,6 +321,7 @@ export default {
   display: flex;
   align-items: center;
   margin: 25px 0;
+  padding-bottop: 20px;
 }
 
 .news-block__actions-block {
@@ -334,6 +335,6 @@ export default {
   font-weight: bold;
   font-size: 20px;
   color: #000;
-  padding-bottom: 10px;
+  padding-bottom: 20px;
 }
 </style>

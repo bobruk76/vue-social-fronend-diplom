@@ -20,10 +20,11 @@ import FriendsPossible from '@/components/Friends/Possible'
 import ProfileInfo from '@/components/Profile/Info'
 import NewsAdd from '@/components/News/Add'
 import NewsBlock from '@/components/News/Block'
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
+
 export default {
   name: 'Profile',
-  components: { FriendsPossible, ProfileInfo, NewsAdd, NewsBlock },
+  components: {FriendsPossible, ProfileInfo, NewsAdd, NewsBlock},
   data: () => ({
     activeTab: 'POSTED'
   }),
@@ -40,8 +41,14 @@ export default {
       this.activeTab = tab
     }
   },
-  created() {
-    if (this.getInfo) this.apiWall({ id: this.getInfo.id })
-  }
+  watch: {
+    getInfo(value) {
+      if (!value) return
+      this.apiWall({id: this.getInfo.id})
+    },
+  },
+  // created() {
+  //   if (this.getInfo) this.apiWall({ id: this.getInfo.id })
+  // }
 }
 </script>

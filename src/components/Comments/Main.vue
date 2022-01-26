@@ -1,6 +1,5 @@
 <template lang="pug">
   .comment-main
-
     template(v-if="info.is_deleted")
       p.comment-main__text Комментарий удален.
         a(href="#" @click="onRecoverComment") Восстановить
@@ -16,7 +15,7 @@
         router-link.comment-main__author(:to="{name: 'ProfileId', params: {id: info.author.id}}") {{info.author.first_name + ' ' + info.author.last_name}}
         p.comment-main__text {{info.comment_text}}
         .comment-main__actions
-          span.comment-main__time {{info.time | moment('from') }}
+          p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
             a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
             like-comment(fill :active="info.my_like" :id="info.id" @liked="likeAction" :quantity="info.likes")

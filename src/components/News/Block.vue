@@ -44,6 +44,7 @@
         .news-block__actions-block
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
+        span.news-block__comments-quantity Комментарии ({{ commentsLength }})
         comments(
           v-for="(comment,index) in info.comments" :key="index"
           :admin="admin"
@@ -326,5 +327,13 @@ export default {
   & + & {
     margin-left: 30px;
   }
+}
+
+.news-block__comments-quantity {
+  font-family: font-exo;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000;
+  padding-bottom: 10px;
 }
 </style>

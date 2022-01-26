@@ -1,13 +1,12 @@
-import News from '@/pages/User/News'
-
-export default [{
+export default [
+  {
     path: '/',
     name: 'News',
-    component: News,
     meta: {
       layout: 'main',
       title: 'Новости'
-    }
+    },
+    component: () => import('@/pages/User/News.vue')
   },
   {
     path: '/im',

@@ -1,7 +1,7 @@
 <template lang="pug">
   .comment-main
     template(v-if="info.is_deleted")
-      p.comment-main__text Комментарий удален. 
+      p.comment-main__text Комментарий удален.
         a(href="#" @click="onRecoverComment") Восстановить
     template(v-else)
       .edit.edit--small(v-if="edit || deleted")
@@ -15,10 +15,10 @@
         router-link.comment-main__author(:to="{name: 'ProfileId', params: {id: info.author.id}}") {{info.author.first_name + ' ' + info.author.last_name}}
         p.comment-main__text {{info.comment_text}}
         .comment-main__actions
-          span.comment-main__time {{info.time | moment('from') }}
+          p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
             a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
-            like-comment(fill :active="info.my_like" :id="info.id" @liked="likeAction" )
+            like-comment(fill :active="info.my_like" :id="info.id" @liked="likeAction" :quantity="info.likes")
 </template>
 
 <script>
@@ -64,6 +64,7 @@ export default {
   display: flex;
   font-size: 13px;
   position: relative;
+  padding-bottom: 26px;
 }
 
 .comment-main__pic {

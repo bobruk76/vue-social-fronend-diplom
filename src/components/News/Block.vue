@@ -44,10 +44,12 @@
         .news-block__actions-block
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
+        //p.news-block__comments-quantity Комментарии ({{ commentsLength }})
         comments(
+          v-for="(comment,index) in info.comments" :key="index"
           :admin="admin"
-          :info="info.comments"
-          :id="info.id"
+          :info="comment"
+          :id="comment.id"
           :edit="edit"
           :deleted="deleted"
         )
@@ -55,14 +57,15 @@
 
 <script>
 import AddForm from '@/components/News/AddForm'
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
 import LikeComment from '@/components/LikeComment'
 import AddTags from '@/components/News/AddTags'
+
 export default {
   name: 'NewsBlock',
-  components: { Comments, LikeComment, AddForm },
+  components: {Comments, LikeComment, AddForm},
   props: {
     info: {
       type: Object,
@@ -73,7 +76,9 @@ export default {
         time: 1559751301818,
         likes: 44,
         id: 1,
-        tags: ['tag1']
+        tags: ['tag1'],
+        comments: [{}],
+
       })
     },
     edit: Boolean,
@@ -94,9 +99,9 @@ export default {
       this.info.comments.map(el => {
         !el.is_deleted && result++
         el.sub_comments &&
-          el.sub_comments.map(subEl => {
-            !subEl.is_deleted && result++
-          })
+        el.sub_comments.map(subEl => {
+          !subEl.is_deleted && result++
+        })
       })
       return result
     }
@@ -116,8 +121,8 @@ export default {
     },
     likeAction(active) {
       active
-        ? this.deleteLike({ item_id: this.info.id, type: 'Post' })
-        : this.putLike({ item_id: this.info.id, type: 'Post' })
+        ? this.deleteLike({item_id: this.info.id, type: 'Post'})
+        : this.putLike({item_id: this.info.id, type: 'Post'})
     },
     toggleEditNews() {
       this.isEditNews = !this.isEditNews
@@ -142,7 +147,7 @@ export default {
 .news-block {
   background: #FFFFFF;
   box-shadow: standart-boxshadow;
-  padding: 30px 40px 0;
+  padding: 30px 40px 10px 30px;
   position: relative;
 
   &.deffered {
@@ -159,12 +164,12 @@ export default {
     }
   }
 
-  &+& {
+  & + & {
     margin-top: 30px;
   }
 
   @media (max-width: breakpoint-xxl) {
-    padding: 20px 30px 0;
+    padding: 20px 30px 10px 20px;
   }
 }
 
@@ -316,11 +321,20 @@ export default {
   display: flex;
   align-items: center;
   margin: 25px 0;
+  padding-bottop: 20px;
 }
 
 .news-block__actions-block {
-  &+& {
+  & + & {
     margin-left: 30px;
   }
+}
+
+.news-block__comments-quantity {
+  font-family: font-exo;
+  font-weight: bold;
+  font-size: 20px;
+  color: #000;
+  padding-bottom: 20px;
 }
 </style>

@@ -18,7 +18,13 @@
           p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
             a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
-            like-comment(fill :active="info.my_like" :id="info.id" @liked="likeAction" :quantity="info.likes")
+            like-comment(
+              fill
+              :active="info.my_like"
+              :id="info.id"
+              @liked="likeAction"
+              :quantity="info.likes"
+              )
 </template>
 
 <script>
@@ -36,9 +42,9 @@ export default {
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     likeAction(active) {
-      active
-        ? this.deleteLike({ item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' })
-        : this.putLike({ item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' })
+      const data = { item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' };
+      console.log(data);
+      // active ? this.deleteLike(data) : this.putLike(data);
     },
     onDeleteComment() {
       this.$emit('delete-comment', this.info.id)

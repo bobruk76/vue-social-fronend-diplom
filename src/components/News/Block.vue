@@ -55,8 +55,8 @@
         .news-block__comments-quantity
           p.news-block__comments-quantity-text Комментарии ({{ commentsLength }})
           a.news-block__comments-quantity-more(v-if="commentsLength>1" href="#" @click.prevent="showComments")
-            template(v-if="isShowAllComments") Свернуть
-            template(v-else) Показать
+            template(v-if="isShowAllComments") свернуть
+            template(v-else) показать
         comments(
           v-for="(comment,index) in info.comments" :key="comment.id"
           v-show="index===0 || isShowAllComments"

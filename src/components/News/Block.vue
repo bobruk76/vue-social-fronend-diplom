@@ -44,9 +44,8 @@
         .news-block__actions-block
           like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
       .news-block__comments(v-if="!deffered")
-        //p.news-block__comments-quantity Комментарии ({{ commentsLength }})
         comments(
-          v-for="(comment,index) in info.comments" :key="index"
+          v-for="comment in info.comments" :key="comment.id"
           :admin="admin"
           :info="comment"
           :id="comment.id"

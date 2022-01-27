@@ -19,17 +19,20 @@
           template(v-if="!admin")
             a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
             like-comment(
-              fill
-              :id="info.id"
+              :quantity="info.likes"
+              width="16px"
+              height="16px"
+              font-size="15px"
               @liked="likeAction"
               :active="info.my_like"
-              :quantity="info.likes"
-              )
+              :id="info.id"
+            )
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import {mapActions} from 'vuex'
 import LikeComment from '@/components/LikeComment'
+
 export default {
   name: 'CommentMain',
   props: {
@@ -38,13 +41,12 @@ export default {
     edit: Boolean,
     deleted: Boolean
   },
-  components: { LikeComment },
+  components: {LikeComment},
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     likeAction(active) {
-      const data = { item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' };
-      console.log(data);
-      // active ? this.deleteLike(data) : this.putLike(data);
+      const data = {item_id: this.info.id, post_id: this.info.post_id, type: 'Comment'};
+      active ? this.deleteLike(data) : this.putLike(data);
     },
     onDeleteComment() {
       this.$emit('delete-comment', this.info.id)
@@ -59,7 +61,7 @@ export default {
     onRecoverComment() {
       this.$emit('recover-comment', this.info.id)
     }
-  }
+  },
 }
 </script>
 

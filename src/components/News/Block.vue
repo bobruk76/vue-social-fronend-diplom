@@ -42,10 +42,19 @@
             :id="info.id"
           )
         .news-block__actions-block
-          like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
+          like-comment(
+            :quantity="commentsLength"
+            width="16px"
+            height="16px"
+            font-size="15px"
+            @comment-up.capture="commentUpAction"
+            :id="info.id"
+            comment
+          )
       .news-block__comments(v-if="!deffered")
         comments(
-          v-for="comment in info.comments" :key="comment.id"
+          v-for="(comment,index) in info.comments" :key="comment.id"
+          v-show="index<countCommentsShow"
           :admin="admin"
           :info="comment"
           :id="comment.id"
@@ -76,8 +85,7 @@ export default {
         likes: 44,
         id: 1,
         tags: ['tag1'],
-        comments: [{}],
-
+        comments: null,
       })
     },
     edit: Boolean,
@@ -89,7 +97,8 @@ export default {
   data: () => ({
     isLotText: false,
     openText: false,
-    isEditNews: false
+    isEditNews: false,
+    countCommentsShow: 1,
   }),
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
@@ -117,6 +126,9 @@ export default {
       return timePost.calendar(null, {
         sameElse: `[через ${timePost.diff(now, 'days')} дней, ${timePost.diff(now, 'hours') % 24} часа]`
       })
+    },
+    commentUpAction() {
+      this.countCommentsShow = (this.countCommentsShow === this.commentsLength) ? 1 : this.commentsLength;
     },
     likeAction(active) {
       active
@@ -318,9 +330,9 @@ export default {
 
 .news-block__actions {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   margin: 25px 0;
-  padding-bottop: 20px;
+  padding-bottop: 20;
 }
 
 .news-block__actions-block {

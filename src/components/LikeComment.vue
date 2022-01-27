@@ -1,11 +1,12 @@
 <template lang="pug">
   .like-comment(:class="{active, fill}")
-    template(v-if="comment")
-      simple-svg(:filepath="'/static/img/comment.svg'" :width="width" :height="height")
-      span(v-if="quantity >= 1" :style="{'font-size': fontSize}") {{quantity}}
+    .comment__checkbox(v-if="comment")
+      input(type="checkbox" :checked="false" :id="uuidv" @change="onClick")
+      label(:for="uuidv" :style="{'font-size': fontSize}")
+        template(v-if="quantity >= 1" :style="{'font-size': fontSize}") {{quantity}}
     .like-comment__checkbox(v-else)
-      input(type="checkbox" :checked="active" :id="hId" @change="onChange")
-      label(:for="hId" :style="{'font-size': fontSize}")
+      input(type="checkbox" :checked="active" :id="uuidv" @change="onChange")
+      label(:for="uuidv" :style="{'font-size': fontSize}")
         template(v-if="localQuantity >= 1") {{localQuantity}}
 </template>
 
@@ -29,7 +30,7 @@ export default {
       default: '12px'
     },
     comment: Boolean,
-    id: Number
+    id: Number,
   },
   data: () => ({
     localQuantity: null,
@@ -48,12 +49,17 @@ export default {
       this.$emit('liked', this.localActive)
       this.localActive ? this.localQuantity-- : this.localQuantity++
       this.localActive = !this.localActive
-    }
+    },
+    onClick() {
+      this.$emit('comment-up', true)
+    },
   },
   computed: {
-    hId() {
-      return `heart${this.id}`;
-    }
+    uuidv: () => {
+      return 'id-'+([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+        (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
+      );
+    },
   },
   mounted() {
     this.localQuantity = this.quantity
@@ -67,7 +73,7 @@ export default {
 
 .like-comment {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   cursor: pointer;
 
   &:hover {
@@ -124,6 +130,27 @@ export default {
     font-weight: 600;
     color: #AEAEBD;
     margin-left: 5px;
+  }
+}
+
+.comment__checkbox {
+  input {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+  }
+
+  label {
+    width: 18px;
+    height: 16px;
+    display: block;
+    background: url('/static/img/comment.svg') center no-repeat;
+    background-size: 18px;
+    padding-left: 25px;
+    font-weight: 600;
+    color: #AEAEBD;
+    cursor: pointer;
   }
 }
 

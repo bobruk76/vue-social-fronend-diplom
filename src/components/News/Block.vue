@@ -66,6 +66,9 @@
           :edit="edit"
           :deleted="deleted"
         )
+        add-comment(
+          :id="info.id",
+        )
 </template>
 
 <script>
@@ -73,6 +76,7 @@ import AddForm from '@/components/News/AddForm'
 import {mapActions, mapGetters} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
+import AddComment from '@/components/Comments/Add.vue'
 import LikeComment from '@/components/LikeComment'
 import AddTags from '@/components/News/AddTags'
 

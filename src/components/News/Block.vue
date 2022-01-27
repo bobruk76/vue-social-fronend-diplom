@@ -52,9 +52,14 @@
             comment
           )
       .news-block__comments(v-if="!deffered")
+        .news-block__comments-quantity
+          p.news-block__comments-quantity-text Комментарии ({{ commentsLength }})
+          a.news-block__comments-quantity-more(v-if="commentsLength>1" href="#" @click.prevent="showComments")
+            template(v-if="isShowAllComments") Свернуть
+            template(v-else) Показать
         comments(
           v-for="(comment,index) in info.comments" :key="comment.id"
-          v-show="index<countCommentsShow"
+          v-show="index===0 || isShowAllComments"
           :admin="admin"
           :info="comment"
           :id="comment.id"
@@ -98,7 +103,7 @@ export default {
     isLotText: false,
     openText: false,
     isEditNews: false,
-    countCommentsShow: 1,
+    isShowAllComments: false,
   }),
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
@@ -137,6 +142,9 @@ export default {
     },
     toggleEditNews() {
       this.isEditNews = !this.isEditNews
+    },
+    showComments() {
+      this.isShowAllComments = !this.isShowAllComments
     },
     deleteNews() {
       this.deleteFeeds({
@@ -342,10 +350,21 @@ export default {
 }
 
 .news-block__comments-quantity {
+  display: flex;
+  align-items: flex-end;
   font-family: font-exo;
   font-weight: bold;
   font-size: 20px;
   color: #000;
   padding-bottom: 20px;
+
+  .news-block__comments-quantity-text {
+    padding-right: 10px;
+  }
+
+  .news-block__comments-quantity-more {
+    font-size: 13px;
+    color: eucalypt;
+  }
 }
 </style>

@@ -66,9 +66,12 @@
           :edit="edit"
           :deleted="deleted"
         )
-        add-comment(
-          :id="info.id",
-        )
+        template
+          add-comment(
+            :id="info.id",
+            @submited="commentAddAction"
+            v-model="commentText"
+          )
 </template>
 
 <script>
@@ -82,7 +85,7 @@ import AddTags from '@/components/News/AddTags'
 
 export default {
   name: 'NewsBlock',
-  components: {Comments, LikeComment, AddForm},
+  components: {Comments, LikeComment, AddForm, AddComment, AddTags},
   props: {
     info: {
       type: Object,
@@ -108,6 +111,7 @@ export default {
     openText: false,
     isEditNews: false,
     isShowAllComments: false,
+    commentText: ''
   }),
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
@@ -126,6 +130,7 @@ export default {
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     ...mapActions('profile/feeds', ['deleteFeeds']),
+    ...mapActions('profile/comments', ['newComment']),
     toggleText() {
       this.openText = !this.openText
     },
@@ -135,6 +140,13 @@ export default {
       return timePost.calendar(null, {
         sameElse: `[через ${timePost.diff(now, 'days')} дней, ${timePost.diff(now, 'hours') % 24} часа]`
       })
+    },
+    commentAddAction() {
+      this.newComment({
+        post_id: this.info.id,
+        text: this.commentText,
+      });
+      this.commentText = '';
     },
     commentUpAction() {
       this.countCommentsShow = (this.countCommentsShow === this.commentsLength) ? 1 : this.commentsLength;

@@ -62,14 +62,14 @@
           v-show="index===0 || isShowAllComments"
           :admin="admin"
           :info="comment"
-          :id="comment.id"
           :edit="edit"
           :deleted="deleted"
+          @new-comment="addComment"
         )
         template
           add-comment(
             :id="info.id",
-            @submited="commentAddAction"
+            @submited="addComment"
             v-model="commentText"
           )
 </template>
@@ -141,11 +141,17 @@ export default {
         sameElse: `[через ${timePost.diff(now, 'days')} дней, ${timePost.diff(now, 'hours') % 24} часа]`
       })
     },
-    commentAddAction() {
-      this.newComment({
-        post_id: this.info.id,
-        text: this.commentText,
-      });
+    addComment(value) {
+      value
+        ? this.newComment({
+          post_id: this.info.id,
+          text: value.commentText,
+          parent_id: value.parentId
+        })
+        : this.newComment({
+          post_id: this.info.id,
+          text: this.commentText,
+        });
       this.commentText = '';
     },
     commentUpAction() {

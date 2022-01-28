@@ -32,8 +32,9 @@
             .comment-main__new
               add-comment(
                 v-show="isAddSubComment"
-                :id="info.id"
-                @submited="subCommentAddAction"
+                :id=parentId
+                :parentId=parentId
+                @submited="addSubComment"
                 v-model="subCommentText"
                 placeholder="Написать ответ..."
               )
@@ -64,8 +65,13 @@ export default {
       // $emit('answer-comment')
       this.isAddSubComment = !this.isAddSubComment
     },
-    subCommentAddAction() {
-
+    addSubComment() {
+      this.$emit('new-comment', {
+        commentText: this.subCommentText,
+        parentId: this.info.id,
+      });
+      this.subCommentText='';
+      this.isAddSubComment=false;
     },
     likeAction(active) {
       const data = {item_id: this.info.id, post_id: this.info.post_id, type: 'Comment'};
@@ -145,9 +151,11 @@ export default {
   color: eucalypt;
   margin-right: 10px;
 }
+
 .comment-main__new {
   flex-basis: 100%;
 }
+
 .break {
   flex-basis: 100%;
   height: 0;

@@ -29,6 +29,8 @@
               :id="info.id"
             )
             .break
+            slot(name="sub")
+            .break
             .comment-main__new
               add-comment(
                 v-show="isAddSubComment"

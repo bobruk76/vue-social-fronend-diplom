@@ -57,7 +57,7 @@
             template(v-if="isShowAllComments") свернуть
             template(v-else) показать
         comments(
-          v-for="(comment,index) in info.comments" :key="comment.id"
+          v-for="(comment,index) in info.comments" :key="index"
           v-show="index===0 || isShowAllComments"
           :admin="admin"
           :info="comment"
@@ -65,6 +65,14 @@
           :deleted="deleted"
           @new-comment="addComment"
         )
+          template(slot="sub")
+            comments(
+              v-for="(sub_comment,index) in comment.sub_comments" :key="index"
+              :info="sub_comment"
+              :admin="admin"
+              :edit="edit"
+              :deleted="deleted"
+            )
         template
           add-comment(
             :id="info.id",
@@ -124,7 +132,7 @@ export default {
           !subEl.is_deleted && countAnswers++
         })
       })
-      return {countComments: countComments, countAnswers: countAnswers, allQuanttity: countComments+countAnswers}
+      return {countComments: countComments, countAnswers: countAnswers, allQuanttity: countComments + countAnswers}
     }
   },
   methods: {

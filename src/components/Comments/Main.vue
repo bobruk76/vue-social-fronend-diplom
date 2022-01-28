@@ -17,7 +17,8 @@
         .comment-main__actions
           p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
-            a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
+            a.comment-main__review(href="#" @click.prevent="toggleNewComment")
+              template(v-if="!isAddSubComment") Ответить
             like-comment(
               :quantity="info.likes"
               width="16px"
@@ -27,11 +28,21 @@
               :active="info.my_like"
               :id="info.id"
             )
+            .break
+            .comment-main__new
+              add-comment(
+                v-show="isAddSubComment"
+                :id="info.id"
+                @submited="subCommentAddAction"
+                v-model="subCommentText"
+                placeholder="Написать ответ..."
+              )
 </template>
 
 <script>
 import {mapActions} from 'vuex'
 import LikeComment from '@/components/LikeComment'
+import AddComment from '@/components/Comments/Add.vue'
 
 export default {
   name: 'CommentMain',
@@ -41,9 +52,21 @@ export default {
     edit: Boolean,
     deleted: Boolean
   },
-  components: {LikeComment},
+  components: {LikeComment, AddComment},
+  data: () => ({
+    subCommentText: '',
+    isAddSubComment: false,
+  }),
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
+    ...mapActions('profile/comments', ['newComment']),
+    toggleNewComment() {
+      // $emit('answer-comment')
+      this.isAddSubComment = !this.isAddSubComment
+    },
+    subCommentAddAction() {
+
+    },
     likeAction(active) {
       const data = {item_id: this.info.id, post_id: this.info.post_id, type: 'Comment'};
       active ? this.deleteLike(data) : this.putLike(data);
@@ -108,6 +131,7 @@ export default {
 
 .comment-main__actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -119,6 +143,13 @@ export default {
 
 .comment-main__review {
   color: eucalypt;
-  margin-right: auto;
+  margin-right: 10px;
+}
+.comment-main__new {
+  flex-basis: 100%;
+}
+.break {
+  flex-basis: 100%;
+  height: 0;
 }
 </style>

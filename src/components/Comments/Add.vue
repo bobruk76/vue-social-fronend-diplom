@@ -2,7 +2,7 @@
   form.comment-add(action="#" @submit.prevent="onSubmitComment")
     .comment-add__pic(v-if="getInfo")
       img(:src="getInfo.photo" :alt="getInfo.fullName")
-    input.comment-add__input(type="text" placeholder="Написать комментарий..." ref="addInput" v-model="commentText")
+    input.comment-add__input(type="text" :placeholder="placeholder" ref="addInput" v-model="commentText")
     .comment-add__icon.photo
       simple-svg(:filepath="'/static/img/photo.svg'")
     .comment-add__icon.add
@@ -14,6 +14,10 @@ import { mapGetters } from 'vuex'
 export default {
   name: 'CommentAdd',
   props: {
+    placeholder: {
+      type: String,
+      default: 'Написать комментарий...',
+    },
     value: String,
     id: [Number, String],
     parentId: Number

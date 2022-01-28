@@ -380,6 +380,7 @@ export default {
 
   .news-block__comments-quantity-more {
     font-size: 13px;
+    font-weight: normal;
     color: eucalypt;
   }
 }

@@ -5,7 +5,7 @@
     input.comment-add__input(type="text" :placeholder="placeholder" ref="addInput" v-model="commentText")
     .comment-add__icon.photo
       simple-svg(:filepath="'/static/img/photo.svg'")
-    .comment-add__icon.add
+    .comment-add__icon.add(@click.prevent="onSubmitComment")
       simple-svg(:filepath="'/static/img/add.svg'")
 </template>
 

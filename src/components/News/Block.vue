@@ -43,18 +43,17 @@
           )
         .news-block__actions-block
           like-comment(
-            :quantity="commentsLength"
+            :quantity="commentsLength.allQuanttity"
             width="16px"
             height="16px"
             font-size="15px"
-            @comment-up.capture="commentUpAction"
             :id="info.id"
             comment
           )
       .news-block__comments(v-if="!deffered")
         .news-block__comments-quantity
-          p.news-block__comments-quantity-text Комментарии ({{ commentsLength }})
-          a.news-block__comments-quantity-more(v-if="commentsLength>1" href="#" @click.prevent="showComments")
+          p.news-block__comments-quantity-text Комментарии ({{ commentsLength.countComments }})
+          a.news-block__comments-quantity-more(v-if="commentsLength.countComments>1" href="#" @click.prevent="showComments")
             template(v-if="isShowAllComments") свернуть
             template(v-else) показать
         comments(
@@ -116,15 +115,16 @@ export default {
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
     commentsLength() {
-      let result = 0
+      let countComments = 0
+      let countAnswers = 0
       this.info.comments.map(el => {
-        !el.is_deleted && result++
+        !el.is_deleted && countComments++
         el.sub_comments &&
         el.sub_comments.map(subEl => {
-          !subEl.is_deleted && result++
+          !subEl.is_deleted && countAnswers++
         })
       })
-      return result
+      return {countComments: countComments, countAnswers: countAnswers, allQuanttity: countComments+countAnswers}
     }
   },
   methods: {
@@ -153,9 +153,6 @@ export default {
           text: this.commentText,
         });
       this.commentText = '';
-    },
-    commentUpAction() {
-      this.countCommentsShow = (this.countCommentsShow === this.commentsLength) ? 1 : this.commentsLength;
     },
     likeAction(active) {
       active

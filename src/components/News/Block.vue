@@ -57,7 +57,7 @@
             template(v-if="isShowAllComments") свернуть
             template(v-else) показать
         comments(
-          v-for="(comment,index) in info.comments" :key="index"
+          v-for="(comment,index) in info.comments || []" :key="index"
           v-show="index===0 || isShowAllComments"
           :admin="admin"
           :info="comment"
@@ -68,7 +68,7 @@
           .news-block__comments-answers(slot="sub")
             expanded(
               v-if="comment.sub_comments.length>0"
-              :comments="comment.sub_comments"
+              :sub_comments="comment.sub_comments"
             )
         template
           add-comment(

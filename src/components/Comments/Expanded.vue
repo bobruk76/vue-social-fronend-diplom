@@ -6,7 +6,7 @@
         template(v-if="isShow") свернуть
         template(v-else) показать все
     comments(
-      v-for="(sub_comment,index) in comments" :key="index"
+      v-for="(sub_comment,index) in sub_comments" :key="index"
       :info="sub_comment"
       :hasAnswering="false"
       :isShow="isShow || index===0"
@@ -19,9 +19,7 @@ import Comments from '@/components/Comments/Main.vue'
 export default {
   name: "Expanded",
   components: {Comments},
-  props: {
-    comments: Object,
-  },
+  props: ['sub_comments',],
   data() {
     return {
       isShow: false
@@ -34,7 +32,7 @@ export default {
   },
   computed: {
     answersLength() {
-      return this.comments.length;
+      return this.sub_comments.length;
     }
   }
 }
@@ -49,6 +47,7 @@ export default {
   padding: 30px 40px 10px 30px;
   position: relative;
 }
+
 .answers-block__quantity {
   display: flex;
   align-items: flex-end;
@@ -57,9 +56,11 @@ export default {
   font-size: 14px;
   color: #000;
   padding-bottom: 20px;
+
   .answers-block__quantity-text {
     padding-right: 10px;
   }
+
   .answers-block__quantity-more {
     font-size: 13px;
     font-weight: normal;

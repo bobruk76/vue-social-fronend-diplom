@@ -17,7 +17,7 @@
         .comment-main__actions
           p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
-            a.comment-main__review(href="#" @click.prevent="toggleNewComment")
+            a.comment-main__review(v-if="hasAnswering" href="#" @click.prevent="toggleNewComment")
               template(v-if="!isAddSubComment") Ответить
             like-comment(
               :quantity="info.likes"
@@ -53,7 +53,11 @@ export default {
     admin: Boolean,
     info: Object,
     edit: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+    hasAnswering: {
+      type: Boolean,
+      default: true,
+    }
   },
   components: {LikeComment, AddComment},
   data: () => ({

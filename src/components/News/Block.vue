@@ -65,13 +65,14 @@
           :deleted="deleted"
           @new-comment="addComment"
         )
-          template(slot="sub")
+          .news-block__comments-answers(slot="sub")
             comments(
               v-for="(sub_comment,index) in comment.sub_comments" :key="index"
               :info="sub_comment"
               :admin="admin"
               :edit="edit"
               :deleted="deleted"
+              :hasAnswering="false"
             )
         template
           add-comment(
@@ -393,6 +394,15 @@ export default {
     font-size: 13px;
     font-weight: normal;
     color: eucalypt;
+  }
+}
+
+.news-block__comments-answers {
+  display: block;
+  width: 100%;
+
+  >.comment-main {
+    padding-top: 10px;
   }
 }
 </style>

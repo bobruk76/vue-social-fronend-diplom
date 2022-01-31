@@ -2,7 +2,7 @@
   .expanded-main
     .answers-block__quantity
       p.answers-block__quantity-text Количество ответов ({{ answersLength }})
-      a.answers-block__quantity-more(v-show="answersLength>0" href="#" @click.prevent="showComments")
+      a.answers-block__quantity-more(v-if="answersLength>1" href="#" @click.prevent="showComments")
         template(v-if="isShow") свернуть
         template(v-else) показать все
     comments(

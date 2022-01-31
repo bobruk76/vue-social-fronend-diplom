@@ -67,6 +67,7 @@
         )
           .news-block__comments-answers(slot="sub")
             expanded(
+              v-if="comment.sub_comments.length>0"
               :comments="comment.sub_comments"
             )
         template

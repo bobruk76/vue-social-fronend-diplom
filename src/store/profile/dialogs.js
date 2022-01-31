@@ -108,10 +108,12 @@ export default {
         }
       })
         .then(async response => {
-          console.log(response);
-          const dialogId = response.data.data.id
-          await dispatch('apiLoadAllDialogs', dialogId)
-          await dispatch('switchDialog', dialogId)
+          if(response.data) {
+            const dialogId = response.data.data.id;
+            await dispatch('apiLoadAllDialogs', dialogId)
+            await dispatch('switchDialog', dialogId)
+          }
+
         })
         .catch(error => {
           console.error(error)

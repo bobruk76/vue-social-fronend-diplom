@@ -50,9 +50,7 @@ export default {
       if (route.query.activeDialog) {
         vm.switchDialog(route.query.activeDialog)
       } else if (route.query.userId) {
-        vm.createDialogWithUser(route.query.userId).catch(
-          vm.createDialogWithUser(route.query.userId)
-        )
+        vm.createDialogWithUser(route.query.userId)
       } else if (vm.dialogs.length > 0) {
         vm.$router.push({name: 'Im', query: {activeDialog: vm.dialogs[0].id}})
       } else {

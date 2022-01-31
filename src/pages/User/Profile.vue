@@ -3,13 +3,13 @@
     .inner-page__main
       .profile__info
         profile-info(me online :info="getInfo")
-      .profile__news(v-if="getWall.length > 0")
+      .profile__news
         .profile__tabs
           span.profile__tab(@click="changeTab('POSTED')" :class="{active: activeTab === 'published'}") Мои публикации ({{getWallPostedLength}})
           span.profile__tab(@click="changeTab('QUEUED')" :class="{active: activeTab === 'queue'}" v-if="getWallQueuedLength > 0") Отложенные публикации ({{getWallQueuedLength}})
         .profile__add
           news-add
-        .profile__news-list
+        .profile__news-list(v-if="getWall.length > 0")
           news-block(edit deleted :deffered="activeTab === 'queue'" v-for="news in activeWall" :key="news.id" :info="news")
     .inner-page__aside
       friends-possible

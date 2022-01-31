@@ -1,5 +1,5 @@
 <template lang="pug">
-  .comment-main
+  .comment-main(v-show="isShow")
     template(v-if="info.is_deleted")
       p.comment-main__text Комментарий удален.
         a(href="#" @click="onRecoverComment") Восстановить
@@ -17,28 +17,75 @@
         .comment-main__actions
           p.comment-main__time {{info.time | moment('from') }}
           template(v-if="!admin")
-            a.comment-main__review(href="#" @click.prevent="$emit('answer-comment')") Ответить
-            like-comment(fill :active="info.my_like" :id="info.id" @liked="likeAction" :quantity="info.likes")
+            a.comment-main__review(v-if="hasAnswering" href="#" @click.prevent="toggleNewComment")
+              template(v-if="!isAddSubComment") Ответить
+            like-comment(
+              :quantity="info.likes"
+              width="16px"
+              height="16px"
+              font-size="15px"
+              @liked="likeAction"
+              :active="info.my_like"
+              :id="info.id"
+            )
+            .break
+            slot(name="sub")
+            .break
+            .comment-main__new
+              add-comment(
+                v-show="isAddSubComment"
+                :id=parentId
+                :parentId=parentId
+                @submited="addSubComment"
+                v-model="subCommentText"
+                placeholder="Написать ответ..."
+              )
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import {mapActions} from 'vuex'
 import LikeComment from '@/components/LikeComment'
+import AddComment from '@/components/Comments/Add.vue'
+
 export default {
   name: 'CommentMain',
   props: {
     admin: Boolean,
     info: Object,
     edit: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
+    hasAnswering: {
+      type: Boolean,
+      default: true,
+    },
+    isShow: {
+      type: Boolean,
+      default: true,
+    },
   },
-  components: { LikeComment },
+  components: {LikeComment, AddComment},
+  data: () => ({
+    subCommentText: '',
+    isAddSubComment: false,
+  }),
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
+    ...mapActions('profile/comments', ['newComment']),
+    toggleNewComment() {
+      // $emit('answer-comment')
+      this.isAddSubComment = !this.isAddSubComment
+    },
+    addSubComment() {
+      this.$emit('new-comment', {
+        commentText: this.subCommentText,
+        parentId: this.info.id,
+      });
+      this.subCommentText = '';
+      this.isAddSubComment = false;
+    },
     likeAction(active) {
-      active
-        ? this.deleteLike({ item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' })
-        : this.putLike({ item_id: this.info.id, post_id: this.info.post_id, type: 'Comment' })
+      const data = {item_id: this.info.id, post_id: this.info.post_id, type: 'Comment'};
+      active ? this.deleteLike(data) : this.putLike(data);
     },
     onDeleteComment() {
       this.$emit('delete-comment', this.info.id)
@@ -53,7 +100,7 @@ export default {
     onRecoverComment() {
       this.$emit('recover-comment', this.info.id)
     }
-  }
+  },
 }
 </script>
 
@@ -100,6 +147,7 @@ export default {
 
 .comment-main__actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
 }
 
@@ -111,6 +159,15 @@ export default {
 
 .comment-main__review {
   color: eucalypt;
-  margin-right: auto;
+  margin-right: 10px;
+}
+
+.comment-main__new {
+  flex-basis: 100%;
+}
+
+.break {
+  flex-basis: 100%;
+  height: 0;
 }
 </style>

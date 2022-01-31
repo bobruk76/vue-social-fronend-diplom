@@ -42,17 +42,40 @@
             :id="info.id"
           )
         .news-block__actions-block
-          like-comment(:quantity="commentsLength" width="16px" height="16px" font-size="15px" comment)
+          like-comment(
+            :quantity="commentsLength.allQuanttity"
+            width="16px"
+            height="16px"
+            font-size="15px"
+            :id="info.id"
+            comment
+          )
       .news-block__comments(v-if="!deffered")
-        //p.news-block__comments-quantity Комментарии ({{ commentsLength }})
+        .news-block__comments-quantity
+          p.news-block__comments-quantity-text Комментарии ({{ commentsLength.countComments }})
+          a.news-block__comments-quantity-more(v-if="commentsLength.countComments>1" href="#" @click.prevent="showComments")
+            template(v-if="isShowAllComments") свернуть
+            template(v-else) показать
         comments(
-          v-for="(comment,index) in info.comments" :key="index"
+          v-for="(comment,index) in info.comments || []" :key="index"
+          v-show="index===0 || isShowAllComments"
           :admin="admin"
           :info="comment"
-          :id="comment.id"
           :edit="edit"
           :deleted="deleted"
+          @new-comment="addComment"
         )
+          .news-block__comments-answers(slot="sub")
+            expanded(
+              v-if="comment.sub_comments.length>0"
+              :sub_comments="comment.sub_comments"
+            )
+        template
+          add-comment(
+            :id="info.id",
+            @submited="addComment"
+            v-model="commentText"
+          )
 </template>
 
 <script>
@@ -60,12 +83,14 @@ import AddForm from '@/components/News/AddForm'
 import {mapActions, mapGetters} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
+import AddComment from '@/components/Comments/Add.vue'
 import LikeComment from '@/components/LikeComment'
+import Expanded from '@/components/Comments/Expanded.vue'
 import AddTags from '@/components/News/AddTags'
 
 export default {
   name: 'NewsBlock',
-  components: {Comments, LikeComment, AddForm},
+  components: {Comments, LikeComment, AddForm, AddComment, AddTags, Expanded},
   props: {
     info: {
       type: Object,
@@ -77,8 +102,7 @@ export default {
         likes: 44,
         id: 1,
         tags: ['tag1'],
-        comments: [{}],
-
+        comments: null,
       })
     },
     edit: Boolean,
@@ -90,25 +114,29 @@ export default {
   data: () => ({
     isLotText: false,
     openText: false,
-    isEditNews: false
+    isEditNews: false,
+    isShowAllComments: false,
+    commentText: ''
   }),
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
     commentsLength() {
-      let result = 0
+      let countComments = 0
+      let countAnswers = 0
       this.info.comments.map(el => {
-        !el.is_deleted && result++
+        !el.is_deleted && countComments++
         el.sub_comments &&
         el.sub_comments.map(subEl => {
-          !subEl.is_deleted && result++
+          !subEl.is_deleted && countAnswers++
         })
       })
-      return result
+      return {countComments: countComments, countAnswers: countAnswers, allQuanttity: countComments + countAnswers}
     }
   },
   methods: {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     ...mapActions('profile/feeds', ['deleteFeeds']),
+    ...mapActions('profile/comments', ['newComment']),
     toggleText() {
       this.openText = !this.openText
     },
@@ -119,6 +147,19 @@ export default {
         sameElse: `[через ${timePost.diff(now, 'days')} дней, ${timePost.diff(now, 'hours') % 24} часа]`
       })
     },
+    addComment(value) {
+      value
+        ? this.newComment({
+          post_id: this.info.id,
+          text: value.commentText,
+          parent_id: value.parentId
+        })
+        : this.newComment({
+          post_id: this.info.id,
+          text: this.commentText,
+        });
+      this.commentText = '';
+    },
     likeAction(active) {
       active
         ? this.deleteLike({item_id: this.info.id, type: 'Post'})
@@ -126,6 +167,9 @@ export default {
     },
     toggleEditNews() {
       this.isEditNews = !this.isEditNews
+    },
+    showComments() {
+      this.isShowAllComments = !this.isShowAllComments
     },
     deleteNews() {
       this.deleteFeeds({
@@ -319,9 +363,9 @@ export default {
 
 .news-block__actions {
   display: flex;
-  align-items: center;
+  align-items: flex-end;
   margin: 25px 0;
-  padding-bottop: 20px;
+  padding-bottop: 20;
 }
 
 .news-block__actions-block {
@@ -331,10 +375,31 @@ export default {
 }
 
 .news-block__comments-quantity {
+  display: flex;
+  align-items: flex-end;
   font-family: font-exo;
   font-weight: bold;
   font-size: 20px;
   color: #000;
   padding-bottom: 20px;
+
+  .news-block__comments-quantity-text {
+    padding-right: 10px;
+  }
+
+  .news-block__comments-quantity-more {
+    font-size: 13px;
+    font-weight: normal;
+    color: eucalypt;
+  }
+}
+
+.news-block__comments-answers {
+  display: block;
+  width: 100%;
+
+  >.comment-main {
+    padding-top: 10px;
+  }
 }
 </style>

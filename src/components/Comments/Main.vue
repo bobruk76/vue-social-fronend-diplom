@@ -1,5 +1,5 @@
 <template lang="pug">
-  .comment-main
+  .comment-main(v-show="isShow")
     template(v-if="info.is_deleted")
       p.comment-main__text Комментарий удален.
         a(href="#" @click="onRecoverComment") Восстановить
@@ -57,7 +57,11 @@ export default {
     hasAnswering: {
       type: Boolean,
       default: true,
-    }
+    },
+    isShow: {
+      type: Boolean,
+      default: true,
+    },
   },
   components: {LikeComment, AddComment},
   data: () => ({
@@ -76,8 +80,8 @@ export default {
         commentText: this.subCommentText,
         parentId: this.info.id,
       });
-      this.subCommentText='';
-      this.isAddSubComment=false;
+      this.subCommentText = '';
+      this.isAddSubComment = false;
     },
     likeAction(active) {
       const data = {item_id: this.info.id, post_id: this.info.post_id, type: 'Comment'};

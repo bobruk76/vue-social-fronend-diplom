@@ -66,13 +66,8 @@
           @new-comment="addComment"
         )
           .news-block__comments-answers(slot="sub")
-            comments(
-              v-for="(sub_comment,index) in comment.sub_comments" :key="index"
-              :info="sub_comment"
-              :admin="admin"
-              :edit="edit"
-              :deleted="deleted"
-              :hasAnswering="false"
+            expanded(
+              :comments="comment.sub_comments"
             )
         template
           add-comment(
@@ -89,11 +84,12 @@ import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
 import AddComment from '@/components/Comments/Add.vue'
 import LikeComment from '@/components/LikeComment'
+import Expanded from '@/components/Comments/Expanded.vue'
 import AddTags from '@/components/News/AddTags'
 
 export default {
   name: 'NewsBlock',
-  components: {Comments, LikeComment, AddForm, AddComment, AddTags},
+  components: {Comments, LikeComment, AddForm, AddComment, AddTags, Expanded},
   props: {
     info: {
       type: Object,

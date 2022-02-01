@@ -34,23 +34,15 @@ export default {
   }),
   computed: {
     ...mapGetters('profile/friends', ['getResultById']),
-    allFriends() {
-      return this.getResultById('friends')
-    },
     friends() {
-      const listFiends = this.allFriends.filter(
-        el => !el.is_blocked
-      );
       return this.first_name.length === 0
-        ? listFiends
-        : listFiends('friends').filter(
+        ? this.getResultById('friends')
+        : this.getResultById('friends').filter(
           el => el.first_name.toLowerCase().indexOf(this.first_name.toLowerCase()) !== -1
         )
     },
     blockedFriends() {
-      return this.allFriends.filter(
-        el => el.is_blocked
-      )
+      return this.getResultById('blocked')
     },
     requests() {
       return this.getResultById('request');
@@ -58,12 +50,10 @@ export default {
   },
   methods: {
     ...mapActions('profile/friends', ['apiFriends']),
-    ...mapActions('profile/friends', ['apiRequest']),
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.apiFriends();
-      vm.apiRequest();
     })
   }
 }

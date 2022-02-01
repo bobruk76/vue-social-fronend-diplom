@@ -6,6 +6,7 @@ export default {
     result: {
       friends: [],
       request: [],
+      blocked: [],
       recommendations: []
     }
   },
@@ -18,7 +19,7 @@ export default {
   },
   actions: {
     async apiFriends({
-      commit
+      commit, dispatch
     }, payload) {
       let query = []
       payload && Object.keys(payload).map(el => {
@@ -28,12 +29,17 @@ export default {
         url: `friends?${query.join('&')}`,
         method: 'GET'
       }).then(response => {
-        console.log("TCL: friends", response)
+        // console.log("TCL: friends", response)
         commit('setResult', {
           id: 'friends',
           value: response.data.data
         })
-      }).catch(error => {})
+      }).catch(error => {
+
+      }).then(()=>{
+        dispatch('apiRequest');
+        dispatch('apiBlockedFriends');
+      })
     },
     apiDeleteFriends({
       dispatch
@@ -49,8 +55,11 @@ export default {
         }, {
           root: true
         })
-        dispatch('apiFriends')
-      }).catch(error => {})
+      }).catch(error => {
+
+      }).then(()=>{
+        dispatch('apiFriends');
+      })
     },
     apiAddFriends({
       dispatch
@@ -66,8 +75,11 @@ export default {
         }, {
           root: true
         })
-        dispatch('apiFriends')
-      }).catch(error => {})
+      }).catch(error => {
+
+      }).then(()=>{
+        dispatch('apiFriends');
+      })
     },
     async apiRequest({
       commit
@@ -83,6 +95,24 @@ export default {
         console.log("TCL: request", response)
         commit('setResult', {
           id: 'request',
+          value: response.data.data
+        })
+      }).catch(error => {})
+    },
+    async apiBlockedFriends({
+      commit
+    }, payload) {
+      let query = []
+      payload && Object.keys(payload).map(el => {
+        payload[el] && query.push(`${el}=${payload[el]}`)
+      })
+      await axios({
+        url: `friends/blocked?${query.join('&')}`,
+        method: 'GET'
+      }).then(response => {
+        console.log("TCL: request", response)
+        commit('setResult', {
+          id: 'blocked',
           value: response.data.data
         })
       }).catch(error => {})

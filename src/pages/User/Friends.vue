@@ -8,14 +8,14 @@
             simple-svg(:filepath="'/static/img/search.svg'")
           input.friends__search-input(placeholder="Начните вводить имя друга..." v-model="first_name")
       .friends__list
-        friends-block(friend v-for="friend in friends" :key="friend.id" :info="friend")
+        friends-block(friend v-for="friend in friends" :key="friend.id" :info="friend" :friend="true" :blocked="false")
       .friends__header
       h2.friends__title Запросы на добавления в друзья
       .friends__list
         friends-block(friend v-for="friend in requests" :key="friend.id" :info="friend" :friend="false")
       h2.friends__title Заблокированные друзья
       .friends__list
-        friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :friend="false")
+        friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :blocked="true")
     .inner-page__aside
       friends-possible
 </template>
@@ -34,21 +34,26 @@ export default {
   }),
   computed: {
     ...mapGetters('profile/friends', ['getResultById']),
-    ...mapGetters('profile/friends', ['getResult']),
+    allFriends() {
+      return this.getResultById('friends')
+    },
     friends() {
+      const listFiends = this.allFriends.filter(
+        el => !el.is_blocked
+      );
       return this.first_name.length === 0
-        ? this.getResultById('friends')
-        : this.getResultById('friends').filter(
+        ? listFiends
+        : listFiends('friends').filter(
           el => el.first_name.toLowerCase().indexOf(this.first_name.toLowerCase()) !== -1
         )
     },
     blockedFriends() {
-      return this.friends.filter(
-          el => el.is_blocked
-        )
+      return this.allFriends.filter(
+        el => el.is_blocked
+      )
     },
     requests() {
-      return this.getResult.request;
+      return this.getResultById('request');
     }
   },
   methods: {

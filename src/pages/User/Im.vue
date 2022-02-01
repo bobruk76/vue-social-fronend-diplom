@@ -2,26 +2,27 @@
   .im
     .im__dialogs
       im-dialog(v-for="dialog in dialogs"
-      :key="dialog.id"
-      :info="dialog"
-      :push="countPush(dialog.unread_count)"
-      :me="dialog.last_message.isSentByMe"
-      :active="activeDialog && dialog.id === activeDialog.id"
-      :online="checkOnlineUser(dialog.last_message.recipient.last_online_time)"
-      @click.native="clickOnDialog(dialog.id)")
+        :key="dialog.id"
+        :info="dialog"
+        :push="countPush(dialog.unread_count)"
+        :me="dialog.last_message.isSentByMe"
+        :active="activeDialog && dialog.id === activeDialog.id"
+        :online="checkOnlineUser(dialog.last_message.recipient.last_online_time)"
+        @click.native="clickOnDialog(dialog.id)")
     .im__chat(v-if="activeDialog")
       im-chat(:info="activeDialog" :messages="messages"
-      :online="checkOnlineUser(activeDialog.last_message.recipient.last_online_time)" )
+        :online="checkOnlineUser(activeDialog.last_message.recipient.last_online_time)" )
 </template>
 
 <script>
 import moment from 'moment'
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import ImDialog from '@/components/Im/Dialog'
 import ImChat from '@/components/Im/Chat'
+
 export default {
   name: 'Im',
-  components: { ImDialog, ImChat },
+  components: {ImDialog, ImChat},
   // data: () => ({
   //   intervalForMessages: null
   // }),
@@ -43,7 +44,7 @@ export default {
       return moment().diff(moment(time), 'seconds') <= 60
     },
     clickOnDialog(dialogId) {
-      this.$router.push({ name: 'Im', query: { activeDialog: dialogId } })
+      this.$router.push({name: 'Im', query: {activeDialog: dialogId}})
     },
     async selectDialogByRoute(route, vm) {
       if (route.query.activeDialog) {
@@ -51,11 +52,11 @@ export default {
       } else if (route.query.userId) {
         vm.createDialogWithUser(route.query.userId)
       } else if (vm.dialogs.length > 0) {
-        vm.$router.push({ name: 'Im', query: { activeDialog: vm.dialogs[0].id } })
+        vm.$router.push({name: 'Im', query: {activeDialog: vm.dialogs[0].id}})
       } else {
         await vm.apiLoadAllDialogs()
         if (vm.dialogs.length > 0) {
-          vm.$router.push({ name: 'Im', query: { activeDialog: vm.dialogs[0].id } })
+          vm.$router.push({name: 'Im', query: {activeDialog: vm.dialogs[0].id}})
         }
         console.log('No dialogs at all')
       }
@@ -72,7 +73,7 @@ export default {
   },
   beforeDestroy() {
     this.closeDialog()
-  }
+  },
 }
 </script>
 

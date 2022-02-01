@@ -108,12 +108,24 @@ export default {
         }
       })
         .then(async response => {
-          if(response.data) {
+          if (response.data) {
             const dialogId = response.data.data.id;
             await dispatch('apiLoadAllDialogs', dialogId)
             await dispatch('switchDialog', dialogId)
+          } else {
+            await axios({
+              url: 'dialogs',
+              method: 'POST',
+              data: {
+                users_ids: [userId]
+              }
+            })
+              .then(async response => {
+                const dialogId = response.data.data.id;
+                await dispatch('apiLoadAllDialogs', dialogId)
+                await dispatch('switchDialog', dialogId)
+              })
           }
-
         })
         .catch(error => {
           console.error(error)

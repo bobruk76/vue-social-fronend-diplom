@@ -13,6 +13,9 @@
       h2.friends__title Запросы на добавления в друзья
       .friends__list
         friends-block(friend v-for="friend in requests" :key="friend.id" :info="friend" :friend="false")
+      h2.friends__title Заблокированные друзья
+      .friends__list
+        friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :friend="false")
     .inner-page__aside
       friends-possible
 </template>
@@ -37,6 +40,11 @@ export default {
         ? this.getResultById('friends')
         : this.getResultById('friends').filter(
           el => el.first_name.toLowerCase().indexOf(this.first_name.toLowerCase()) !== -1
+        )
+    },
+    blockedFriends() {
+      return this.friends.filter(
+          el => el.is_blocked
         )
     },
     requests() {

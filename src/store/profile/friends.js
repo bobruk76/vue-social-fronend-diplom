@@ -49,8 +49,12 @@ export default {
         }, {
           root: true
         })
-        dispatch('apiFriends')
-      }).catch(error => {})
+      }).catch(error => {
+
+      }).then(()=>{
+        dispatch('apiFriends');
+        dispatch('apiRequest');
+      })
     },
     apiAddFriends({
       dispatch
@@ -66,8 +70,12 @@ export default {
         }, {
           root: true
         })
-        dispatch('apiFriends')
-      }).catch(error => {})
+      }).catch(error => {
+
+      }).then(()=>{
+        dispatch('apiFriends');
+        dispatch('apiRequest');
+      })
     },
     async apiRequest({
       commit

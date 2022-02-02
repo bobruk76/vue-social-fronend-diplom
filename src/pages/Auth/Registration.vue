@@ -11,17 +11,22 @@
         name-field(id="register-firstName" v-model="firstName" :v="$v.firstName")
         name-field(id="register-lastName" v-model="lastName" :v="$v.lastName" label="Фамилия")
       .form__block
-        h4.form__subtitle Введите код
-        span.form__code {{code}}
-        number-field(id="register-number" v-model="number" :v="$v.number" :class="{checked: $v.number.required && $v.number.isCode}")
+        h4.form__subtitle Введите код с картинки
+        //span.form__code {{code}}
+        //number-field(id="register-number" v-model="number" :v="$v.number" :class="{checked: $v.number.required && $v.number.isCode}")
+
+        a(href="#" @click.prevent="loadCaptcha")
+          img.form__code(:src="getCaptcha.image" alt="Captcha")
+        name-field(id="captcha" v-model="captcha" :v="$v.captcha" label="Введите символы с картинки")
+
         confirm-field(id="register-confirm" v-model="confirm" :v="$v.confirm")
       .registration__action
         button-hover(tag="button" type="submit" variant="white") Зарегистрироваться
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { required, email, minLength, sameAs, numeric } from 'vuelidate/lib/validators'
+import {mapGetters, mapActions} from 'vuex'
+import {required, email, minLength, sameAs, numeric} from 'vuelidate/lib/validators'
 import PasswordField from '@/components/FormElements/PasswordField'
 import PasswordRepeatField from '@/components/FormElements/PasswordRepeatField'
 import EmailField from '@/components/FormElements/EmailField'
@@ -49,40 +54,53 @@ export default {
     firstName: '',
     lastName: '',
     code: 0,
-    number: '',
-    confirm: false
+    // number: '',
+    confirm: false,
+    captcha: '',
   }),
   computed: {
-    ...mapGetters(['getCode'])
+    // ...mapGetters(['getCode', 'getCaptcha'])
+    ...mapGetters(['getCaptcha'])
   },
   methods: {
     ...mapActions('auth/api', ['register']),
+    ...mapActions(['loadCaptcha']),
     submitHandler() {
       if (this.$v.$invalid) {
         this.$v.$touch()
         return
       }
-      const { email, passwd1, passwd2, firstName, lastName } = this
-      this.register({ email, passwd1, passwd2, firstName, lastName, code: this.number }).then(() => {
-        this.$router.push({ name: 'RegisterSuccess' })
+      const {email, passwd1, passwd2, firstName, lastName, captcha} = this
+      this.register({
+        email,
+        passwd1,
+        passwd2,
+        firstName,
+        lastName,
+        captcha,
+        captcha_secret: this.getCaptcha.secret_code
+      }).then(() => {
+        this.$router.push({name: 'RegisterSuccess'})
       })
     }
   },
   mounted() {
-    this.code = this.getCode
+    this.loadCaptcha();
+    // this.code = this.getCode
   },
   validations: {
-    confirm: { sameAs: sameAs(() => true) },
-    email: { required, email },
-    passwd1: { required, minLength: minLength(8) },
-    passwd2: { required, minLength: minLength(8), sameAsPassword: sameAs('passwd1') },
-    firstName: { required, minLength: minLength(3) },
-    lastName: { required, minLength: minLength(3) },
-    number: {
-      required,
-      numeric,
-      isCode
-    }
+    confirm: {sameAs: sameAs(() => true)},
+    email: {required, email},
+    passwd1: {required, minLength: minLength(8)},
+    passwd2: {required, minLength: minLength(8), sameAsPassword: sameAs('passwd1')},
+    firstName: {required, minLength: minLength(3)},
+    lastName: {required, minLength: minLength(3)},
+    captcha: {required, minLength: minLength(3)},
+    // number: {
+    //   required,
+    //   numeric,
+    //   isCode
+    // }
   }
 }
 </script>

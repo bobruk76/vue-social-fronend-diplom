@@ -9,13 +9,16 @@
           input.friends__search-input(placeholder="Начните вводить имя друга..." v-model="first_name")
       .friends__list
         friends-block(friend v-for="friend in friends" :key="friend.id" :info="friend" :friend="true" :blocked="false")
-      .friends__header
-      h2.friends__title Запросы на добавления в друзья
-      .friends__list
-        friends-block(friend v-for="friend in requests" :key="friend.id" :info="friend" :friend="false")
-      h2.friends__title Заблокированные друзья
-      .friends__list
-        friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :blocked="true")
+      template(v-if="requests.length > 0")
+        .friends__header
+          h2.friends__title Запросы на добавления в друзья
+        .friends__list
+          friends-block(friend v-for="friend in requests" :key="friend.id" :info="friend" :friend="false")
+      template(v-if="blockedFriends.length > 0")
+        .friends__header
+          h2.friends__title Заблокированные друзья
+        .friends__list
+          friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :blocked="true")
     .inner-page__aside
       friends-possible
 </template>

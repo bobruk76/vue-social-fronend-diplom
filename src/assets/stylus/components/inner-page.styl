@@ -1,14 +1,15 @@
 .inner-page
   padding standart-padding
   display flex
-  @media (max-width breakpoint-xxl) 
+  @media (max-width breakpoint-xxl)
     padding standart-padding-xxl
+    flex-wrap wrap
 
 .inner-page__main
   max-width 69%
   flex auto
   margin-right 40px
-  @media (max-width breakpoint-xxl) 
+  @media (max-width breakpoint-xxl)
     margin-right 20px
   @media (max-width breakpoint-xl)
     max-width 100%
@@ -21,4 +22,5 @@
   @media (max-width breakpoint-xxl)
     max-width 380px
   @media (max-width breakpoint-xl)
-    display none
+    //display block
+    width 100%

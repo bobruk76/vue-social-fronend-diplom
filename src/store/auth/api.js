@@ -17,8 +17,8 @@ export default {
   },
   actions: {
     async register({
-      dispatch
-    }, user) {
+                     dispatch
+                   }, user) {
       await axios({
         url: 'account/register',
         data: user,
@@ -34,11 +34,18 @@ export default {
           email: user.email,
           password: user.passwd1
         })
-      }).catch(error => {})
+      }).catch(error => {
+        dispatch('global/alert/setAlert', {
+          status: 'error',
+          text: 'К сожалению зарегистрироваться не удалось! Попробуйте еще раз.'
+        }, {
+          root: true
+        })
+      })
     },
     async login({
-      commit
-    }, user) {
+                  commit
+                }, user) {
       commit('setStatus', 'loading')
       await axios({
         url: 'auth/login',
@@ -59,9 +66,9 @@ export default {
       })
     },
     async logout({
-      commit,
-      dispatch
-    }) {
+                   commit,
+                   dispatch
+                 }) {
       await axios({
         url: 'auth/logout',
         method: 'POST'
@@ -76,7 +83,8 @@ export default {
         })
         localStorage.removeItem('user-token')
         delete axios.defaults.headers.common['Authorization']
-      }).catch(error => {})
+      }).catch(error => {
+      })
     }
   }
 }

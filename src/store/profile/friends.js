@@ -39,6 +39,7 @@ export default {
       }).then(()=>{
         dispatch('apiRequest');
         dispatch('apiBlockedFriends');
+        dispatch('apiRecommendations');
       })
     },
     apiDeleteFriends({

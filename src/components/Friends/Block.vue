@@ -19,13 +19,16 @@
         .friends-block__actions-block(v-tooltip.bottom="'Заблокировать'" v-else)
           simple-svg(:filepath="'/static/img/blocked.svg'")
       template(v-else)
-        .friends-block__actions-block.message(v-tooltip.bottom="'Написать сообщение'" @click="sendMessage(info.id)")
-          simple-svg(:filepath="'/static/img/sidebar/im.svg'")
-        .friends-block__actions-block.delete(v-tooltip.bottom="'Удалить из друзей'" @click="openModal('delete')" v-if="friend")
-          simple-svg(:filepath="'/static/img/delete.svg'")
-        .friends-block__actions-block.add(v-tooltip.bottom="'Добавить в друзья'" @click="apiAddFriends(info.id)" v-else)
-          simple-svg(:filepath="'/static/img/friend-add.svg'")
-        .friends-block__actions-block(v-tooltip.bottom="'Заблокировать'" @click="openModal('blocked')")
+        template(v-if="!blocked")
+          .friends-block__actions-block.message(v-tooltip.bottom="'Написать сообщение'" @click="sendMessage(info.id)")
+            simple-svg(:filepath="'/static/img/sidebar/im.svg'")
+          .friends-block__actions-block.delete(v-tooltip.bottom="'Удалить из друзей'" @click="openModal('delete')" v-if="friend")
+            simple-svg(:filepath="'/static/img/delete.svg'")
+          .friends-block__actions-block.add(v-tooltip.bottom="'Добавить в друзья'" @click="apiAddFriends(info.id)" v-else)
+            simple-svg(:filepath="'/static/img/friend-add.svg'")
+        .friends-block__actions-block(v-tooltip.bottom="'Разблокировать'" @click="openModal('unblocked')" v-if="blocked")
+          simple-svg(:filepath="'/static/img/unblocked.svg'")
+        .friends-block__actions-block(v-tooltip.bottom="'Заблокировать'" @click="openModal('blocked')" v-else)
           simple-svg(:filepath="'/static/img/friend-blocked.svg'")
     modal(v-model="modalShow")
       p(v-if="modalText") {{modalText}}
@@ -36,7 +39,8 @@
 
 <script>
 import Modal from '@/components/Modal'
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
+
 export default {
   name: 'FriendsBlock',
   props: {
@@ -56,7 +60,7 @@ export default {
       })
     }
   },
-  components: { Modal },
+  components: {Modal},
   data: () => ({
     modalShow: false,
     modalType: 'delete'
@@ -64,11 +68,18 @@ export default {
   computed: {
     ...mapGetters('profile/dialogs', ['dialogs']),
     modalText() {
-      return this.modalType === 'delete'
-        ? `Вы уверены, что хотите удалить пользователя ${this.info.first_name + ' ' + this.info.last_name} из друзей?`
-        : this.modalType === 'deleteModerator'
-        ? `Вы уверены, что хотите удалить ${this.info.first_name + ' ' + this.info.last_name} из списка модераторов?`
-        : `Вы уверены, что хотите заблокировать пользователя ${this.info.first_name + ' ' + this.info.last_name}?`
+      switch (this.modalType) {
+        case 'delete':
+          return `Вы уверены, что хотите удалить пользователя ${this.info.first_name + ' ' + this.info.last_name} из друзей?`;
+        case 'deleteModerator':
+          return `Вы уверены, что хотите удалить ${this.info.first_name + ' ' + this.info.last_name} из списка модераторов?`;
+        case 'blocked':
+          return `Вы уверены, что хотите заблокировать пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
+        case 'unblocked':
+          return `Вы уверены, что хотите 'разблокировать пользователя' ${this.info.first_name + ' ' + this.info.last_name}?`;
+        default:
+          return 'Ваше действие пока в нашей системе выполнить нельзя.';
+      }
     }
   },
   methods: {
@@ -83,23 +94,35 @@ export default {
       this.modalShow = true
     },
     sendMessage(userId) {
-      this.$router.push({ name: 'Im', query: { userId: userId } })
+      this.$router.push({name: 'Im', query: {userId: userId}})
     },
     onConfrim(id) {
-      this.modalType === 'delete'
-        ? this.apiDeleteFriends(id).then(() => this.closeModal())
-        : this.modalType === 'deleteModerator'
-        ? console.log('delete moderator')
-        : this.apiBlockUser(id).then(() => this.closeModal())
-    }
-  }
+      switch (this.modalType) {
+        case 'delete':
+          this.apiDeleteFriends(id);
+          break;
+        case 'deleteModerator':
+          console.log('delete moderator')
+          break;
+        case 'blocked':
+          this.apiBlockUser(id);
+          break;
+        case 'unblocked':
+          this.apiUnblockUser(id);
+          break;
+        default:
+          console.error('Undefined action!')
+      }
+      this.closeModal();
+    },
+  },
 }
 </script>
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.friends-block {
+.friends-block
   align-items: center;
   background: #fff;
   box-shadow: standart-boxshadow;
@@ -108,7 +131,10 @@ export default {
   max-width: calc(50% - 20px);
   display: inline-flex;
   margin: 0 10px 20px;
-}
+  @media (max-width breakpoint-lg)
+    max-width: calc(80% - 20px);
+  @media (max-width breakpoint-md)
+    max-width: calc(100% - 20px);
 
 .friends-block__img {
   width: 65px;
@@ -162,12 +188,12 @@ export default {
   cursor: pointer;
 
   @media (max-width: breakpoint-xxl) {
-    &+& {
+    & + & {
       margin-left: 5px;
     }
   }
 
-  &+& {
+  & + & {
     margin-left: 10px;
   }
 

@@ -3,8 +3,27 @@
     user-info-form-block(label="Имя:" placeholder="Введите имя" v-model="firstName" )
     user-info-form-block(label="Фамилия:" placeholder="Введите фамилию" v-model="lastName" )
     user-info-form-block(label="Телефон:" placeholder="Введите телефон" v-model="phone" phone)
-    user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country.Country")
-    user-info-form-block(label="Город:" placeholder="Введите город" v-model="city.City")
+    //user-info-form-block(label="Страна:" placeholder="Введите страну" v-model="country.Country")
+    .user-info-form__block
+      span.user-info-form__label Страна:
+      v-autocomplete(
+        placeholder="Введите страну"
+        :items="itemsCountries"
+        v-model="selectCountry"
+        @update-items="updateCountriesList"
+        @input="apiFetchCities"
+        :min-len="minLen"
+      )
+    .user-info-form__block
+      span.user-info-form__label Город::
+      v-autocomplete(
+        placeholder="Введите город"
+        :items="itemsCities"
+        v-model="selectCity"
+        @update-items="updateCitiesList"
+        :min-len="minLen"
+      )
+    //user-info-form-block(label="Город:" placeholder="Введите город" v-model="city.City")
     .user-info-form__block
       span.user-info-form__label Дата рождения:
       .user-info-form__wrap
@@ -38,10 +57,11 @@
 import {mapGetters, mapActions} from 'vuex'
 import moment from 'moment'
 import UserInfoFormBlock from '@/components/Settings/UserInfoForm/Block.vue'
+import VAutocomplete from 'v-autocomplete'
 
 export default {
   name: 'SettingsMain',
-  components: {UserInfoFormBlock},
+  components: {UserInfoFormBlock, VAutocomplete},
   data: () => ({
     firstName: '',
     lastName: '',
@@ -63,15 +83,21 @@ export default {
       {val: 10, text: 'Октября'},
       {val: 11, text: 'Ноября'},
       {val: 12, text: 'Декабря'}
+
     ],
     photo: null,
     src: '',
     country: {},
-    city: {}
+    city: {},
+    itemsCountries: [],
+    itemsCities: [],
+    minLen: 2,
+
   }),
   computed: {
     ...mapGetters('global/storage', ['getStorage']),
-    ...mapGetters('profile/info', ['getInfo']),
+    ...mapGetters('profile/info', ['getInfo', 'getCountries', 'getCities']),
+
     phoneNumber() {
       return this.phone.replace(/\D+/g, '')
     },
@@ -85,11 +111,31 @@ export default {
           : 29
         : 30 + ((this.month.val + (this.month.val >> 3)) & 1)
     },
+    selectCountry: {
+      get() {
+        return this.country
+          ? this.country.Country
+          : ''
+      },
+      set(newValue) {
+        this.country = {id: 0, Country: newValue};
+      }
+    },
+    selectCity: {
+      get() {
+        return this.city
+          ? this.city.City
+          : ''
+      },
+      set(newValue) {
+        this.city = {id: 0, City: newValue};
+      }
+    },
   },
   methods: {
     ...mapActions('global/storage', ['apiStorage']),
     ...mapActions('profile/info', ['apiChangeInfo']),
-    ...mapActions('profile/info', ['apiInfo']),
+    ...mapActions('profile/info', ['apiInfo', 'apiFetchCountries', 'apiFetchCities']),
 
     submitHandler() {
       this.apiChangeInfo({
@@ -126,7 +172,6 @@ export default {
         this.lastName = this.getInfo.last_name;
         if (!this.photo)
           this.src = this.getInfo.photo;
-        // this.photo = this.getInfo.photo
         this.phone = this.getInfo.phone ? this.getInfo.phone.replace(/^[+]?[78]/, "") : "";
         if (this.getInfo.birth_date) {
           this.day = moment(this.getInfo.birth_date).date()
@@ -137,7 +182,21 @@ export default {
         this.country = this.getInfo.country || {Country: ""}
         this.city = this.getInfo.city || {City: ""}
       }
-    }
+    },
+    updateCountriesList(value) {
+      if (value) {
+        this.itemsCountries = this.getCountries.filter((country) =>
+          country.toLowerCase().startsWith(value.toLowerCase())
+        )
+      }
+    },
+    updateCitiesList(value) {
+      if (value) {
+        this.itemsCities = this.getCities.filter((city) =>
+          city.toLowerCase().startsWith(value.toLowerCase())
+        )
+      }
+    },
   },
   watch: {
     getInfo(value) {
@@ -152,29 +211,46 @@ export default {
 
   beforeMount() {
     this.setInfo();
+    this.apiFetchCountries();
   }
 }
 </script>
 
 <style lang="stylus">
-@import '../../assets/stylus/base/vars.styl';
+@import '../../assets/stylus/base/vars.styl'
+@import '../../assets/stylus/components/user-info-form.styl'
 
-.settings-main {
-  background: #fff;
-  box-shadow: standart-boxshadow;
-  padding: 40px 10px 50px;
+.settings-main
+  background #fff
+  box-shadow standart-boxshadow
+  padding 40px 10px 50px
 
-  .user-info-form__label {
-    white-space: pre-wrap;
-  }
+  .user-info-form__label
+    white-space pre-wrap
 
-  @media (max-width: breakpoint-xl) {
-    padding: 40px 20px;
-  }
-}
+  @media (max-width: breakpoint-xl)
+    padding 40px 20px
 
-.settings-main__back {
-  margin-left: 20px;
-}
+.settings-main__back
+  margin-left 20px
 
+.v-autocomplete
+  @extend .user-info-form__wrap
+  display block
+  position relative
+  .v-autocomplete-input-group
+    .v-autocomplete-input
+      @extend .user-info-form__input
+  .v-autocomplete-list
+    position absolute
+    z-index 100
+    padding: 0 20px;
+    width 100%
+    background-color #fff
+    border: 1px solid #e3e3e3;
+    font-size: 15px;
+    .v-autocomplete-list-item
+      height 25px
+      &.v-autocomplete-item-active
+        background-color #eee
 </style>

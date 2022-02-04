@@ -4,40 +4,58 @@ import moment from 'moment'
 export default {
   namespaced: true,
   state: {
-    info: null
+    info: null,
+    countries: [],
+    cities: [],
   },
   getters: {
+    getCountries: state => state.countries,
+    getCities: state => state.cities,
     getInfo(state) {
       if (!state.info) return
       let result = {
         ...state.info
       }
-      result.fullName = (result.first_name && result.last_name) ? result.first_name + ' ' + result.last_name : '';
+      result.fullName = (result.first_name && result.last_name) ? `${result.first_name} ${result.last_name}` : '';
       result.ages = moment().diff(result.birth_date, 'years')
       return result
     }
   },
   mutations: {
-    setInfo: (s, info) => s.info = info
+    setInfo: (s, info) => s.info = info,
+    setCountries: (state, value) => state.countries = value,
+    setCities: (state, value) => state.cities = value,
   },
   actions: {
-    async apiInfo({
-                    commit,
-                    dispatch
-                  }) {
+    async apiFetchCountries({commit}) {
+      await axios({
+        url: 'platform/countries',
+        method: 'GET'
+      }).then(async response => {
+        commit('setCountries', response.data.data)
+      }).catch(() => {})
+    },
+    async apiFetchCities({commit}, country) {
+      country
+        ? await axios.get('platform/cities',
+          {
+            params: {country}
+          }).then(async response => {
+          commit('setCities', response.data.data)
+        }).catch(() => {
+          commit('setCities', [])
+        })
+        : commit('setCities', [])
+    },
+    async apiInfo({commit}) {
       await axios({
         url: 'users/me',
         method: 'GET'
       }).then(async response => {
         commit('setInfo', response.data.data)
-      }).catch(error => {
-      })
+      }).catch(() => {})
     },
-    async apiChangeInfo({
-                          commit,
-                          dispatch
-                        }, user) {
-      // console.log("TCL: user", user)
+    async apiChangeInfo({commit, dispatch}, user) {
       await axios({
         url: 'users/me',
         method: 'PUT',
@@ -60,14 +78,14 @@ export default {
           root: true
         })
       })
-    },
+    }
+    ,
     async deleteInfo() {
       await axios({
         url: 'users/me',
         method: 'DELETE'
-      }).then(response => {
-      }).catch(error => {
-      })
+      }).then(() => {
+      }).catch(() => {})
     }
   }
 }

@@ -2,29 +2,69 @@
   .friends.inner-page
     .inner-page__main
       .friends__header
-        h2.friends__title Мои друзья
+        h2.friends__title Мои друзья ({{ countFriends }})
+          a.friends__more(href="#" @click.prevent="showFriends('allFriends')" v-if="countFriends>getFriendsPerPage" )
+            template(v-if="isShow.allFriends") скрыть
+            template(v-else) показать
         .friends__search
           .friends__search-icon
             simple-svg(:filepath="'/static/img/search.svg'")
           input.friends__search-input(placeholder="Начните вводить имя друга..." v-model="first_name")
       .friends__list
-        friends-block(friend v-for="friend in friends" :key="friend.id" :info="friend" :friend="true" :blocked="false")
-      template(v-if="requests.length > 0")
-        .friends__header
-          h2.friends__title Запросы на добавления в друзья
-        .friends__list
-          friends-block(friend v-for="friend in requests" :key="friend.id" :info="friend" :friend="false")
-      template(v-if="blockedFriends.length > 0")
-        .friends__header
-          h2.friends__title Заблокированные друзья
-        .friends__list
-          friends-block(friend v-for="friend in blockedFriends" :key="friend.id" :info="friend" :blocked="true")
+        friends-block(
+          friend
+          v-for="(friend,index) in friends"
+          :key="friend.id"
+          :info="friend"
+          :blocked="false"
+          v-show="(index < getFriendsPerPage) || isShow.allFriends"
+          )
+
+      .friends__header
+        h2.friends__title Входящие заявки ({{ countRequestsIn }})
+          a.friends__more(href="#" @click.prevent="showFriends('allRequestsIn')" v-if="countRequestsIn>0" )
+            template(v-if="isShow.allRequestsIn") скрыть
+            template(v-else) показать
+      .friends__list
+        friends-block(:friend="false" v-for="(friend,index) in requestsIn" :key="friend.id" :info="friend" v-show="isShow.allRequestsIn")
+
+      .friends__header
+        h2.friends__title Исходящие заявки ({{ countRequestsOut }})
+          a.friends__more(href="#" @click.prevent="showFriends('allRequestsOut')" v-if="countRequestsOut>0")
+            template(v-if="isShow.allRequestsOut") скрыть
+            template(v-else) показать
+      .friends__list
+        friends-block(:requestsOut="true" v-for="(friend,index) in requestsOut" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
+
+      .friends__header
+        h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
+          a.friends__more(href="#" @click.prevent="showFriends('allBlockedFriends')" v-if="countBlockedFriends>0")
+            template(v-if="isShow.allBlockedFriends") скрыть
+            template(v-else) показать
+      .friends__list
+        friends-block(blocked v-for="(friend,index) in blockedFriends" :key="friend.id" :info="friend" v-show="isShow.allBlockedFriends")
+
+      .friends__header
+        h2.friends__title Подписки ({{ countSubscriptions }})
+          a.friends__more(href="#" @click.prevent="showFriends('allSubscriptions')" v-if="countSubscriptions>0")
+            template(v-if="isShow.allSubscriptions") скрыть
+            template(v-else) показать
+      .friends__list
+        friends-block(v-for="(friend,index) in subscriptions" :key="friend.id" :info="friend" v-show="isShow.allSubscriptions")
+
+      .friends__header
+        h2.friends__title Подписчики ({{ countSubscribers }})
+          a.friends__more(href="#" @click.prevent="showFriends('allSubscribers')" v-if="countSubscribers>0")
+            template(v-if="isShow.allSubscribers") скрыть
+            template(v-else) показать
+      .friends__list
+        friends-block(v-for="(friend,index) in subscribers" :key="friend.id" :info="friend" v-show="isShow.allSubscribers")
+
     .inner-page__aside
       friends-possible
 </template>
 
 <script>
-import store from '@/store'
 import {mapGetters, mapActions} from 'vuex'
 import FriendsPossible from '@/components/Friends/Possible'
 import FriendsBlock from '@/components/Friends/Block'
@@ -33,10 +73,18 @@ export default {
   name: 'Friends',
   components: {FriendsPossible, FriendsBlock},
   data: () => ({
-    first_name: ''
+    first_name: '',
+    isShow: {
+      allFriends: false,
+      allBlockedFriends: false,
+      allRequestsIn: false,
+      allRequestsOut: false,
+      allSubscriptions: false,
+      allSubscribers: false,
+    },
   }),
   computed: {
-    ...mapGetters('profile/friends', ['getResultById']),
+    ...mapGetters('profile/friends', ['getResultById', 'getFriendsPerPage']),
     friends() {
       return this.first_name.length === 0
         ? this.getResultById('friends')
@@ -44,20 +92,64 @@ export default {
           el => el.first_name.toLowerCase().indexOf(this.first_name.toLowerCase()) !== -1
         )
     },
+    countFriends() {
+      return this.friends.length;
+    },
     blockedFriends() {
       return this.getResultById('blocked')
     },
-    requests() {
-      return this.getResultById('request');
-    }
+    countBlockedFriends() {
+      return this.blockedFriends.length;
+    },
+    requestsIn() {
+      return this.getResultById('requestsIn');
+    },
+    countRequestsIn() {
+      return this.requestsIn.length;
+    },
+    requestsOut() {
+      return this.getResultById('requestsOut');
+    },
+    countRequestsOut() {
+      return this.requestsOut.length;
+    },
+    subscriptions() {
+      return this.getResultById('subscriptions');
+    },
+    countSubscriptions() {
+      return this.subscriptions
+        ? this.subscriptions.length
+        : 0;
+    },
+    subscribers() {
+      return this.getResultById('subscribers');
+    },
+    countSubscribers() {
+      return this.subscribers
+        ? this.subscribers.length
+        : 0;
+    },
   },
   methods: {
     ...mapActions('profile/friends', ['apiFriends']),
+    showFriends(value) {
+      this.isShow[value] = !this.isShow[value]
+    }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.apiFriends();
     })
-  }
+  },
 }
 </script>
+<style lang="stylus">
+@import '../../assets/stylus/base/vars.styl';
+.friends__title
+  .friends__more
+    padding-left 10px
+    font-size 20px
+    font-weight normal
+    color eucalypt
+
+</style>

@@ -24,12 +24,14 @@
             simple-svg(:filepath="'/static/img/sidebar/im.svg'")
           .friends-block__actions-block.delete(v-tooltip.bottom="'Удалить из друзей'" @click="openModal('delete')" v-if="friend")
             simple-svg(:filepath="'/static/img/delete.svg'")
-          .friends-block__actions-block.add(v-tooltip.bottom="'Добавить в друзья'" @click="apiAddFriends(info.id)" v-else)
+          .friends-block__actions-block.add(v-tooltip.bottom="'Добавить в друзья'" @click="apiAddFriends(info.id)" v-else-if="!requestsOut" )
             simple-svg(:filepath="'/static/img/friend-add.svg'")
         .friends-block__actions-block(v-tooltip.bottom="'Разблокировать'" @click="openModal('unblocked')" v-if="blocked")
-          simple-svg(:filepath="'/static/img/unblocked.svg'")
+          simple-svg(:filepath="'/static/img/blocked.svg'")
         .friends-block__actions-block(v-tooltip.bottom="'Заблокировать'" @click="openModal('blocked')" v-else)
           simple-svg(:filepath="'/static/img/friend-blocked.svg'")
+        .friends-block__actions-block(v-tooltip.bottom="'Отозвать'" @click="openModal('unrequests')" v-if="requestsOut")
+          simple-svg(:filepath="'/static/img/delete.svg'")
     modal(v-model="modalShow")
       p(v-if="modalText") {{modalText}}
       template(slot="actions")
@@ -48,6 +50,7 @@ export default {
     admin: Boolean,
     blocked: Boolean,
     moderator: Boolean,
+    requestsOut: Boolean,
     info: {
       type: Object,
       default: () => ({
@@ -76,14 +79,16 @@ export default {
         case 'blocked':
           return `Вы уверены, что хотите заблокировать пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
         case 'unblocked':
-          return `Вы уверены, что хотите 'разблокировать пользователя' ${this.info.first_name + ' ' + this.info.last_name}?`;
+          return `Вы уверены, что хотите разблокировать пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
+        case 'unrequests':
+          return `Вы уверены, что хотите отозвать запрос на добавление в список друзей для пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
         default:
           return 'Ваше действие пока в нашей системе выполнить нельзя.';
       }
     }
   },
   methods: {
-    ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends']),
+    ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends', 'apiDeleteRequest']),
     // ...mapActions('profile/dialogs', ['openDialog']),
     ...mapActions('users/actions', ['apiBlockUser', 'apiUnblockUser']),
     closeModal() {
@@ -110,8 +115,11 @@ export default {
         case 'unblocked':
           this.apiUnblockUser(id);
           break;
+        case 'unrequests':
+          this.apiDeleteRequest(id);
+          break;
         default:
-          console.error('Undefined action!')
+          console.error('Эта функция пока не реализованна!!!')
       }
       this.closeModal();
     },
@@ -121,6 +129,10 @@ export default {
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
+.friends-block__actions-block-link
+  font-size 13px
+  font-weight normal
+  color eucalypt
 
 .friends-block
   align-items: center;

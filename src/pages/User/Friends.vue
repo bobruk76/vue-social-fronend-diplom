@@ -26,7 +26,7 @@
             template(v-if="isShow.allRequestsIn") скрыть
             template(v-else) показать
       .friends__list
-        friends-block(:friend="false" v-for="(friend,index) in requestsIn" :key="friend.id" :info="friend" v-show="isShow.allRequestsIn")
+        friends-block(requests-in :friend="false" v-for="(friend,index) in requestsIn" :key="friend.id" :info="friend" v-show="isShow.allRequestsIn")
 
       .friends__header
         h2.friends__title Исходящие заявки ({{ countRequestsOut }})
@@ -34,7 +34,7 @@
             template(v-if="isShow.allRequestsOut") скрыть
             template(v-else) показать
       .friends__list
-        friends-block(:requestsOut="true" v-for="(friend,index) in requestsOut" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
+        friends-block(requests-out v-for="(friend,index) in requestsOut" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
 
       .friends__header
         h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
@@ -50,7 +50,7 @@
             template(v-if="isShow.allSubscriptions") скрыть
             template(v-else) показать
       .friends__list
-        friends-block(v-for="(friend,index) in subscriptions" :key="friend.id" :info="friend" v-show="isShow.allSubscriptions")
+        friends-block(subscriptions v-for="(friend,index) in subscriptions" :key="friend.id" :info="friend" v-show="isShow.allSubscriptions")
 
       .friends__header
         h2.friends__title Подписчики ({{ countSubscribers }})

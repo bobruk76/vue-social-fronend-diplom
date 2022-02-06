@@ -4,26 +4,32 @@ export default {
   namespaced: true,
   state: {
     token: localStorage.getItem('user-token') || '',
-    status: ''
+    status: '',
+    formErrors: {
+      captcha: 'captcha',
+    }
   },
   getters: {
     apiToken: s => s.token,
     isAuthenticated: state => !!state.token,
-    authStatus: state => state.status
+    authStatus: state => state.status,
+    getFormErrors: state => state.formErrors,
   },
   mutations: {
     setToken: (s, token) => s.token = token,
-    setStatus: (s, status) => s.status = status
+    setStatus: (s, status) => s.status = status,
+    setFormErrors: (state, errors) => errors.map(el => {
+      state.formErrors[el] = el
+    }),
   },
   actions: {
-    async register({
-                     dispatch
-                   }, user) {
+    async register({commit, dispatch}, user) {
       await axios({
         url: 'account/register',
         data: user,
         method: 'POST'
       }).then(async response => {
+        commit('setStatus', 'success');
         dispatch('global/alert/setAlert', {
           status: 'success',
           text: 'Зарегестрирован, делаю логин'
@@ -35,9 +41,11 @@ export default {
           password: user.passwd1
         })
       }).catch(error => {
+        commit('setStatus', 'error');
+        commit('setFormErrors', error.response.errors);
         dispatch('global/alert/setAlert', {
           status: 'error',
-          text: 'К сожалению зарегистрироваться не удалось! Попробуйте еще раз.'
+          text: error.response.error_description,
         }, {
           root: true
         })
@@ -61,7 +69,7 @@ export default {
           root: true
         })
       }).catch(error => {
-        commit('setStatus', error)
+        commit('setStatus', 'error');
         localStorage.removeItem('user-token')
       })
     },

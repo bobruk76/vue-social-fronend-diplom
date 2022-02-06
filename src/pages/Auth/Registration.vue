@@ -17,7 +17,8 @@
 
         a(href="#" @click.prevent="loadCaptcha")
           img.form__code(:src="getCaptcha.image" alt="Captcha")
-        name-field(id="captcha" v-model="captcha" :v="$v.captcha" label="Введите символы с картинки")
+        name-field(id="captcha" v-model="captcha" :v="$v.captcha" label="Введите код с картинки")
+        span.form__error(v-show="getFormErrors.captcha") Неверно введен код с картинки!
 
         confirm-field(id="register-confirm" v-model="confirm" :v="$v.confirm")
       .registration__action
@@ -35,7 +36,7 @@ import NumberField from '@/components/FormElements/NumberField'
 import ConfirmField from '@/components/FormElements/ConfirmField'
 import store from '@/store'
 
-const isCode = value => +value === store.state.code
+// const isCode = value => +value === store.state.code
 
 export default {
   name: 'Registration',
@@ -53,14 +54,12 @@ export default {
     passwd2: '',
     firstName: '',
     lastName: '',
-    code: 0,
-    // number: '',
     confirm: false,
     captcha: '',
   }),
   computed: {
-    // ...mapGetters(['getCode', 'getCaptcha'])
-    ...mapGetters(['getCaptcha'])
+    ...mapGetters(['getCaptcha']),
+    ...mapGetters('auth/api', ['authStatus', 'getFormErrors', ])
   },
   methods: {
     ...mapActions('auth/api', ['register']),
@@ -80,13 +79,14 @@ export default {
         captcha,
         captcha_secret: this.getCaptcha.secret_code
       }).then(() => {
-        this.$router.push({name: 'RegisterSuccess'})
+        if (this.authStatus==='success') {
+          this.$router.push({name: 'RegisterSuccess'})
+        }
       })
     }
   },
   mounted() {
     this.loadCaptcha();
-    // this.code = this.getCode
   },
   validations: {
     confirm: {sameAs: sameAs(() => true)},
@@ -96,11 +96,6 @@ export default {
     firstName: {required, minLength: minLength(3)},
     lastName: {required, minLength: minLength(3)},
     captcha: {required, minLength: minLength(3)},
-    // number: {
-    //   required,
-    //   numeric,
-    //   isCode
-    // }
   }
 }
 </script>
@@ -108,18 +103,21 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.registration {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+.registration
+  min-height 100%
+  display flex
+  flex-direction column
+  justify-content center
 
-.registration__action {
-  margin-top: 40px;
+.registration__action
+  margin-top 40px
 
-  @media (max-width: breakpoint-xxl) {
-    margin-top: 20px;
-  }
-}
+  @media (max-width: breakpoint-xxl)
+    margin-top 20px
+
+.form__error
+  position relative
+  bottom 0
+  color darkred
+
 </style>

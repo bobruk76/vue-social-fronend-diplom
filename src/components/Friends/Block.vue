@@ -30,7 +30,9 @@
           simple-svg(:filepath="'/static/img/blocked.svg'")
         .friends-block__actions-block(v-tooltip.bottom="'Заблокировать'" @click="openModal('blocked')" v-else)
           simple-svg(:filepath="'/static/img/friend-blocked.svg'")
-        .friends-block__actions-block(v-tooltip.bottom="'Отозвать'" @click="openModal('unrequests')" v-if="requestsOut")
+        .friends-block__actions-block(v-tooltip.bottom="'Отозвать'" @click="openModal('unrequests')" v-if="requestsOut || requestsIn")
+          simple-svg(:filepath="'/static/img/delete.svg'")
+        .friends-block__actions-block(v-tooltip.bottom="'Отозвать'" @click="openModal('unsubscriptions')" v-if="subscriptions")
           simple-svg(:filepath="'/static/img/delete.svg'")
     modal(v-model="modalShow")
       p(v-if="modalText") {{modalText}}
@@ -51,6 +53,8 @@ export default {
     blocked: Boolean,
     moderator: Boolean,
     requestsOut: Boolean,
+    requestsIn: Boolean,
+    subscriptions: Boolean,
     info: {
       type: Object,
       default: () => ({
@@ -82,13 +86,15 @@ export default {
           return `Вы уверены, что хотите разблокировать пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
         case 'unrequests':
           return `Вы уверены, что хотите отозвать запрос на добавление в список друзей для пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
+        case 'unsubscriptions':
+          return `Вы уверены, что хотите отозвать запрос на добавление в список друзей для пользователя ${this.info.first_name + ' ' + this.info.last_name}?`;
         default:
           return 'Ваше действие пока в нашей системе выполнить нельзя.';
       }
     }
   },
   methods: {
-    ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends', 'apiDeleteRequest']),
+    ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends', 'apiDeleteRequest', 'apiDeleteSubscriptions']),
     // ...mapActions('profile/dialogs', ['openDialog']),
     ...mapActions('users/actions', ['apiBlockUser', 'apiUnblockUser']),
     closeModal() {
@@ -118,6 +124,9 @@ export default {
         case 'unrequests':
           this.apiDeleteRequest(id);
           break;
+        case 'unsubscriptions':
+          this.apiDeleteSubscriptions(id);
+          break;
         default:
           console.error('Эта функция пока не реализованна!!!')
       }
@@ -135,66 +144,57 @@ export default {
   color eucalypt
 
 .friends-block
-  align-items: center;
-  background: #fff;
-  box-shadow: standart-boxshadow;
-  padding: 20px;
-  width: 100%;
-  max-width: calc(50% - 20px);
-  display: inline-flex;
-  margin: 0 10px 20px;
+  align-items center
+  background #fff
+  box-shadow standart-boxshadow
+  padding 20px
+  width 100%
+  max-width calc(50% - 20px)
+  display inline-flex
+  margin 0 10px 20px
   @media (max-width breakpoint-lg)
-    max-width: calc(80% - 20px);
+    max-width calc(80% - 20px)
   @media (max-width breakpoint-md)
-    max-width: calc(100% - 20px);
+    max-width calc(100% - 20px)
 
-.friends-block__img {
-  width: 65px;
-  height: 65px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 30px;
-  flex: none;
+.friends-block__img
+  width 65px
+  height 65px
+  border-radius 50%
+  overflow hidden
+  margin-right 30px
+  flex none
 
-  @media (max-width: breakpoint-xxl) {
-    margin-right: 10px;
-  }
+  @media (max-width breakpoint-xxl)
+    margin-right 10px
 
-  img {
-    width: 100%;
-  }
-}
+  img
+    width 100%
 
-.friends-block__info {
-  margin-right: auto;
-}
+.friends-block__info
+  margin-right auto
 
-.friends-block__name {
-  font-weight: 600;
-  font-size: 18px;
-  line-height: 27px;
-  color: steel-gray;
-  display: block;
+.friends-block__name
+  font-weight 600
+  font-size 18px
+  line-height 27px
+  color steel-gray
+  display block
 
-  @media (max-width: breakpoint-xxl) {
-    font-size: 14px;
-  }
-}
+  @media (max-width: breakpoint-xxl)
+    font-size 14px
 
-.friends-block__age-city {
-  font-size: 15px;
-  line-height: 22px;
-  color: #5A5A5A;
+.friends-block__age-city
+  font-size 15px
+  line-height 22px
+  color #5A5A5A
 
-  @media (max-width: breakpoint-xxl) {
-    font-size: 13px;
-  }
-}
+  @media (max-width: breakpoint-xxl)
+    font-size 13px
 
-.friends-block__actions {
-  display: flex;
-  align-items: center;
-}
+.friends-block__actions
+  display flex
+  align-items center
 
 .friends-block__actions-block {
   cursor: pointer;

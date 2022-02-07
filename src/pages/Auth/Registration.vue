@@ -93,7 +93,13 @@ export default {
   },
   validations: {
     confirm: {sameAs: sameAs(() => true)},
-    email: {required, email},
+    email: {
+      required,
+      email,
+      serverOk: function () {
+        return !this.getFormErrors.email
+      }
+    },
     passwd1: {required, minLength: minLength(8)},
     passwd2: {required, minLength: minLength(8), sameAsPassword: sameAs('passwd1')},
     firstName: {required, minLength: minLength(3)},

@@ -4,7 +4,7 @@ export default {
     status: 'success',
     text: 'Сделано!',
     show: false,
-    timeout: 2000
+    timeout: 5000
   },
   getters: {
     getState: s => s
@@ -14,17 +14,16 @@ export default {
       state.status = value.status
       state.text = value.text
     },
-    toggleShow: s => s.show = !s.show
+    toggleShow: s => s.show = !s.show,
+    onShow: s => s.show = true,
+    offShow: s => s.show = false,
   },
   actions: {
-    setAlert({
-      commit,
-      state
-    }, value) {
+    setAlert({commit, state}, value) {
       commit('setInfo', value)
-      commit('toggleShow')
+      commit('onShow')
       setTimeout(() => {
-        commit('toggleShow')
+        commit('offShow')
       }, state.timeout)
     }
   }

@@ -78,7 +78,7 @@ export default {
   height: 100vh;
 
   @media (max-width: breakpoint-xxl) {
-    padding: 50px 2.3%;
+    padding: 30px 2.3%;
   }
 }
 </style>

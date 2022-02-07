@@ -17,8 +17,12 @@
 
         a(href="#" @click.prevent="loadCaptcha")
           img.form__code(:src="getCaptcha.image" alt="Captcha")
-        name-field(id="captcha" v-model="captcha" :v="$v.captcha" label="Введите код с картинки")
-        span.form__error(v-show="getFormErrors.captcha") Неверно введен код с картинки!
+        captcha-field(
+          id="register-captcha"
+          v-model="captcha"
+          :v="$v.captcha"
+          label="Введите код с картинки"
+        )
 
         confirm-field(id="register-confirm" v-model="confirm" :v="$v.confirm")
       .registration__action
@@ -33,10 +37,8 @@ import PasswordRepeatField from '@/components/FormElements/PasswordRepeatField'
 import EmailField from '@/components/FormElements/EmailField'
 import NameField from '@/components/FormElements/NameField'
 import NumberField from '@/components/FormElements/NumberField'
+import CaptchaField from '@/components/FormElements/CaptchaField.vue'
 import ConfirmField from '@/components/FormElements/ConfirmField'
-import store from '@/store'
-
-// const isCode = value => +value === store.state.code
 
 export default {
   name: 'Registration',
@@ -44,6 +46,7 @@ export default {
     PasswordField,
     EmailField,
     NameField,
+    CaptchaField,
     NumberField,
     ConfirmField,
     PasswordRepeatField
@@ -59,7 +62,7 @@ export default {
   }),
   computed: {
     ...mapGetters(['getCaptcha']),
-    ...mapGetters('auth/api', ['authStatus', 'getFormErrors', ])
+    ...mapGetters('auth/api', ['authStatus', 'getFormErrors',])
   },
   methods: {
     ...mapActions('auth/api', ['register']),
@@ -79,7 +82,7 @@ export default {
         captcha,
         captcha_secret: this.getCaptcha.secret_code
       }).then(() => {
-        if (this.authStatus==='success') {
+        if (this.authStatus === 'success') {
           this.$router.push({name: 'RegisterSuccess'})
         }
       })
@@ -95,8 +98,13 @@ export default {
     passwd2: {required, minLength: minLength(8), sameAsPassword: sameAs('passwd1')},
     firstName: {required, minLength: minLength(3)},
     lastName: {required, minLength: minLength(3)},
-    captcha: {required, minLength: minLength(3)},
-  }
+    captcha: {
+      required,
+      serverOk: function () {
+        return !this.getFormErrors.captcha
+      }
+    },
+  },
 }
 </script>
 
@@ -108,16 +116,5 @@ export default {
   display flex
   flex-direction column
   justify-content center
-
-.registration__action
-  margin-top 40px
-
-  @media (max-width: breakpoint-xxl)
-    margin-top 20px
-
-.form__error
-  position relative
-  bottom 0
-  color darkred
 
 </style>

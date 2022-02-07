@@ -6,7 +6,8 @@ export default {
     token: localStorage.getItem('user-token') || '',
     status: '',
     formErrors: {
-      captcha: 'captcha',
+      captcha: false,
+      email: false,
     }
   },
   getters: {
@@ -18,9 +19,9 @@ export default {
   mutations: {
     setToken: (s, token) => s.token = token,
     setStatus: (s, status) => s.status = status,
-    setFormErrors: (state, errors) => errors.map(el => {
-      state.formErrors[el] = el
-    }),
+    setFormErrors(state, payload) {
+      state.formErrors[payload.name] = payload.value
+    },
   },
   actions: {
     async register({commit, dispatch}, user) {
@@ -40,26 +41,25 @@ export default {
           email: user.email,
           password: user.passwd1
         })
-      }).catch(error => {
+      }).catch(async error => {
+        console.log(error.response.data);
         commit('setStatus', 'error');
-        commit('setFormErrors', error.response.errors);
+        commit('setFormErrors', {name: error.response.data.error, value: true});
         dispatch('global/alert/setAlert', {
           status: 'error',
-          text: error.response.error_description,
+          text: error.response.data.error_description,
         }, {
           root: true
         })
       })
     },
-    async login({
-                  commit
-                }, user) {
+    async login({commit}, user) {
       commit('setStatus', 'loading')
       await axios({
         url: 'auth/login',
         data: user,
         method: 'POST'
-      }).then(response => {
+      }).then(async response => {
         const token = response.data.data.token
         localStorage.setItem('user-token', token)
         axios.defaults.headers.common['Authorization'] = token
@@ -68,19 +68,14 @@ export default {
         commit('profile/info/setInfo', response.data.data, {
           root: true
         })
-      }).catch(error => {
+      }).catch(async error => {
         commit('setStatus', 'error');
         localStorage.removeItem('user-token')
       })
     },
-    async logout({
-                   commit,
-                   dispatch
-                 }) {
-      await axios({
-        url: 'auth/logout',
-        method: 'POST'
-      }).then(() => {
+    async logout({commit, dispatch}) {
+      await axios.post('auth/logout'
+      ).then(() => {
         commit('setToken', '')
         commit('setStatus', 'logout')
         dispatch('global/alert/setAlert', {
@@ -91,7 +86,7 @@ export default {
         })
         localStorage.removeItem('user-token')
         delete axios.defaults.headers.common['Authorization']
-      }).catch(error => {
+      }).catch(() => {
       })
     }
   }

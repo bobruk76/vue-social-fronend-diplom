@@ -8,7 +8,7 @@
 
 <script>
 export default {
-  name: 'EmailField',
+  name: 'NameField',
   props: {
     value: {
       type: String,

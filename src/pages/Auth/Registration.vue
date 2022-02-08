@@ -17,7 +17,12 @@
 
         a(href="#" @click.prevent="loadCaptcha")
           img.form__code(:src="getCaptcha.image" alt="Captcha")
-        name-field(id="captcha" v-model="captcha" :v="$v.captcha" label="Введите символы с картинки")
+        captcha-field(
+          id="register-captcha"
+          v-model="captcha"
+          :v="$v.captcha"
+          label="Введите код с картинки"
+        )
 
         confirm-field(id="register-confirm" v-model="confirm" :v="$v.confirm")
       .registration__action
@@ -32,10 +37,8 @@ import PasswordRepeatField from '@/components/FormElements/PasswordRepeatField'
 import EmailField from '@/components/FormElements/EmailField'
 import NameField from '@/components/FormElements/NameField'
 import NumberField from '@/components/FormElements/NumberField'
+import CaptchaField from '@/components/FormElements/CaptchaField.vue'
 import ConfirmField from '@/components/FormElements/ConfirmField'
-import store from '@/store'
-
-const isCode = value => +value === store.state.code
 
 export default {
   name: 'Registration',
@@ -43,6 +46,7 @@ export default {
     PasswordField,
     EmailField,
     NameField,
+    CaptchaField,
     NumberField,
     ConfirmField,
     PasswordRepeatField
@@ -53,14 +57,12 @@ export default {
     passwd2: '',
     firstName: '',
     lastName: '',
-    code: 0,
-    // number: '',
     confirm: false,
     captcha: '',
   }),
   computed: {
-    // ...mapGetters(['getCode', 'getCaptcha'])
-    ...mapGetters(['getCaptcha'])
+    ...mapGetters(['getCaptcha']),
+    ...mapGetters('auth/api', ['authStatus', 'getFormErrors',])
   },
   methods: {
     ...mapActions('auth/api', ['register']),
@@ -80,46 +82,45 @@ export default {
         captcha,
         captcha_secret: this.getCaptcha.secret_code
       }).then(() => {
-        this.$router.push({name: 'RegisterSuccess'})
+        if (this.authStatus === 'success') {
+          this.$router.push({name: 'RegisterSuccess'})
+        }
       })
     }
   },
   mounted() {
     this.loadCaptcha();
-    // this.code = this.getCode
   },
   validations: {
     confirm: {sameAs: sameAs(() => true)},
-    email: {required, email},
+    email: {
+      required,
+      email,
+      serverOk: function () {
+        return !this.getFormErrors.email
+      }
+    },
     passwd1: {required, minLength: minLength(8)},
     passwd2: {required, minLength: minLength(8), sameAsPassword: sameAs('passwd1')},
     firstName: {required, minLength: minLength(3)},
     lastName: {required, minLength: minLength(3)},
-    captcha: {required, minLength: minLength(3)},
-    // number: {
-    //   required,
-    //   numeric,
-    //   isCode
-    // }
-  }
+    captcha: {
+      required,
+      serverOk: function () {
+        return !this.getFormErrors.captcha
+      }
+    },
+  },
 }
 </script>
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.registration {
-  min-height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
+.registration
+  min-height 100%
+  display flex
+  flex-direction column
+  justify-content center
 
-.registration__action {
-  margin-top: 40px;
-
-  @media (max-width: breakpoint-xxl) {
-    margin-top: 20px;
-  }
-}
 </style>

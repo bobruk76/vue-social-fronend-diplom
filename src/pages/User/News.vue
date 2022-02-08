@@ -18,7 +18,7 @@
  </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 import FriendsPossible from '@/components/Friends/Possible'
 import NewsBlock from '@/components/News/Block'
 import NewsAdd from '@/components/News/Add'
@@ -27,13 +27,15 @@ export default {
   components: { FriendsPossible, NewsBlock, NewsAdd },
   computed: {
     ...mapGetters('profile/feeds', ['getFeeds', 'getIsShowMore']),
-    ...mapGetters('profile/info', ['getInfo'])
+    ...mapGetters('profile/info', ['getInfo']),
   },
   methods: {
-    ...mapActions('profile/feeds', ['apiFeeds'])
+    ...mapActions('profile/feeds', ['apiFeeds']),
+    ...mapMutations('profile/feeds', ['setDefaultState']),
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
+      vm.setDefaultState()
       vm.apiFeeds()
     })
   }

@@ -13,6 +13,12 @@ export default {
     getIsShowMore: s => s.totalFeeds > s.feeds.length,
   },
   mutations: {
+    setDefaultState(s) {
+      s.feeds = []
+      s.offset = 0
+      s.itemPerPage = 3
+      s.totalFeeds = 0
+    },
     setOffset: (s, payload) => s.offset = payload,
     setTotalFeeds: (s, payload) => s.totalFeeds = payload,
     incrementOffset: s => s.offset++,
@@ -29,10 +35,6 @@ export default {
   },
   actions: {
     async apiFeeds({commit, state}, payload = null) {
-      // let query = []
-      // payload && Object.keys(payload).map(el => {
-      //   payload[el] && query.push(`${el}=${payload[el]}`)
-      // })
       await axios.get('feeds', {
         params: {
           ...payload,
@@ -45,14 +47,16 @@ export default {
         commit('incrementOffset')
       }).catch(() => {
       })
-    },
+    }
+    ,
     async apiFeedsById({commit}, post_id) {
       await axios.get(`post/${post_id}`
       ).then(async response => {
         commit('setFeedsById', response.data)
       }).catch(() => {
       })
-    },
+    }
+    ,
     async actionsFeed({dispatch}, payload) {
       console.log("TCL: payload", payload)
       let url = payload.edit ? `post/${payload.post_id}` : `users/${payload.id}/wall`
@@ -82,7 +86,8 @@ export default {
         }
       }).catch(() => {
       })
-    },
+    }
+    ,
     async deleteFeeds({dispatch}, payload) {
       await axios.delete(`post/${payload.post_id}`
       ).then(async response => {

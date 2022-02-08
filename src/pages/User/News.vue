@@ -5,12 +5,14 @@
         news-add(user)
       .news__list(v-if="getInfo")
         news-block(
-          v-for="feed in getFeeds" 
+          v-for="feed in getFeeds"
           :key="feed.id"
-          :info="feed" 
-          :edit="getInfo.id === feed.author.id" 
+          :info="feed"
+          :edit="getInfo.id === feed.author.id"
           :deleted="getInfo.id === feed.author.id"
         )
+      .news-block()
+        a.news-block__more(href="#" @click.prevent="apiFeeds" v-show="getIsShowMore") показать еще...
     .inner-page__aside
       friends-possible
  </template>
@@ -24,7 +26,7 @@ export default {
   name: 'News',
   components: { FriendsPossible, NewsBlock, NewsAdd },
   computed: {
-    ...mapGetters('profile/feeds', ['getFeeds']),
+    ...mapGetters('profile/feeds', ['getFeeds', 'getIsShowMore']),
     ...mapGetters('profile/info', ['getInfo'])
   },
   methods: {
@@ -41,7 +43,11 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.news__add {
-  margin-bottom: 30px;
-}
+.news__add
+  margin-bottom 30px
+
+.news-block__more
+  font-size 20px
+  font-weight normal
+  color eucalypt
 </style>

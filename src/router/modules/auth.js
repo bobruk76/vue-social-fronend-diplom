@@ -1,14 +1,14 @@
 export default [{
-    path: '/login',
-    name: 'Login',
-    meta: {
-      layout: 'form',
-      notRequiresAuth: true,
-      notWithoutAuth: true,
-      title: 'Авторизация'
-    },
-    component: () => import('@/pages/Auth/Login.vue')
+  path: '/login',
+  name: 'Login',
+  meta: {
+    layout: 'form',
+    notRequiresAuth: true,
+    notWithoutAuth: true,
+    title: 'Авторизация'
   },
+  component: () => import('@/pages/Auth/Login.vue')
+},
   {
     path: '/registration',
     name: 'Registration',
@@ -58,6 +58,16 @@ export default [{
       title: 'Изменить пароль'
     },
     component: () => import('@/pages/Auth/ChangePassword.vue')
+  },
+  {
+    path: '/change-email',
+    name: 'ChangeEmail',
+    meta: {
+      layout: 'form',
+      notRequiresAuth: true,
+      title: 'Изменить почтовый ящик'
+    },
+    component: () => import('@/pages/Auth/ChangeEmail.vue')
   },
   {
     path: '/change-password-success',

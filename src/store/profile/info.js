@@ -28,25 +28,21 @@ export default {
   },
   actions: {
     async apiFetchCountries({commit}) {
-      await axios({
-        url: 'platform/countries',
-        method: 'GET'
-      }).then(async response => {
-        commit('setCountries', response.data.data)
-      }).catch(() => {
-      })
+      await axios.get('platform/countries')
+        .then(async response => {
+          commit('setCountries', response.data.data)
+        })
+        .catch(() => {
+        })
     },
     async apiFetchCities({commit}, country) {
-      country
-        ? await axios.get('platform/cities',
-          {
-            params: {country}
-          }).then(async response => {
-          commit('setCities', response.data.data)
-        }).catch(() => {
-          commit('setCities', [])
-        })
-        : commit('setCities', [])
+      commit('setCities', [])
+      country && await axios.get('platform/cities',
+        {
+          params: {country}
+        }).then(async response => {
+        commit('setCities', response.data.data)
+      }).catch(() => {})
     },
     async apiInfo({commit}) {
       await axios({

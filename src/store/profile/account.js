@@ -67,14 +67,11 @@ export default {
       }).catch(error => {
       })
     },
-    async changeEmail({}, email) {
-      await axios({
-        url: 'account/email',
-        method: 'PUT',
-        data: email
-      }).then(async response => {
-      }).catch(() => {
-      })
+    async changeEmail({dispatch}, email) {
+      await axios.put('account/email', email).
+      then(async response => {
+        console.log(response.data)
+      }).catch(() => {})
     },
     changeNotifications({dispatch}, data) {
       axios.put('account/notifications', data)

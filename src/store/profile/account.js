@@ -3,12 +3,13 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: {
-    notifications: [{
-      icon: 'comments',
-      name: 'О новых комментариях к моим публикациям',
-      type: 'POST_COMMENT',
-      enable: false
-    },
+    notifications: [
+      {
+        icon: 'comments',
+        name: 'О новых комментариях к моим публикациям',
+        type: 'POST_COMMENT',
+        enable: false
+      },
       {
         icon: 'reviews',
         name: 'О ответах на мои комментарии',
@@ -53,9 +54,7 @@ export default {
       }).catch(error => {
       })
     },
-    async passwordSet({
-                        rootState
-                      }, password) {
+    async passwordSet({rootState}, password) {
       let data = {
         token: rootState.auth.api.token,
         password
@@ -73,8 +72,8 @@ export default {
         url: 'account/email',
         method: 'PUT',
         data: email
-      }).then(response => {
-      }).catch(error => {
+      }).then(async response => {
+      }).catch(() => {
       })
     },
     changeNotifications({dispatch}, data) {
@@ -82,7 +81,7 @@ export default {
         .then(async response => {
           dispatch('global/alert/setAlert', {
             status: 'success',
-            text: 'Настройки уведомления изменены'
+            text: 'Настройки уведомлений изменены'
           }, {
             root: true
           })

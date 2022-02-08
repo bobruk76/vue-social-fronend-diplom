@@ -3,7 +3,7 @@
     h2.change-email__title.form__title Смена почтового ящика
     form.change-email__form(@submit.prevent="submitHandler")
       email-field(id="register-email" v-model="email" :v="$v.email" :class="{checked: $v.email.required && $v.email.email}")
-      .change-password__action
+      .change-email__action
         button-hover(tag="button" type="submit" variant="white") Сменить
 </template>
 
@@ -21,20 +21,24 @@ export default {
     email: '',
   }),
   methods: {
-    ...mapActions('profile/account', ['passwordSet']),
+    ...mapActions('profile/account', ['changeEmail']),
     submitHandler() {
       if (this.$v.$invalid) {
         this.$v.$touch()
         return
       }
 
-      this.passwordSet(this.passwordTwo).then(() => {
-        this.$router.push({name: 'ChangePasswordSuccess'})
+      this.changeEmail(this.email).then(() => {
+        this.$router.push({name: 'ChangeEmailSuccess'})
       })
     }
   },
   validations: {
-    email: {required, email}
+    email: {
+      required,
+      email,
+      serverOk: () => true,
+    }
   }
 }
 </script>
@@ -46,11 +50,10 @@ export default {
   flex-direction column
   height 100%
 
-.change-email__title {
-  margin-bottom: 50px;
-}
+.change-email__title
+  margin-bottom 50px
 
-.change-password__action {
-  margin-top: 50px;
-}
+.change-email__action
+  margin-top 50px
+
 </style>

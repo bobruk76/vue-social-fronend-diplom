@@ -69,6 +69,16 @@ export default [{
     },
     component: () => import('@/pages/Auth/ChangeEmail.vue')
   },
+    {
+    path: '/change-email-success',
+    name: 'ChangeEmailSuccess',
+    meta: {
+      layout: 'form',
+      notRequiresAuth: true,
+      title: 'Успешное изменение почтового ящика'
+    },
+    component: () => import('@/pages/Auth/ChangeEmailSuccess.vue')
+  },
   {
     path: '/change-password-success',
     name: 'ChangePasswordSuccess',

@@ -45,6 +45,18 @@ export default {
           text: 'Перейти в почту'
         }
       },
+      'change-email': {
+        title: 'Смена почты',
+        text: 'Введите новый почтовый ящик.'
+      },
+      'change-email-success': {
+        title: `На ваш новый e-mail отправлено письмо с подтверждением`,
+        text: `В течение 5 минут, на указанную вами почту, придёт письмо со ссылкой. Перейдите по ней, чтобы подтвердить e-mail.`,
+        btn: {
+          link: '',
+          text: 'Перейти в почту'
+        }
+      },
       'change-password': {
         title: 'Смена пароля',
         text: 'Ваш старый пароль был сброшен. Придумайте новый пароль для входа на сайт.'
@@ -84,7 +96,7 @@ export default {
     }
   },
   getters: {
-    getInfoById: state => id => state.pages[id] !== undefined ? state.pages[id] : state.pages['not-found'] 
+    getInfoById: state => id => state.pages[id] !== undefined ? state.pages[id] : state.pages['not-found']
   },
   mutations: {},
   actions: {}

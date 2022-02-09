@@ -28,9 +28,13 @@ export default {
         return
       }
 
-      this.changeEmail(this.email).then(() => {
-        this.$router.push({name: 'ChangeEmailSuccess'})
-      })
+      this.changeEmail({email: this.email})
+        .then(() => {
+          this.$router.push({name: 'ChangeEmailSuccess'})
+        })
+        .catch(error => {
+          console.error(error)
+        })
     }
   },
   validations: {

@@ -68,10 +68,17 @@ export default {
       })
     },
     async changeEmail({dispatch}, email) {
-      await axios.put('account/email', email).
-      then(async response => {
-        console.log(response.data)
-      }).catch(() => {})
+      await axios.put('account/email', email)
+        .then(async response => {})
+        .catch(async error => {
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Изменить почту не удалось!'
+          }, {
+            root: true
+          })
+          await Promise.reject(error)
+        })
     },
     changeNotifications({dispatch}, data) {
       axios.put('account/notifications', data)
@@ -83,7 +90,8 @@ export default {
             root: true
           })
         })
-        .catch(() => {})
+        .catch(() => {
+        })
         .then(() => {
           dispatch('apiNotificationsSettings')
         })
@@ -94,7 +102,7 @@ export default {
         console.log(response.data.data)
         commit('setNotificationsSettings', response.data.data)
       }).catch(async error => {
-        console.log(error.response)
+        console.error(error.response.data)
       })
     }
   }

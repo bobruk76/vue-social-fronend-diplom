@@ -31,38 +31,32 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.settings {
-  display: block;
+.settings
+  display block
 
-  @media (max-width: breakpoint-xl) {
-    .inner-page__aside {
-      display: block;
-      max-width: 100%;
-    }
+  @media (max-width: breakpoint-xl)
+    .inner-page__aside
+      display block
+      max-width 100%
 
-    .inner-page__main {
-      margin-right: 0;
-    }
-  }
-}
+    .inner-page__main
+      margin-right 0
 
-.settings__title {
-  font-family: font-exo;
-  font-weight: 200;
-  font-size: 30px;
-  margin-bottom: 20px;
-  color: #000;
+.settings__title
+  font-family font-exo
+  font-weight 200
+  font-size 30px
+  margin-bottom 20px
+  color #000
 
-  @media (max-width: breakpoint-xl) {
-    display: none;
-  }
-}
+  @media (max-width: breakpoint-xl)
+    display none
 
-.settings__wrap {
-  display: flex;
+.settings__wrap
+  display flex
 
-  @media (max-width: breakpoint-xl) {
-    flex-direction: column-reverse;
-  }
-}
+  @media (max-width: breakpoint-xl)
+    flex-direction column
+    .inner-page__aside
+      margin-bottom 0
 </style>

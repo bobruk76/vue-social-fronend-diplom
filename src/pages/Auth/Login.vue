@@ -46,7 +46,11 @@ export default {
     }
   },
   validations: {
-    email: { required, email },
+    email: {
+      required,
+      email,
+      serverOk: () => true,
+    },
     password: { required, minLength: minLength(8) }
   }
 }

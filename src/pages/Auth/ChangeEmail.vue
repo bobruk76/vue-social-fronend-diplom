@@ -21,6 +21,7 @@ export default {
     email: '',
   }),
   methods: {
+    ...mapActions('auth/api', ['logout']),
     ...mapActions('profile/account', ['changeEmail']),
     submitHandler() {
       if (this.$v.$invalid) {
@@ -30,6 +31,7 @@ export default {
 
       this.changeEmail({email: this.email})
         .then(() => {
+          this.logout()
           this.$router.push({name: 'ChangeEmailSuccess'})
         })
         .catch(error => {

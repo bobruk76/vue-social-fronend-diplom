@@ -25,7 +25,11 @@ export default {
     setItemPerPage: (s, payload) => s.itemPerPage = payload,
 
     setFeeds: (s, feeds) => s.feeds = feeds,
-    appendFeeds: (s, feeds) => feeds.map(el => s.feeds.push(el)),
+    appendFeeds: (s, feeds) => feeds.map(el => {
+      if (!s.feeds.includes(el)) {
+        s.feeds.push(el)
+      }
+    }),
     setCommentsById: (s, payload) => {
       s.feeds[s.feeds.indexOf(s.feeds.find(el => el.id === payload.post_id))].comments = payload.value
       s.feeds.push('dog-nail')

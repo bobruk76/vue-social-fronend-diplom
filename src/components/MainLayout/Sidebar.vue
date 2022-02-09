@@ -15,6 +15,8 @@
     a.main-layout__link(@click.prvent="onLogout" href="#")
       simple-svg(:filepath="'/static/img/sidebar/exit.svg'")
       span Выйти
+    router-link.main-layout__link(:to="{name: 'AdminStatistics'}")
+      span админ
 </template>
 
 <script>

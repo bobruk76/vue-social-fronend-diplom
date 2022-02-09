@@ -1,13 +1,15 @@
 <template lang="pug">
   .statistics-main
-    p(v-for="(item, index) in getStatistics" :key="index") {{ item }}
+    statistics-card(v-for="(item, index) in getStatistics" :key="index" :statistic="item")
 </template>
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
+import StatisticsCard from '@/components/Statistics/Card'
 
 export default {
   name: 'SettingsMain',
+  components: {StatisticsCard},
   computed: {
     ...mapGetters('admin/info',['getStatistics'])
   },

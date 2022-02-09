@@ -23,7 +23,7 @@ export default {
     }
   },
   mutations: {
-    setStatistics: (s, statistics) => s.statistics = statistics,
+    setStatistics: (s, payload) => s.statistics = Object.entries(payload).map(([key, value]) => ({ [key]: value })),
   },
   actions: {
     async apiAllStatistics({commit}) {

@@ -1,38 +1,37 @@
 <template lang="pug">
-  .card
-    simple-svg(:filepath="'/static/img/link.svg'")
+  .statistics-card-main
+    span {{ filepath }}
+    //simple-svg.statistics-card-main__img(:filepath="filepath")
 
 </template>
 
 <script>
 export default {
-  name: "Card",
+  name: 'StatisticsCard',
   props: ['statistic', ],
   data: () => {
 
   },
   computed: {
-    fileSvgName() {
-      return this.statistic
-    },
     filepath() {
-      return `/static/img/statistics/${this.fileSvgName}.svg`
+      return `/static/img/statistics/${Object.keys(this.statistic)[0].replace('_','-')}.svg`
     },
   }
 }
 </script>
 
 <style lang="stylus">
-.card
+@import '../../assets/stylus/base/vars.styl';
+.statistics-card-main
   display flex
   flex-direction row
   min-width 518px
   min-height 150px
   background-color #fff
 
-  .card__img
+  .statistics-card-main__img
     height 100%
     width calc(100vh)
-    background-color #21A45D
+    background-color #eucalypt
 
 </style>

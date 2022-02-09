@@ -3,7 +3,7 @@
     .settings-security__block
       h3.settings-security__title E-mail:
       span.settings-security__value {{getInfo.email}}
-      button-hover(@click.native="openModal('email')") Изменить
+      button-hover(@click.native="onEmailChange") Изменить
     .settings-security__block
       h3.settings-security__title Пароль:
       span.settings-security__value ********
@@ -40,6 +40,9 @@ export default {
   },
   methods: {
     ...mapActions('profile/account', ['changeEmail', 'passwordSet']),
+    onEmailChange() {
+      this.$router.push({name: 'ChangeEmail'});
+    },
     openModal(id) {
       this.modalType = id
       this.modalShow = true
@@ -49,9 +52,6 @@ export default {
     },
     onConfrim() {
       switch (this.modalType) {
-        case 'email':
-          this.changeEmail({email: this.getInfo.email});
-          break;
         case 'password':
           this.passwordSet();
           break;

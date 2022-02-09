@@ -3,6 +3,7 @@
   display flex
   @media (max-width breakpoint-xxl)
     padding standart-padding-xxl
+  @media (max-width breakpoint-xl)
     flex-wrap wrap
 
 .inner-page__main
@@ -12,6 +13,7 @@
   @media (max-width breakpoint-xxl)
     margin-right 20px
   @media (max-width breakpoint-xl)
+    order 2
     max-width 100%
     margin-right 0
 
@@ -22,5 +24,6 @@
   @media (max-width breakpoint-xxl)
     max-width 380px
   @media (max-width breakpoint-xl)
-    //display block
-    width 100%
+    order 1
+    max-width 100%
+    margin-bottom 30px

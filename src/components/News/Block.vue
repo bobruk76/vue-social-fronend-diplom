@@ -109,14 +109,14 @@ export default {
     deffered: Boolean,
     admin: Boolean,
     blocked: Boolean,
-    deleted: Boolean
+    deleted: Boolean,
   },
   data: () => ({
     isLotText: false,
     openText: false,
     isEditNews: false,
     isShowAllComments: false,
-    commentText: ''
+    commentText: '',
   }),
   computed: {
     ...mapGetters('profile/info', ['getInfo']),
@@ -368,38 +368,31 @@ export default {
   padding-bottop: 20;
 }
 
-.news-block__actions-block {
-  & + & {
-    margin-left: 30px;
-  }
-}
+.news-block__actions-block
+  & + &
+    margin-left 30px
 
-.news-block__comments-quantity {
-  display: flex;
-  align-items: flex-end;
-  font-family: font-exo;
-  font-weight: bold;
-  font-size: 20px;
-  color: #000;
-  padding-bottom: 20px;
+.news-block__comments-quantity
+  display flex
+  align-items flex-end
+  font-family font-exo
+  font-weight bold
+  font-size 20px
+  color #000
+  padding-bottom 20px
 
-  .news-block__comments-quantity-text {
-    padding-right: 10px;
-  }
+  .news-block__comments-quantity-text
+    padding-right 10px
 
-  .news-block__comments-quantity-more {
-    font-size: 13px;
-    font-weight: normal;
-    color: eucalypt;
-  }
-}
+  .news-block__comments-quantity-more
+    font-size 13px
+    font-weight normal
+    color eucalypt
 
-.news-block__comments-answers {
-  display: block;
-  width: 100%;
+.news-block__comments-answers
+  display block
+  width 100%
 
-  >.comment-main {
-    padding-top: 10px;
-  }
-}
+  > .comment-main
+    padding-top 10px
 </style>

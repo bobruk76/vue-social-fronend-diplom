@@ -28,24 +28,21 @@ export default {
   },
   actions: {
     async apiFetchCountries({commit}) {
-      await axios({
-        url: 'platform/countries',
-        method: 'GET'
-      }).then(async response => {
-        commit('setCountries', response.data.data)
-      }).catch(() => {})
+      await axios.get('platform/countries')
+        .then(async response => {
+          commit('setCountries', response.data.data)
+        })
+        .catch(() => {
+        })
     },
     async apiFetchCities({commit}, country) {
-      country
-        ? await axios.get('platform/cities',
-          {
-            params: {country}
-          }).then(async response => {
-          commit('setCities', response.data.data)
-        }).catch(() => {
-          commit('setCities', [])
-        })
-        : commit('setCities', [])
+      commit('setCities', [])
+      country && await axios.get('platform/cities',
+        {
+          params: {country}
+        }).then(async response => {
+        commit('setCities', response.data.data)
+      }).catch(() => {})
     },
     async apiInfo({commit}) {
       await axios({
@@ -53,31 +50,30 @@ export default {
         method: 'GET'
       }).then(async response => {
         commit('setInfo', response.data.data)
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     async apiChangeInfo({commit, dispatch}, user) {
-      await axios({
-        url: 'users/me',
-        method: 'PUT',
-        data: user
-      }).then(response => {
-        console.log("TCL: apiChangeInfo -> response", response.data.data)
-        dispatch('global/alert/setAlert', {
-          status: 'success',
-          text: 'Информация обновлена'
-        }, {
-          root: true
+      await axios.put('users/me', user)
+        .then(async response => {
+          console.log("TCL: apiChangeInfo -> response", response.data.data)
+          dispatch('global/alert/setAlert', {
+            status: 'success',
+            text: 'Информация обновлена'
+          }, {
+            root: true
+          })
+          commit('setInfo', response.data.data)
         })
-        commit('setInfo', response.data.data)
-      }).catch(error => {
-        console.log(error.response);
-        dispatch('global/alert/setAlert', {
-          status: 'error',
-          text: 'Не удалось обновить информацию((('
-        }, {
-          root: true
+        .catch(error => {
+          console.log(error.response);
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Не удалось обновить информацию((('
+          }, {
+            root: true
+          })
         })
-      })
     }
     ,
     async deleteInfo() {
@@ -85,7 +81,8 @@ export default {
         url: 'users/me',
         method: 'DELETE'
       }).then(() => {
-      }).catch(() => {})
+      }).catch(() => {
+      })
     }
   }
 }

@@ -3,7 +3,7 @@
     .settings-security__block
       h3.settings-security__title E-mail:
       span.settings-security__value {{getInfo.email}}
-      button-hover(@click.native="openModal('email')") Изменить
+      button-hover(@click.native="onEmailChange") Изменить
     .settings-security__block
       h3.settings-security__title Пароль:
       span.settings-security__value ********
@@ -11,32 +11,55 @@
     modal(v-model="modalShow")
       p(v-if="modalText") {{modalText}}
       template(slot="actions")
-        button-hover(@click.native="closeModal") Ок
+        button-hover(@click.native="onConfrim") Ок
 </template>
 
 <script>
 import Modal from '@/components/Modal'
-import { mapGetters } from 'vuex'
+import {mapActions, mapGetters} from 'vuex'
+
 export default {
   name: 'SettingsSecurity',
-  components: { Modal },
+  components: {Modal},
   data: () => ({
+    modalType: 'email',
     modalShow: false,
-    modalText: ''
   }),
   computed: {
-    ...mapGetters('profile/info', ['getInfo'])
+    ...mapGetters('profile/info', ['getInfo']),
+    modalText() {
+      switch (this.modalType) {
+        case 'email':
+          return `На ваш E-mail было отправлено письмо с подтверждением смены.`;
+        case 'password':
+          return `На ваш E-mail было отправлено письмо с ссылкой для смены пароля.`;
+        default:
+          return 'Ваше действие пока в нашей системе выполнить нельзя.';
+      }
+    }
   },
   methods: {
+    ...mapActions('profile/account', ['changeEmail', 'passwordSet']),
+    onEmailChange() {
+      this.$router.push({name: 'ChangeEmail'});
+    },
+    openModal(id) {
+      this.modalType = id
+      this.modalShow = true
+    },
     closeModal() {
       this.modalShow = false
     },
-    openModal(id) {
-      id === 'email'
-        ? (this.modalText = 'На ваш E-mail было отправлено письмо с подтверждением смены.')
-        : (this.modalText = 'На ваш E-mail было отправлено письмо с ссылкой для смены пароля.')
-      this.modalShow = true
-    }
+    onConfrim() {
+      switch (this.modalType) {
+        case 'password':
+          this.passwordSet();
+          break;
+        default:
+          console.error('Эта функция пока не реализованна!!!')
+      }
+      this.closeModal();
+    },
   }
 }
 </script>
@@ -53,7 +76,7 @@ export default {
   padding: 0 33px 0 50px;
   font-size: 15px;
 
-  &+& {
+  & + & {
     margin-top: 20px;
   }
 }

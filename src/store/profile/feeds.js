@@ -3,50 +3,65 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: {
-    feeds: []
+    feeds: [],
+    offset: 0,
+    itemPerPage: 3,
+    totalFeeds: 0
   },
   getters: {
-    getFeeds: s => s.feeds
+    getFeeds: s => s.feeds,
+    getIsShowMore: s => s.totalFeeds > s.feeds.length,
   },
   mutations: {
+    setDefaultState(s) {
+      s.feeds = []
+      s.offset = 0
+      s.itemPerPage = 3
+      s.totalFeeds = 0
+    },
+    setOffset: (s, payload) => s.offset = payload,
+    setTotalFeeds: (s, payload) => s.totalFeeds = payload,
+    incrementOffset: s => s.offset++,
+    setItemPerPage: (s, payload) => s.itemPerPage = payload,
+
     setFeeds: (s, feeds) => s.feeds = feeds,
+    appendFeeds: (s, feeds) => feeds.map(el => {
+      if (!s.feeds.includes(el)) {
+        s.feeds.push(el)
+      }
+    }),
     setCommentsById: (s, payload) => {
       s.feeds[s.feeds.indexOf(s.feeds.find(el => el.id === payload.post_id))].comments = payload.value
       s.feeds.push('dog-nail')
-      s.feeds.splice(-1,1)
+      s.feeds.splice(-1, 1)
     },
     setFeedsById: (s, payload) => s.feeds[s.feeds.indexOf(s.feeds.find(el => el.id === payload.id))] = payload
   },
   actions: {
-    async apiFeeds({
-      commit
-    }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
+    async apiFeeds({commit, state}, payload = null) {
+      await axios.get('feeds', {
+        params: {
+          ...payload,
+          offset: state.offset,
+          item_per_page: state.itemPerPage,
+        }
+      }).then(async response => {
+        commit('appendFeeds', response.data.data)
+        commit('setTotalFeeds', response.data.total)
+        commit('incrementOffset')
+      }).catch(() => {
       })
-      await axios({
-        url: `feeds?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        console.log("TCL: apiFeeds -> response", response)
-        commit('setFeeds', response.data.data)
-      }).catch(() => {})
-    },
-    async apiFeedsById({
-      commit
-    }, post_id) {
-      await axios({
-        url: `post/${post_id}`,
-        method: 'GET'
-      }).then(response => {
-        console.log("TCL: apiFeeds -> response", response)
+    }
+    ,
+    async apiFeedsById({commit}, post_id) {
+      await axios.get(`post/${post_id}`
+      ).then(async response => {
         commit('setFeedsById', response.data)
-      }).catch(() => {})
-    },
-    async actionsFeed({
-      dispatch
-    }, payload) {
+      }).catch(() => {
+      })
+    }
+    ,
+    async actionsFeed({dispatch}, payload) {
       console.log("TCL: payload", payload)
       let url = payload.edit ? `post/${payload.post_id}` : `users/${payload.id}/wall`
       let method = payload.edit ? 'PUT' : 'POST'
@@ -73,13 +88,13 @@ export default {
               root: true
             })
         }
-      }).catch(() => {})
-    },
+      }).catch(() => {
+      })
+    }
+    ,
     async deleteFeeds({dispatch}, payload) {
-      await axios({
-        url: `post/${payload.post_id}`,
-        method: 'DELETE'
-      }).then(response => {
+      await axios.delete(`post/${payload.post_id}`
+      ).then(async response => {
         payload.route === 'News' ?
           dispatch('apiFeeds') :
           dispatch('users/info/apiWall', {
@@ -87,7 +102,8 @@ export default {
           }, {
             root: true
           })
-      }).catch(() => {})
+      }).catch(() => {
+      })
     }
   }
 }

@@ -1,20 +1,24 @@
 <template lang="pug">
   .statistics-card-main
-    span {{ filepath }}
-    //simple-svg.statistics-card-main__img(:filepath="filepath")
-
+    .statistics-card-main__img
+      simple-svg.statistics-card-main__img-svg(:filepath="getSvgFilePath(statistic.type)")
+    .statistics-card-main__info
+    //  span {{ getStatisticsText(statistic.type) }}
+    //  span {{ statistic.count }}
 </template>
 
 <script>
+import {mapGetters} from "vuex";
+
 export default {
   name: 'StatisticsCard',
-  props: ['statistic', ],
-  data: () => {
-
+  props: {
+    statistic: Object,
   },
   computed: {
+    ...mapGetters('admin/info', ['getStatisticsText', 'getSvgFilePath']),
     filepath() {
-      return `/static/img/statistics/${Object.keys(this.statistic)[0].replace('_','-')}.svg`
+      return `/static/img/statistics/${Object.keys(this.statistic)[0].replace('_', '-')}.svg`
     },
   }
 }
@@ -23,15 +27,19 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 .statistics-card-main
-  display flex
-  flex-direction row
-  min-width 518px
-  min-height 150px
+  display grid
+  grid-template-columns 1fr 2fr
+  margin-bottom 20px
+  width calc((100% / 2) - 20px)
+  height calc(@width / 3)
   background-color #fff
-
-  .statistics-card-main__img
-    height 100%
-    width calc(100vh)
-    background-color #eucalypt
+  &:nth-child(2n-1)
+    margin-right 20px
+  &__img
+    aspect-ratio 1
+    background-color eucalypt
+  &__info
+    display flex
+    flex-direction column
 
 </style>

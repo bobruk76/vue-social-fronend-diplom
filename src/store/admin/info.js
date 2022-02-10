@@ -5,10 +5,11 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: {
-    statistics: null,
+    statistics: [],
   },
   getters: {
-    getStatistics: state => state.statistics,
+    getStatistics: s => s.statistics,
+    getSvgFilePath: s => type => `/static/img/statistics/${type.replace('_','-')}.svg`,
     getStatisticsText: s => type => {
       switch (type) {
         case 'comments_count':
@@ -23,7 +24,10 @@ export default {
     }
   },
   mutations: {
-    setStatistics: (s, payload) => s.statistics = Object.entries(payload).map(([key, value]) => ({ [key]: value })),
+    setStatistics: (s, payload) => s.statistics = Object.entries(payload).map(([key, value]) => ({
+      type: key,
+      count: value,
+    })),
   },
   actions: {
     async apiAllStatistics({commit}) {
@@ -31,6 +35,7 @@ export default {
         .then(async response => {
           commit('setStatistics', response.data)
         }).catch(async error => {
+          commit('setStatistics', [])
           await Promise.reject(error)
         })
     },

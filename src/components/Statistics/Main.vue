@@ -31,15 +31,17 @@ export default {
 @import '../../assets/stylus/components/user-info-form.styl'
 
 .statistics-main
-  background #fff
+  display flex
+  flex-wrap wrap
+  width 100%
   box-shadow standart-boxshadow
-  padding 40px 10px 50px
+  padding 40px 20px
 
   .statistics-main__header
     font-size 24px
 
   @media (max-width: breakpoint-xl)
-    padding 40px 20px
+    padding 30px 10px
 
 .statistics-main__back
   margin-left 20px

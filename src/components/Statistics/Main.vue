@@ -31,17 +31,17 @@ export default {
 @import '../../assets/stylus/components/user-info-form.styl'
 
 .statistics-main
+  font-family 'Open Sans'
   display flex
   flex-wrap wrap
   width 100%
-  box-shadow standart-boxshadow
-  padding 40px 20px
+  padding 0 20px
 
   .statistics-main__header
     font-size 24px
 
   @media (max-width: breakpoint-xl)
-    padding 30px 10px
+    padding 0 10px
 
 .statistics-main__back
   margin-left 20px

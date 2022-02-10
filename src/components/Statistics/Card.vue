@@ -3,8 +3,8 @@
     .statistics-card-main__img
       simple-svg.statistics-card-main__img-svg(:filepath="getSvgFilePath(statistic.type)")
     .statistics-card-main__info
-    //  span {{ getStatisticsText(statistic.type) }}
-    //  span {{ statistic.count }}
+      h3.statistics-card-main__info-header {{ getStatisticsText(statistic.type) }}
+      span.statistics-card-main__info-discr {{ statistic.count }}
 </template>
 
 <script>
@@ -41,5 +41,9 @@ export default {
   &__info
     display flex
     flex-direction column
-
+    justify-content space-around
+    &-header
+      font-size 20px
+    &-discr
+      font-size 54px
 </style>

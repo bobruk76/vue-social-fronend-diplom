@@ -72,17 +72,33 @@ export default {
             labels.push(key)
             data.push(value)
           })
-          const responseData = {
+          let responseData = {
             monthData: {
               labels,
               datasets: [
                 {
-                  label: 'Данные 1',
-                  backgroundColor: '#f87979',
+                  label: 'Динамика прироста',
+                  backgroundColor: 'green',
                   data,
                 }
               ]
             }
+          }
+          labels = []
+          data = []
+          Object.entries(response.data.posts_by_hour).map(([key, value]) => {
+            labels.push(key)
+            data.push(value)
+          })
+          responseData.hourData = {
+            labels,
+            datasets: [
+              {
+                label: 'Время публикации (суточная диаграмма)',
+                backgroundColor: 'green',
+                data,
+              }
+            ]
           }
           commit('setPostsStatistic', responseData)
           commit('setIsDataLoad', true)

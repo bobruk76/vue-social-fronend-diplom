@@ -1,20 +1,27 @@
 <template lang="pug">
-  .statistics-main
+  .posts-main
     statistics-line(
       v-if="getIsDataLoad"
       :chart-data="getPostsStatistic.monthData"
       :options="options"
-      )
-    //statistics-card(v-for="(item, index) in getStatistics" :key="index" :statistic="item")
+      :styles="lineStyles"
+    )
+    statistics-bar(
+      v-if="getIsDataLoad"
+      :chart-data="getPostsStatistic.hourData"
+      :options="options"
+      :styles="lineStyles"
+    )
 </template>
 
 <script>
 import {mapGetters, mapActions} from 'vuex'
 import StatisticsLine from '@/components/Statistics/Line'
 import StatisticsBar from '@/components/Statistics/Bar'
+
 export default {
   name: 'SettingsMain',
-  components: {StatisticsLine},
+  components: {StatisticsLine, StatisticsBar},
   data: () => ({
     isDataLoad: false,
     options: {
@@ -24,6 +31,12 @@ export default {
   }),
   computed: {
     ...mapGetters('admin/info', ['getPostsStatistic', 'getIsDataLoad']),
+    lineStyles() {
+      return {
+        width: '100%',
+        position: 'relative'
+      }
+    }
   },
   methods: {
     ...mapActions('admin/info', ['apiPostsStatistic']),
@@ -40,20 +53,16 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl'
 
-.statistics-main
+.posts-main
   font-family 'Open Sans'
   display flex
   flex-wrap wrap
+  position: relative
   width 100%
   padding 0 20px
 
-  .statistics-main__header
-    font-size 24px
+  &__line
+    width 100%
 
-  @media (max-width: breakpoint-xl)
-    padding 0 10px
-
-.statistics-main__back
-  margin-left 20px
 
 </style>

@@ -41,9 +41,11 @@ export default {
   &__info
     display flex
     flex-direction column
-    justify-content space-around
+    justify-content center
     &-header
+      padding-left 10px
       font-size 20px
     &-discr
+      padding-left 10px
       font-size 54px
 </style>

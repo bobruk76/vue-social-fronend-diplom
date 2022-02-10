@@ -45,14 +45,19 @@ export default {
         el.enable = notifications.find(n => n.notification_type === el.type).enable)
   },
   actions: {
-    async passwordRecovery({}, email) {
-      await axios({
-        url: 'account/password/recovery',
-        method: 'PUT',
-        data: email
-      }).then(response => {
-      }).catch(error => {
-      })
+    async passwordRecovery({dispatch}, email) {
+      await axios.put('account/password/recovery', email)
+        .then(async response => {
+        })
+        .catch(async error => {
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Что-то пошло те так!'
+          }, {
+            root: true
+          })
+          await Promise.reject(error)
+        })
     },
     async passwordSet({rootState}, password) {
       let data = {
@@ -63,15 +68,24 @@ export default {
         url: 'account/password/set',
         method: 'PUT',
         data
-      }).then(response => {
-      }).catch(error => {
+      }).then(async response => {
+      }).catch(async error => {
+        await Promise.reject(error)
       })
     },
     async changeEmail({dispatch}, email) {
-      await axios.put('account/email', email).
-      then(async response => {
-        console.log(response.data)
-      }).catch(() => {})
+      await axios.put('account/email', email)
+        .then(async response => {
+        })
+        .catch(async error => {
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Изменить почту не удалось!'
+          }, {
+            root: true
+          })
+          await Promise.reject(error)
+        })
     },
     changeNotifications({dispatch}, data) {
       axios.put('account/notifications', data)
@@ -83,7 +97,8 @@ export default {
             root: true
           })
         })
-        .catch(() => {})
+        .catch(() => {
+        })
         .then(() => {
           dispatch('apiNotificationsSettings')
         })
@@ -94,7 +109,7 @@ export default {
         console.log(response.data.data)
         commit('setNotificationsSettings', response.data.data)
       }).catch(async error => {
-        console.log(error.response)
+        console.error(error.response.data)
       })
     }
   }

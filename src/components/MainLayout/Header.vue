@@ -5,6 +5,8 @@
         button.main-layout__search-btn
           simple-svg(:filepath="'/static/img/search.svg'")
         input.main-layout__search-input(type="text" placeholder="Поиск" :value="searchText" @input="setSearchText($event.target.value)")
+      .main-layout__push(@click="apiNotifications")
+        span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
         simple-svg(:filepath="'/static/img/push.svg'" :data-push="getNotificationsLength > 0 ? getNotificationsLength : false")
         push(:isOpen="isOpenPush" @close-push="togglePush")
@@ -36,6 +38,7 @@ export default {
     ...mapMutations('global/search', ['setSearchText']),
     ...mapActions('profile/info', ['apiInfo']),
     ...mapActions('global/search', ['searchAll']),
+    ...mapActions('profile/notifications', ['apiNotifications']),
     onSearch() {
       this.searchAll(this.searchText).then(() => {
         this.$router.push({ name: 'Search', query: { text: this.searchText } })
@@ -54,107 +57,101 @@ export default {
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.main-layout__header {
-  background: eucalypt;
-  box-shadow: standart-boxshadow;
-  height: header-height;
-  position: fixed;
-  top: 0;
-  left: sidebar-width;
-  right: 0;
-  display: flex;
-  align-items: center;
-  padding: 0 40px;
-  z-index: 10;
-  color: #FFFFFF;
+.main-layout
+  &__header
+    background eucalypt
+    box-shadow standart-boxshadow
+    height header-height
+    position fixed
+    top 0
+    left sidebar-width
+    right 0
+    display flex
+    align-items center
+    padding 0 40px
+    z-index 10
+    color #FFFFFF
 
-  &.admin {
-    background: #fff;
-    color: steel-gray;
-    justify-content: flex-end;
-  }
+    &.admin
+      background #fff
+      color steel-gray
+      justify-content flex-end
 
-  @media (max-width: breakpoint-xxl) {
-    left: sidebar-width-xl;
-  }
-}
+    @media (max-width: breakpoint-xxl)
+      left sidebar-width-xl
 
-.main-layout__search {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 350px;
-  margin-right: auto;
-}
+  &__search
+    display flex
+    align-items center
+    width 100%
+    max-width 350px
+    margin-right auto
 
-.main-layout__search-btn {
-  margin-right: 10px;
-  background-color: transparent;
-  outline: none;
+  &__search-btn
+    margin-right 10px
+    background-color transparent
+    outline none
 
-  .simple-svg-wrapper {
-    width: 16px;
-    height: 16px;
-  }
+    .simple-svg
+      stroke: #fff;
+      fill: transparent;
+      &-wraper
+        width 16px
+        height 16px
 
-  .simple-svg {
-    stroke: #fff;
-    fill: transparent;
-  }
-}
+  &__search-input
+    font-size 15px
+    width 100%
+    background transparent
+    padding 5px
+    border-bottom 2px solid rgba(255, 255, 255, 0.12)
+    color #fff
+    transition all 0.2s
 
-.main-layout__search-input {
-  font-size: 15px;
-  width: 100%;
-  background: transparent;
-  padding: 5px;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.12);
-  color: #fff;
-  transition: all 0.2s;
+    &::placeholder
+      color rgba(255, 255, 255, 0.3)
 
-  &::placeholder {
-    color: rgba(255, 255, 255, 0.3);
-  }
+    &:focus
+      border-bottom-color #fff
 
-  &:focus {
-    border-bottom-color: #fff;
-  }
-}
+  &__push
+    margin-right 30px
+    width 60px
+    height 60px
+    display flex
+    align-items center
+    justify-content center
+    cursor pointer
 
-.main-layout__push {
-  margin-right: 30px;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
+    &-reload
+      font-family Lucida Sans Unicode
+      font-size 30px
+      color: rgba(255, 255, 255, 0.4);
+      &:hover
+        color #fff
 
-  .simple-svg-wrapper {
-    width: 17px;
-    height: 17px;
-    position: relative;
+    .simple-svg-wrapper
+      width 17px
+      height 17px
+      position relative
 
-    &[data-push]:after {
-      content: attr(data-push);
-      font-style: normal;
-      font-weight: bold;
-      font-size: 10px;
-      line-height: 15px;
-      width: 16px;
-      height: 16px;
-      background-color: #F9555F;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-      top: -25px;
-      left: 7px;
-      padding-right: 1px;
-    }
-  }
-}
+      &[data-push]:after
+        content attr(data-push)
+        font-style normal
+        font-weight bold
+        font-size 10px
+        line-height 15px
+        width 16px
+        height 16px
+        background-color #F9555F
+        border-radius 50%
+        display flex
+        align-items center
+        justify-content center
+        position relative
+        top -25px
+        left 7px
+        padding-right 1px
 
 .main-layout__user {
   display: flex;
@@ -177,7 +174,8 @@ export default {
   }
 }
 
-.main-layout__user-post {
-  margin-left: 5px;
-}
+.main-layout__user-post
+  margin-left 5px
+
+
 </style>

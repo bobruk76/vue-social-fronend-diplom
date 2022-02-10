@@ -4,7 +4,7 @@ export default {
     status: 'success',
     text: 'Сделано!',
     show: false,
-    timeout: 5000
+    timeout: 2000
   },
   getters: {
     getState: s => s

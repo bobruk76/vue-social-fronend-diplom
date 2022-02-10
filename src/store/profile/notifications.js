@@ -30,28 +30,29 @@ export default {
   },
   actions: {
     async apiNotifications({
-      commit,
-      dispatch
-    }) {
-      await axios({
-        url: 'notifications',
-        method: 'GET'
-      }).then(response => {
-
-        if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
-          commit('setNotifications', response.data.data)
-        }
-        // добавить когда будет прод
-        // setTimeout(() => {
-        //   dispatch('apiNotifications')
-        // }, 5000)
-      }).catch(() => {})
+                             commit,
+                             dispatch
+                           }) {
+      await axios.get('notifications')
+        .then(async response => {
+          console.log(response.data)
+          if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
+            commit('setNotifications', response.data.data)
+          }
+          // добавить когда будет прод
+          // setTimeout(() => {
+          //   dispatch('apiNotifications')
+          // }, 5000)
+        })
+        .catch(() => {
+        })
     },
     async readNotifications() {
-      await axios({
-        url: 'notifications?all=true',
-        method: 'PUT'
-      }).then(response => {}).catch(() => {})
+      await axios.put('notifications?all=true')
+        .then(async response => {
+        })
+        .catch(() => {
+        })
     }
   }
 }

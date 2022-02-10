@@ -25,6 +25,7 @@ export default {
   }),
   methods: {
     ...mapActions('profile/account', ['passwordSet']),
+    ...mapActions('auth/api', ['logout']),
     submitHandler() {
       if (this.$v.$invalid) {
         this.$v.$touch()
@@ -32,6 +33,7 @@ export default {
       }
 
       this.passwordSet(this.passwordTwo).then(() => {
+        this.logout()
         this.$router.push({ name: 'ChangePasswordSuccess' })
       })
     }

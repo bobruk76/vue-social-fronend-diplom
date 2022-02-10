@@ -56,7 +56,6 @@ export default {
     async apiChangeInfo({commit, dispatch}, user) {
       await axios.put('users/me', user)
         .then(async response => {
-          console.log("TCL: apiChangeInfo -> response", response.data.data)
           dispatch('global/alert/setAlert', {
             status: 'success',
             text: 'Информация обновлена'
@@ -65,8 +64,8 @@ export default {
           })
           commit('setInfo', response.data.data)
         })
-        .catch(error => {
-          console.log(error.response);
+        .catch(async error => {
+          console.error(error.response);
           dispatch('global/alert/setAlert', {
             status: 'error',
             text: 'Не удалось обновить информацию((('

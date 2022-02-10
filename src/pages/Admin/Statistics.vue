@@ -12,9 +12,10 @@
 import {mapActions, mapGetters} from "vuex";
 import StatisticsSidebar from '@/components/Statistics/Sidebar'
 import StatisticsMain from '@/components/Statistics/Main'
+import StatisticsPosts from '@/components/Statistics/Posts'
 export default {
   name: 'AdminStatistics',
-  components: {StatisticsSidebar, StatisticsMain},
+  components: {StatisticsSidebar, StatisticsMain, StatisticsPosts},
   data: () => ({
     activeComponent: {component: 'statistics-main', text: 'Общая'}
   }),

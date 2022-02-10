@@ -15,7 +15,7 @@
   "dependencies": {
     "@vue/composition-api": "^1.4.1",
     "axios": "^0.19.2",
-    "chart.js": "^3.7.0",
+    "chart.js": "^2.9.4",
     "inputmask": "^4.0.8",
     "moment": "^2.24.0",
     "petrovich": "^0.2.1",

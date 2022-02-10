@@ -13,6 +13,7 @@ export default {
   data: () => ({
     list: [
       { component: 'statistics-main', text: 'Общая' },
+      { component: 'statistics-posts', text: 'Публикации' },
     ]
   }),
   methods: {

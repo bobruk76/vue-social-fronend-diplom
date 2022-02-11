@@ -1,31 +1,31 @@
 <template lang="pug">
-  .posts-main
-    .posts-main__header
-      span.posts-main__header-discr {{ getPostsStatistic.postsCount }}
-      span.posts-main__header-title Публикаций за все время:
+  .users-main
+    .users-main__header
+      span.users-main__header-discr {{ getUsersStatistic.usersCount }}
+      span.users-main__header-title Пользователей зарегистрировано:
 
-    statistics-line.posts-main__line(
+    statistics-doughnut.users-main__line(
       v-if="getIsDataLoad"
-      :chart-data="getPostsStatistic.monthData"
+      :chart-data="getUsersStatistic.dynamic"
       :options="options"
       :styles="lineStyles"
     )
-    statistics-bar.posts-main__line(
-      v-if="getIsDataLoad"
-      :chart-data="getPostsStatistic.hourData"
-      :options="options"
-      :styles="lineStyles"
-    )
+    //statistics-line.users-main__line(
+    //  v-if="getIsDataLoad"
+    //  :chart-data="getUsersStatistic.dynamic"
+    //  :options="options"
+    //  :styles="lineStyles"
+    //)
 </template>
 
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex'
 import StatisticsLine from '@/components/Statistics/Line'
-import StatisticsBar from '@/components/Statistics/Bar'
+import StatisticsDoughnut from '@/components/Statistics/Doughnut'
 
 export default {
   name: 'SettingsMain',
-  components: {StatisticsLine, StatisticsBar},
+  components: {StatisticsLine, StatisticsDoughnut},
   data: () => ({
     isDataLoad: false,
     options: {
@@ -34,7 +34,7 @@ export default {
     }
   }),
   computed: {
-    ...mapGetters('admin/info', ['getPostsStatistic', 'getIsDataLoad']),
+    ...mapGetters('admin/info', ['getUsersStatistic', 'getIsDataLoad']),
     lineStyles() {
       return {
         width: '100%',
@@ -44,21 +44,21 @@ export default {
     }
   },
   methods: {
-    ...mapActions('admin/info', ['apiPostsStatistic']),
+    ...mapActions('admin/info', ['apiUsersStatistic']),
     showFriends(value) {
       this.isShow[value] = !this.isShow[value]
     }
   },
   mounted() {
-    this.apiPostsStatistic()
-  }
+    this.apiUsersStatistic()
+  },
 }
 </script>
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl'
 
-.posts-main
+.users-main
   font-family 'Open Sans'
   display flex
   flex-wrap wrap

@@ -14,6 +14,7 @@ export default {
     getIsDataLoad: s => s.isDataLoad,
     getStatistics: s => s.statistics,
     getPostsStatistic: s => s.postsStatistic,
+    getUsersStatistic: s => s.usersStatistic,
     getSvgFilePath: s => type => `/static/img/statistics/${type.replace('_', '-')}.svg`,
     getStatisticsText: s => type => {
       switch (type) {
@@ -34,6 +35,7 @@ export default {
       count: value,
     })),
     setPostsStatistic: (s, payload) => s.postsStatistic = payload,
+    setUsersStatistic: (s, payload) => s.usersStatistic = payload,
     setIsDataLoad: (s, payload) => s.isDataLoad = payload,
   },
   actions: {
@@ -72,7 +74,6 @@ export default {
               ]
             }
           }
-          console.log(result)
           Object.entries(response.data.posts).map(([key, value]) => {
             result.monthData.labels.push(key)
             result.monthData.datasets[0].data.push(value)
@@ -82,6 +83,48 @@ export default {
             result.hourData.datasets[0].data.push(value)
           })
           commit('setPostsStatistic', result)
+          commit('setIsDataLoad', true)
+        }).catch(async error => {
+          commit('setPostsStatistic', {})
+          commit('setIsDataLoad', false)
+          await Promise.reject(error)
+        })
+    },
+    async apiUsersStatistic({commit}) {
+      await axios.get(`stat/users`)
+        .then(async response => {
+          const result = {
+            usersCount: response.data.users_count,
+            dynamic: {
+              labels: [],
+              datasets: [
+                {
+                  label: 'Динамика прироста',
+                  backgroundColor: 'green',
+                  data: [],
+                }
+              ]
+            },
+            // hourData: {
+            //   labels: [],
+            //   datasets: [
+            //     {
+            //       label: 'Время публикации (суточная диаграмма)',
+            //       backgroundColor: 'green',
+            //       data: [],
+            //     }
+            //   ]
+            // }
+          }
+          Object.entries(response.data.dynamic).map(([key, value]) => {
+            result.dynamic.labels.push(key)
+            result.dynamic.datasets[0].data.push(value)
+          })
+          // Object.entries(response.data.posts_by_hour).map(([key, value]) => {
+          //   result.hourData.labels.push(key)
+          //   result.hourData.datasets[0].data.push(value)
+          // })
+          commit('setUsersStatistic', result)
           commit('setIsDataLoad', true)
         }).catch(async error => {
           commit('setPostsStatistic', {})

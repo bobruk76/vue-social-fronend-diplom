@@ -8,6 +8,7 @@ export default {
     statistics: [],
     postsStatistic: {},
     usersStatistic: {},
+    likesStatistic: {},
     isDataLoad: false
   },
   getters: {

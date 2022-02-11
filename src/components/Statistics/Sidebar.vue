@@ -15,6 +15,7 @@ export default {
       { component: 'statistics-main', text: 'Общая' },
       { component: 'statistics-posts', text: 'Публикации' },
       { component: 'statistics-users', text: 'Пользователи' },
+      { component: 'statistics-comments', text: 'Комментарии' },
     ]
   }),
   methods: {

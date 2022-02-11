@@ -3,7 +3,7 @@
     h1.statistics__title {{activeComponent.text}}
     .statistics__wrap
       .inner-page__main
-        component(:is="activeComponent.component")
+        component(:is="activeComponent.component" :line-data="lineData" :bar-data="barData")
       .inner-page__aside
         statistics-sidebar(v-model="activeComponent.component" @change-component="onChange")
 </template>
@@ -13,16 +13,35 @@ import {mapActions, mapGetters} from "vuex";
 import StatisticsSidebar from '@/components/Statistics/Sidebar'
 import StatisticsMain from '@/components/Statistics/Main'
 import StatisticsPosts from '@/components/Statistics/Posts'
+import StatisticsLineBar from '@/components/Statistics/LineBar'
 import StatisticsUsers from '@/components/Statistics/Users'
+
 export default {
   name: 'AdminStatistics',
-  components: {StatisticsSidebar, StatisticsMain, StatisticsPosts, StatisticsUsers},
+  components: {StatisticsSidebar, StatisticsMain, StatisticsPosts, StatisticsUsers, StatisticsLineBar},
   data: () => ({
-    activeComponent: {component: 'statistics-main', text: 'Общая'}
+    activeComponent: {component: 'statistics-main', text: 'Общая'},
+    lineData: null,
+    barData: null,
   }),
+  computed: {
+    ...mapGetters('admin/info', ['getPostsStatistic']),
+  },
   methods: {
+    ...mapActions('admin/info', ['apiPostsStatistic']),
     onChange(item) {
       this.activeComponent = item
+      switch (item.component) {
+        case 'statistics-posts' : {
+          this.apiPostsStatistic()
+            .then(() => {
+              this.activeComponent.component = 'statistics-line-bar'
+              this.lineData = this.getPostsStatistic.monthData
+              this.barData = this.getPostsStatistic.hourData
+            })
+          break
+        }
+      }
     }
   },
 }

@@ -33,35 +33,22 @@ export default {
     ...mapGetters('admin/info', ['getCategoryStatistic']),
   },
   methods: {
-    ...mapActions('admin/info', ['apiStatistic', 'apiCategoryStatistic']),
+    ...mapActions('admin/info', ['apiCategoryStatistic']),
     onChange(item) {
 
       switch (item.component) {
+        case 'likes' :
         case 'comments' :
         case 'posts' :
-          this.apiStatistic(item.component)
+          this.apiCategoryStatistic(item.component)
             .then(() => {
               this.activeComponent.component = 'statistics-line-bar'
               this.lineData = this.getCategoryStatistic.monthData
-              this.barData = this.getPostsStatistic.hourData
+              this.barData = this.getCategoryStatistic.hourData
               this.titleData = {
                 title: 'Публикаций за все время:',
-                count: this.getPostsStatistic.count,
+                count: this.getCategoryStatistic.count,
                 svg: `background-image url('/static/img/statistics/${item.component}-count.svg')`
-              }
-            })
-          break
-        case 'statistics-comments' :
-          this.apiCommentsStatistic()
-            .then(() => {
-              this.activeComponent.component = 'statistics-line-bar'
-              // this.lineData = this.getPostsStatistic.monthData
-              // this.barData = this.getPostsStatistic.hourData
-              this.titleData = {
-                title: 'Комментариев оставлено:',
-                // count: this.getPostsStatistic.postsCount,
-                count: 0,
-                svg: "background-image url('/static/img/statistics/comments-count.svg')"
               }
             })
           break

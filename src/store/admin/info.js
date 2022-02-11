@@ -117,7 +117,7 @@ export default {
               labels: [],
               datasets: [
                 {
-                  label: 'Время публикации (суточная диаграмма)',
+                  label: 'Распределение по возрасту',
                   backgroundColor: [],
                   data: [],
                 }

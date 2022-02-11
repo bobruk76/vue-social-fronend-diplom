@@ -10,13 +10,14 @@
       :options="options"
       :styles="lineStyles"
     )
-
-    statistics-doughnut.users-main__line(
-      v-if="getIsDataLoad"
-      :chart-data="getUsersStatistic.yearsUsersStat"
-      :options="options"
-      :styles="lineStyles"
-    )
+    .users-main__doughnut
+      h3.users-main__doughnut-title Распределение по возрасту
+      statistics-doughnut.users-main__doughnut(
+        v-if="getIsDataLoad"
+        :chart-data="getUsersStatistic.yearsUsersStat"
+        :options="options"
+        :styles="lineStyles"
+      )
 </template>
 
 <script>
@@ -89,5 +90,10 @@ export default {
       padding-right 20px
   &__line
     margin-bottom 20px
+  &__doughnut
+    width 50%
+    &-title
+      font-weight 700
+      font-size 20px
 
 </style>

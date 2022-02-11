@@ -1,13 +1,14 @@
 <template lang="pug">
   .posts-main
-    .posts-main__header
-      //span.posts-main__header-discr {{ getPostsStatistic.postsCount }}
-      span.posts-main__header-title Публикаций за все время:
-
-    statistics-line.posts-main__line(
-      :chart-data="lineData"
-      :options="options"
-      :styles="lineStyles"
+    .posts-main__header(:style="titleData.svg")
+      span.posts-main__header-discr {{ titleData.count | numberFormat }}
+      span.posts-main__header-title {{ titleData.title }}
+    template
+      h3.posts-main__line-title {{ lineData.datasets[0].label}}
+      statistics-line.posts-main__line(
+        :chart-data="lineData"
+        :options="options"
+        :styles="lineStyles"
     )
     statistics-bar.posts-main__line(
       :chart-data="barData"
@@ -17,14 +18,14 @@
 </template>
 
 <script>
-import {mapGetters, mapActions, mapMutations} from 'vuex'
 import StatisticsLine from '@/components/Statistics/Line'
 import StatisticsBar from '@/components/Statistics/Bar'
-
+import numberFormat from '@/helpers/numberFormat';
 export default {
   name: 'LineBar',
-  props: ['lineData', 'barData'],
+  props: ['titleData', 'lineData', 'barData'],
   components: {StatisticsLine, StatisticsBar},
+  filters: { numberFormat },
   data: () => ({
     options: {
       responsive: true,
@@ -63,7 +64,7 @@ export default {
     height h = calc(100vh / 4)
     max-height 100px
     background-color eucalypt
-    background-image url('/static/img/statistics/posts-count.svg')
+    //background-image url('/static/img/statistics/posts-count.svg')
     background-position: left center;
     background-repeat: no-repeat;
     margin-bottom 20px
@@ -80,5 +81,7 @@ export default {
 
   &__line
     margin-bottom 20px
-
+    &-title
+      font-weight 700
+      font-size 20px
 </style>

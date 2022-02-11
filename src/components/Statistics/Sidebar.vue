@@ -13,9 +13,9 @@ export default {
   data: () => ({
     list: [
       { component: 'statistics-main', text: 'Общая' },
-      { component: 'statistics-posts', text: 'Публикации' },
+      { component: 'posts', text: 'Публикации' },
       { component: 'statistics-users', text: 'Пользователи' },
-      { component: 'statistics-comments', text: 'Комментарии' },
+      { component: 'comments', text: 'Комментарии' },
     ]
   }),
   methods: {

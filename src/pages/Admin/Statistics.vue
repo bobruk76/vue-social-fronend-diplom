@@ -3,7 +3,12 @@
     h1.statistics__title {{activeComponent.text}}
     .statistics__wrap
       .inner-page__main
-        component(:is="activeComponent.component" :line-data="lineData" :bar-data="barData")
+        component(
+          :is="activeComponent.component"
+          :line-data="lineData"
+          :bar-data="barData"
+          :title-data="titleData"
+        )
       .inner-page__aside
         statistics-sidebar(v-model="activeComponent.component" @change-component="onChange")
 </template>
@@ -12,35 +17,56 @@
 import {mapActions, mapGetters} from "vuex";
 import StatisticsSidebar from '@/components/Statistics/Sidebar'
 import StatisticsMain from '@/components/Statistics/Main'
-import StatisticsPosts from '@/components/Statistics/Posts'
 import StatisticsLineBar from '@/components/Statistics/LineBar'
 import StatisticsUsers from '@/components/Statistics/Users'
 
 export default {
   name: 'AdminStatistics',
-  components: {StatisticsSidebar, StatisticsMain, StatisticsPosts, StatisticsUsers, StatisticsLineBar},
+  components: {StatisticsSidebar, StatisticsMain, StatisticsUsers, StatisticsLineBar},
   data: () => ({
     activeComponent: {component: 'statistics-main', text: 'Общая'},
+    titleData: null,
     lineData: null,
     barData: null,
   }),
   computed: {
-    ...mapGetters('admin/info', ['getPostsStatistic']),
+    ...mapGetters('admin/info', ['getCategoryStatistic']),
   },
   methods: {
-    ...mapActions('admin/info', ['apiPostsStatistic']),
+    ...mapActions('admin/info', ['apiStatistic', 'apiCategoryStatistic']),
     onChange(item) {
-      this.activeComponent = item
+
       switch (item.component) {
-        case 'statistics-posts' : {
-          this.apiPostsStatistic()
+        case 'comments' :
+        case 'posts' :
+          this.apiStatistic(item.component)
             .then(() => {
               this.activeComponent.component = 'statistics-line-bar'
-              this.lineData = this.getPostsStatistic.monthData
+              this.lineData = this.getCategoryStatistic.monthData
               this.barData = this.getPostsStatistic.hourData
+              this.titleData = {
+                title: 'Публикаций за все время:',
+                count: this.getPostsStatistic.count,
+                svg: `background-image url('/static/img/statistics/${item.component}-count.svg')`
+              }
             })
           break
-        }
+        case 'statistics-comments' :
+          this.apiCommentsStatistic()
+            .then(() => {
+              this.activeComponent.component = 'statistics-line-bar'
+              // this.lineData = this.getPostsStatistic.monthData
+              // this.barData = this.getPostsStatistic.hourData
+              this.titleData = {
+                title: 'Комментариев оставлено:',
+                // count: this.getPostsStatistic.postsCount,
+                count: 0,
+                svg: "background-image url('/static/img/statistics/comments-count.svg')"
+              }
+            })
+          break
+        default:
+          this.activeComponent = item
       }
     }
   },

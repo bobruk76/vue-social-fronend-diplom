@@ -6,16 +6,17 @@ export default {
   namespaced: true,
   state: {
     statistics: [],
-    postsStatistic: {},
+    categoryStatistic: {},
     usersStatistic: {},
-    likesStatistic: {},
     isDataLoad: false
   },
   getters: {
     getIsDataLoad: s => s.isDataLoad,
+    getCategoryStatistic: s => s.categoryStatistic,
+
     getStatistics: s => s.statistics,
-    getPostsStatistic: s => s.postsStatistic,
     getUsersStatistic: s => s.usersStatistic,
+
     getSvgFilePath: s => type => `/static/img/statistics/${type.replace('_', '-')}.svg`,
     getStatisticsText: s => type => {
       switch (type) {
@@ -35,8 +36,9 @@ export default {
       type: key,
       count: value,
     })),
-    setPostsStatistic: (s, payload) => s.postsStatistic = payload,
+    setCategoryStatistic: (s, payload) => s.categoryStatistic = payload,
     setUsersStatistic: (s, payload) => s.usersStatistic = payload,
+
     setIsDataLoad: (s, payload) => s.isDataLoad = payload,
   },
   actions: {
@@ -49,11 +51,12 @@ export default {
           await Promise.reject(error)
         })
     },
-    async apiPostsStatistic({commit}) {
-      await axios.get(`stat/posts`)
+
+    async apiCategoryStatistic({commit}, category) {
+      await axios.get(`stat/${category}`)
         .then(async response => {
           const result = {
-            postsCount: response.data.posts_count,
+            count: response.data[`${category}_count`],
             monthData: {
               labels: [],
               datasets: [
@@ -78,21 +81,19 @@ export default {
               ]
             }
           }
-          Object.entries(response.data.posts).map(([key, value]) => {
+          Object.entries(response.data[`${category}`]).map(([key, value]) => {
             result.monthData.labels.push(key)
             result.monthData.datasets[0].data.push(value)
             result.monthData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
-          Object.entries(response.data.posts_by_hour).map(([key, value]) => {
+          Object.entries(response.data[`${category}_by_hour`]).map(([key, value]) => {
             result.hourData.labels.push(key)
             result.hourData.datasets[0].data.push(value)
             result.hourData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
-          commit('setPostsStatistic', result)
-          commit('setIsDataLoad', true)
+          commit(`setCategoryStatistic`, result)
         }).catch(async error => {
-          commit('setPostsStatistic', {})
-          commit('setIsDataLoad', false)
+          commit(`setCategoryStatistic`, {})
           await Promise.reject(error)
         })
     },
@@ -141,7 +142,7 @@ export default {
           commit('setUsersStatistic', result)
           commit('setIsDataLoad', true)
         }).catch(async error => {
-          commit('setPostsStatistic', {})
+          commit('setUsersStatistic', {})
           commit('setIsDataLoad', false)
           await Promise.reject(error)
         })

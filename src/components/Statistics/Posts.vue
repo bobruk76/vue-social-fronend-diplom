@@ -1,12 +1,12 @@
 <template lang="pug">
   .posts-main
-    statistics-line(
+    statistics-line.posts-main__line(
       v-if="getIsDataLoad"
       :chart-data="getPostsStatistic.monthData"
       :options="options"
       :styles="lineStyles"
     )
-    statistics-bar(
+    statistics-bar.posts-main__line(
       v-if="getIsDataLoad"
       :chart-data="getPostsStatistic.hourData"
       :options="options"
@@ -34,6 +34,7 @@ export default {
     lineStyles() {
       return {
         width: '100%',
+        'max-height': '300px',
         position: 'relative'
       }
     }
@@ -58,11 +59,12 @@ export default {
   display flex
   flex-wrap wrap
   position: relative
+  background-color #fff
   width 100%
   padding 0 20px
 
   &__line
-    width 100%
+    margin-bottom 20px
 
 
 </style>

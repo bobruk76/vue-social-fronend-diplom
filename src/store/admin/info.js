@@ -66,41 +66,38 @@ export default {
     async apiPostsStatistic({commit}) {
       await axios.get(`stat/posts`)
         .then(async response => {
-          let labels = []
-          let data = []
-          Object.entries(response.data.posts).map(([key, value]) => {
-            labels.push(key)
-            data.push(value)
-          })
-          let responseData = {
+          const result = {
             monthData: {
-              labels,
+              labels: [],
               datasets: [
                 {
                   label: 'Динамика прироста',
                   backgroundColor: 'green',
-                  data,
+                  data: [],
+                }
+              ]
+            },
+            hourData: {
+              labels: [],
+              datasets: [
+                {
+                  label: 'Время публикации (суточная диаграмма)',
+                  backgroundColor: 'green',
+                  data: [],
                 }
               ]
             }
           }
-          labels = []
-          data = []
-          Object.entries(response.data.posts_by_hour).map(([key, value]) => {
-            labels.push(key)
-            data.push(value)
+          console.log(result)
+          Object.entries(response.data.posts).map(([key, value]) => {
+            result.monthData.labels.push(key)
+            result.monthData.datasets[0].data.push(value)
           })
-          responseData.hourData = {
-            labels,
-            datasets: [
-              {
-                label: 'Время публикации (суточная диаграмма)',
-                backgroundColor: 'green',
-                data,
-              }
-            ]
-          }
-          commit('setPostsStatistic', responseData)
+          Object.entries(response.data.posts_by_hour).map(([key, value]) => {
+            result.hourData.labels.push(key)
+            result.hourData.datasets[0].data.push(value)
+          })
+          commit('setPostsStatistic', result)
           commit('setIsDataLoad', true)
         }).catch(async error => {
           commit('setPostsStatistic', {})

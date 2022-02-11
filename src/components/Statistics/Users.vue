@@ -11,12 +11,12 @@
       :styles="lineStyles"
     )
 
-    //statistics-doughnut.users-main__line(
-    //  v-if="getIsDataLoad"
-    //  :chart-data="getUsersStatistic.dynamic"
-    //  :options="options"
-    //  :styles="lineStyles"
-    //)
+    statistics-doughnut.users-main__line(
+      v-if="getIsDataLoad"
+      :chart-data="getUsersStatistic.yearsUsersStat"
+      :options="options"
+      :styles="lineStyles"
+    )
 </template>
 
 <script>

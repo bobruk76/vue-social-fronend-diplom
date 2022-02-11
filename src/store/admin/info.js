@@ -113,26 +113,27 @@ export default {
                 }
               ]
             },
-            // yearsUsersStat: {
-            //   labels: [],
-            //   datasets: [
-            //     {
-            //       label: 'Время публикации (суточная диаграмма)',
-            //       backgroundColor: 'green',
-            //       data: [],
-            //     }
-            //   ]
-            // }
+            yearsUsersStat: {
+              labels: [],
+              datasets: [
+                {
+                  label: 'Время публикации (суточная диаграмма)',
+                  backgroundColor: [],
+                  data: [],
+                }
+              ]
+            }
           }
           Object.entries(response.data.dynamic).map(([key, value]) => {
             result.dynamic.labels.push(key)
             result.dynamic.datasets[0].data.push(value)
             result.dynamic.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
-          // Object.entries(response.data.posts_by_hour).map(([key, value]) => {
-          //   result.hourData.labels.push(key)
-          //   result.hourData.datasets[0].data.push(value)
-          // })
+          Object.entries(response.data.yearsUsersStat).map(([key, value]) => {
+            result.yearsUsersStat.labels.push(key)
+            result.yearsUsersStat.datasets[0].data.push(value)
+            result.yearsUsersStat.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
+          })
           commit('setUsersStatistic', result)
           commit('setIsDataLoad', true)
         }).catch(async error => {

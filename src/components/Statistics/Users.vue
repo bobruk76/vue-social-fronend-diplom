@@ -3,16 +3,17 @@
     .users-main__header
       span.users-main__header-discr {{ getUsersStatistic.usersCount }}
       span.users-main__header-title Пользователей зарегистрировано:
-
-    statistics-line.users-main__line(
-      v-if="getIsDataLoad"
-      :chart-data="getUsersStatistic.dynamic"
-      :options="options"
-      :styles="lineStyles"
-    )
+    template
+      h3.users-main__line-title Динамика прироста
+      statistics-line.users-main__line(
+        v-if="getIsDataLoad"
+        :chart-data="getUsersStatistic.dynamic"
+        :options="options"
+        :styles="lineStyles"
+      )
     .users-main__doughnut
       h3.users-main__doughnut-title Распределение по возрасту
-      statistics-doughnut.users-main__doughnut(
+      statistics-doughnut(
         v-if="getIsDataLoad"
         :chart-data="getUsersStatistic.yearsUsersStat"
         :options="options"
@@ -90,6 +91,9 @@ export default {
       padding-right 20px
   &__line
     margin-bottom 20px
+    &-title
+      font-weight 700
+      font-size 20px
   &__doughnut
     width 50%
     &-title

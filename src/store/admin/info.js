@@ -104,7 +104,7 @@ export default {
               labels: [],
               datasets: [
                 {
-                  label: 'Динамика прироста',
+                  label: '',
                   backgroundColor: [],
                   borderColor: 'green',
                   fill: false,
@@ -129,11 +129,14 @@ export default {
             result.dynamic.datasets[0].data.push(value)
             result.dynamic.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
+          let count = 0
           Object.entries(response.data.yearsUsersStat).map(([key, value]) => {
             result.yearsUsersStat.labels.push(key)
             result.yearsUsersStat.datasets[0].data.push(value)
+            count += value
             result.yearsUsersStat.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
+          result.yearsUsersStat.datasets[0].data = result.yearsUsersStat.datasets[0].data.map(el => (100 * el / count).toFixed(3))
           commit('setUsersStatistic', result)
           commit('setIsDataLoad', true)
         }).catch(async error => {

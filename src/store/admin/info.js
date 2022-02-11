@@ -58,7 +58,10 @@ export default {
               datasets: [
                 {
                   label: 'Динамика прироста',
-                  backgroundColor: 'green',
+                  backgroundColor: [],
+                  borderColor: 'green',
+                  fill: false,
+                  tension: 0.2,
                   data: [],
                 }
               ]
@@ -68,7 +71,7 @@ export default {
               datasets: [
                 {
                   label: 'Время публикации (суточная диаграмма)',
-                  backgroundColor: 'green',
+                  backgroundColor: [],
                   data: [],
                 }
               ]
@@ -77,10 +80,12 @@ export default {
           Object.entries(response.data.posts).map(([key, value]) => {
             result.monthData.labels.push(key)
             result.monthData.datasets[0].data.push(value)
+            result.monthData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
           Object.entries(response.data.posts_by_hour).map(([key, value]) => {
             result.hourData.labels.push(key)
             result.hourData.datasets[0].data.push(value)
+            result.hourData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
           commit('setPostsStatistic', result)
           commit('setIsDataLoad', true)
@@ -100,12 +105,15 @@ export default {
               datasets: [
                 {
                   label: 'Динамика прироста',
-                  backgroundColor: 'green',
+                  backgroundColor: [],
+                  borderColor: 'green',
+                  fill: false,
+                  tension: 0.2,
                   data: [],
                 }
               ]
             },
-            // hourData: {
+            // yearsUsersStat: {
             //   labels: [],
             //   datasets: [
             //     {
@@ -119,6 +127,7 @@ export default {
           Object.entries(response.data.dynamic).map(([key, value]) => {
             result.dynamic.labels.push(key)
             result.dynamic.datasets[0].data.push(value)
+            result.dynamic.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
           })
           // Object.entries(response.data.posts_by_hour).map(([key, value]) => {
           //   result.hourData.labels.push(key)

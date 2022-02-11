@@ -4,13 +4,14 @@
       span.users-main__header-discr {{ getUsersStatistic.usersCount }}
       span.users-main__header-title Пользователей зарегистрировано:
 
-    statistics-doughnut.users-main__line(
+    statistics-line.users-main__line(
       v-if="getIsDataLoad"
       :chart-data="getUsersStatistic.dynamic"
       :options="options"
       :styles="lineStyles"
     )
-    //statistics-line.users-main__line(
+
+    //statistics-doughnut.users-main__line(
     //  v-if="getIsDataLoad"
     //  :chart-data="getUsersStatistic.dynamic"
     //  :options="options"
@@ -74,7 +75,7 @@ export default {
     height h = calc(100vh / 4)
     max-height 100px
     background-color eucalypt
-    background-image url('/static/img/statistics/posts-count.svg')
+    background-image url('/static/img/statistics/users-count.svg')
     background-position: left center;
     background-repeat: no-repeat;
     margin-bottom 20px

@@ -31,7 +31,6 @@ export default {
   grid-template-columns 1fr 2fr
   margin-bottom 20px
   width calc((100% / 2) - 20px)
-  height calc(@width / 3)
   background-color #fff
   &:nth-child(2n-1)
     margin-right 20px

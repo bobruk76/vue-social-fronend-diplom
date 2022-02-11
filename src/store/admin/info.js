@@ -7,6 +7,7 @@ export default {
   state: {
     statistics: [],
     postsStatistic: {},
+    usersStatistic: {},
     isDataLoad: false
   },
   getters: {
@@ -26,24 +27,6 @@ export default {
           return 'Пользователей зарегестрировано'
       }
     },
-    // getChartData(s) {
-    //   let labels = []
-    //   let data = []
-    //   Object.entries(s.postsStatistic.posts).map(([key, value]) => {
-    //     labels.push(key)
-    //     data.push(value)
-    //   })
-    //   return {
-    //     labels: labels,
-    //     datasets: [
-    //       {
-    //         label: 'Данные 1',
-    //         backgroundColor: '#f87979',
-    //         data: data,
-    //       }
-    //     ]
-    //   }
-    // },
   },
   mutations: {
     setStatistics: (s, payload) => s.statistics = Object.entries(payload).map(([key, value]) => ({
@@ -67,6 +50,7 @@ export default {
       await axios.get(`stat/posts`)
         .then(async response => {
           const result = {
+            postsCount: response.data.posts_count,
             monthData: {
               labels: [],
               datasets: [

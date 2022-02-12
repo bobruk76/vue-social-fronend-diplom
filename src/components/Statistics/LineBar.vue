@@ -1,6 +1,6 @@
 <template lang="pug">
   .posts-main
-    .posts-main__header(:style="titleData.svg")
+    .posts-main__header(:style="titleData.img")
       span.posts-main__header-discr {{ titleData.count | numberFormat }}
       span.posts-main__header-title {{ titleData.title }}
     template

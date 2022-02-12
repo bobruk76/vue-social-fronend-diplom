@@ -4,7 +4,7 @@
     .statistics__wrap
       .inner-page__main
         component(
-          :is="activeComponent.component"
+          :is="componentName"
           :line-data="lineData"
           :bar-data="barData"
           :title-data="titleData"
@@ -24,7 +24,8 @@ export default {
   name: 'AdminStatistics',
   components: {StatisticsSidebar, StatisticsMain, StatisticsUsers, StatisticsLineBar},
   data: () => ({
-    activeComponent: {component: 'statistics-main', text: 'Общая'},
+    activeComponent: {component: 'main', text: 'Общая'},
+    componentName: `statistics-main`,
     titleData: null,
     lineData: null,
     barData: null,
@@ -35,25 +36,26 @@ export default {
   methods: {
     ...mapActions('admin/info', ['apiCategoryStatistic']),
     onChange(item) {
-
+      this.activeComponent = item
       switch (item.component) {
         case 'likes' :
         case 'comments' :
         case 'posts' :
           this.apiCategoryStatistic(item.component)
             .then(() => {
-              this.activeComponent.component = 'statistics-line-bar'
               this.lineData = this.getCategoryStatistic.monthData
               this.barData = this.getCategoryStatistic.hourData
               this.titleData = {
                 title: 'Публикаций за все время:',
                 count: this.getCategoryStatistic.count,
-                svg: `background-image url('/static/img/statistics/${item.component}-count.svg')`
+                img: `background-image url('@/static/img/statistics/${item.component}-count.svg')`
               }
+              this.componentName = 'statistics-line-bar'
             })
           break
         default:
-          this.activeComponent = item
+          this.componentName = `statistics-${item.component}`
+          break
       }
     }
   },

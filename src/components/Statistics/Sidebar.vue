@@ -12,9 +12,9 @@ export default {
   },
   data: () => ({
     list: [
-      { component: 'statistics-main', text: 'Общая' },
+      { component: 'main', text: 'Общая' },
       { component: 'posts', text: 'Публикации' },
-      { component: 'statistics-users', text: 'Пользователи' },
+      { component: 'users', text: 'Пользователи' },
       { component: 'comments', text: 'Комментарии' },
       { component: 'likes', text: 'Лайков' },
     ]

@@ -48,7 +48,7 @@ export default {
               this.titleData = {
                 title: 'Публикаций за все время:',
                 count: this.getCategoryStatistic.count,
-                img: `background-image url('@/static/img/statistics/${item.component}-count.svg')`
+                img: `/static/img/statistics/${item.component}-count.svg`
               }
               this.componentName = 'statistics-line-bar'
             })

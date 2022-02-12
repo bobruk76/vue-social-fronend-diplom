@@ -1,8 +1,10 @@
 <template lang="pug">
   .posts-main
-    .posts-main__header(:style="titleData.img")
-      span.posts-main__header-discr {{ titleData.count | numberFormat }}
-      span.posts-main__header-title {{ titleData.title }}
+    .posts-main__header
+      .posts-main__header-discr {{ titleData.count | numberFormat }}
+      .posts-main__header-title {{ titleData.title }}
+      .posts-main__header-img
+        simple-svg.posts-main__header-img-svg(:filepath="titleData.img")
     template
       h3.posts-main__line-title {{ lineData.datasets[0].label}}
       statistics-line.posts-main__line(
@@ -59,16 +61,26 @@ export default {
   &__header
     display flex
     flex-direction row-reverse
+
     align-items center
     width 100%
     height h = calc(100vh / 4)
     max-height 100px
     background-color eucalypt
     //background-image url('/static/img/statistics/posts-count.svg')
-    background-position: left center;
-    background-repeat: no-repeat;
+    //background-position: left center;
+    //background-repeat: no-repeat;
     margin-bottom 20px
     color #fff
+    &-img
+      display block
+      align-items: center;
+      justify-content: center;
+      width 10%
+      max-width 100px
+      aspect-ratio 1
+
+
 
     &-title
       font-size 20px

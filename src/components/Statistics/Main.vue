@@ -28,7 +28,6 @@ export default {
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl'
-//@import '../../assets/stylus/components/user-info-form.styl'
 
 .statistics-main
   font-family 'Open Sans'

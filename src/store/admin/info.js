@@ -52,8 +52,9 @@ export default {
       commit('setIsDataLoad', false)
       await axios.get(`stat/${category}`)
         .then(response => {
-          let result = {
-            count: response.data[`${category}_count`],
+          const responseData = response.data
+          const result = {
+            count: responseData[`${category}_count`],
             svgFilePath: svgFilePath(`${category}_count`),
             lineData: {
               labels: [],
@@ -81,7 +82,7 @@ export default {
           }
           if (category === 'users') {
             let count = 0
-            Object.entries(response.data.yearsUsersStat).map(([key, value]) => {
+            Object.entries(responseData.yearsUsersStat).map(([key, value]) => {
               result.lineData.labels.push(key)
               result.lineData.datasets[0].data.push(value)
               count += value
@@ -89,13 +90,13 @@ export default {
             })
             result.lineData.datasets[0].data = result.lineData.datasets[0].data.map(el => (100 * el / count).toFixed(3))
           } else {
-            Object.entries(response.data[`${category}`]).map(([key, value]) => {
+            Object.entries(responseData[`${category}`]).map(([key, value]) => {
               result.lineData.labels.push(key)
               result.lineData.datasets[0].data.push(value)
               result.lineData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
             })
           }
-          Object.entries(response.data[(category === 'users') ? 'dynamic' : `${category}_by_hour`])
+          Object.entries(responseData[(category === 'users') ? 'dynamic' : `${category}_by_hour`])
             .map(([key, value]) => {
               result.barData.labels.push(key)
               result.barData.datasets[0].data.push(value)
@@ -104,9 +105,7 @@ export default {
 
           commit('setCategoryStatistic', result)
           commit('setIsDataLoad', true)
-          result = {}
         }).catch(async error => {
-          commit(`setCategoryStatistic`, {})
           await Promise.reject(error)
         })
     },

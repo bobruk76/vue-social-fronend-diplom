@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from "vuex";
+import {mapActions, mapGetters, mapMutations} from "vuex";
 import StatisticsSidebar from '@/components/Statistics/Sidebar'
 import StatisticsMain from '@/components/Statistics/Main'
 import StatisticsLineBar from '@/components/Statistics/LineBar'
@@ -33,11 +33,14 @@ export default {
   },
   methods: {
     ...mapActions('admin/info', ['apiCategoryStatistic']),
+    ...mapMutations('admin/info', ['setIsDataLoad']),
     onChange(item) {
+      this.setIsDataLoad(false)
+      this.titleData = {}
       this.activeComponent = item
       if (item.component !== 'main') {
         this.apiCategoryStatistic(item.component)
-          .then(() => {
+          .then(async () => {
             this.titleData = {
               title: 'Публикаций за все время:',
               count: this.getCategoryStatistic.count,

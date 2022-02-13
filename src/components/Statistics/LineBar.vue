@@ -1,10 +1,12 @@
 <template lang="pug">
   .stats-main
     .stats-main__header
-      .stats-main__header-discr {{ titleData.count | numberFormat }}
-      .stats-main__header-title {{ titleData.title }}
       .stats-main__header-img
         simple-svg.stats-main__header-img-svg(:filepath="titleData.img")
+      .stats-main__header-content
+        .stats-main__header-content-discr {{ titleData.count | numberFormat }}
+        .stats-main__header-content-title {{ titleData.title }}
+
     template(v-if='category!=="users"')
       h3.stats-main__line-title {{ lineData.datasets[0].label}}
       statistics-line.stats-main__line(
@@ -17,7 +19,7 @@
       :options="options"
       :styles="lineStyles"
     )
-    template.stats-main__doughnut(v-if='category==="users"')
+    .stats-main__doughnut(v-if='category==="users"')
       h3.stats-main__doughnut-title Распределение по возрасту
       statistics-doughnut(
         :chart-data="lineData"
@@ -59,6 +61,7 @@ export default {
   font-family 'Open Sans'
   display flex
   flex-wrap wrap
+  justify-content left
   position relative
   background-color #fff
   width 100%
@@ -73,8 +76,8 @@ export default {
 
   &__header
     display flex
-    flex-direction row-reverse
-
+    flex-direction row
+    justify-content space-between
     align-items center
     width 100%
     height h = calc(100vh / 4)
@@ -85,21 +88,26 @@ export default {
 
     &-img
       display block
-      align-items: center;
-      justify-content: center;
-      width 10%
+      align-items bottom
+      justify-content bottom
+      width 20%
       max-width 100px
       aspect-ratio 1
+      padding-left 20px
 
+    &-content
+      display flex
+      flex-direction row-reverse
+      align-items center
 
-    &-title
-      font-size 20px
-      padding-right 20px
+      &-title
+        font-size 20px
+        padding-right 20px
 
-    &-discr
-      font-weight 600
-      font-size 39px
-      padding-right 20px
+      &-discr
+        font-weight 600
+        font-size 39px
+        padding-right 20px
 
   &__line
     margin-bottom 20px

@@ -1,9 +1,9 @@
 <template lang="pug">
   .statistics-card-main
     .statistics-card-main__img
-      simple-svg.statistics-card-main__img-svg(:filepath="getSvgFilePath(statistic.type)")
+      simple-svg.statistics-card-main__img-svg(:filepath="statistic.path")
     .statistics-card-main__info
-      h3.statistics-card-main__info-header {{ getStatisticsText(statistic.type) }}
+      h3.statistics-card-main__info-header {{ statistic.title }}
       span.statistics-card-main__info-discr {{ statistic.count }}
 </template>
 
@@ -15,12 +15,6 @@ export default {
   props: {
     statistic: Object,
   },
-  computed: {
-    ...mapGetters('admin/info', ['getStatisticsText', 'getSvgFilePath']),
-    filepath() {
-      return `/static/img/statistics/${Object.keys(this.statistic)[0].replace('_', '-')}.svg`
-    },
-  }
 }
 </script>
 

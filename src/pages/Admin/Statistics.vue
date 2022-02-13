@@ -3,11 +3,13 @@
     h1.statistics__title {{activeComponent.text}}
     .statistics__wrap
       .inner-page__main
-        component(
-          :is="componentName"
-          :line-data="lineData"
-          :bar-data="barData"
+        statistics-main(v-if="activeComponent.component==='main'")
+        statistics-line-bar(
+          v-else-if="getIsDataLoad"
+          :line-data="getCategoryStatistic.lineData"
+          :bar-data="getCategoryStatistic.barData"
           :title-data="titleData"
+          :category="activeComponent.component"
         )
       .inner-page__aside
         statistics-sidebar(v-model="activeComponent.component" @change-component="onChange")
@@ -18,44 +20,30 @@ import {mapActions, mapGetters} from "vuex";
 import StatisticsSidebar from '@/components/Statistics/Sidebar'
 import StatisticsMain from '@/components/Statistics/Main'
 import StatisticsLineBar from '@/components/Statistics/LineBar'
-import StatisticsUsers from '@/components/Statistics/Users'
 
 export default {
   name: 'AdminStatistics',
-  components: {StatisticsSidebar, StatisticsMain, StatisticsUsers, StatisticsLineBar},
+  components: {StatisticsSidebar, StatisticsMain, StatisticsLineBar},
   data: () => ({
     activeComponent: {component: 'main', text: 'Общая'},
-    componentName: `statistics-main`,
     titleData: null,
-    lineData: null,
-    barData: null,
   }),
   computed: {
-    ...mapGetters('admin/info', ['getCategoryStatistic']),
+    ...mapGetters('admin/info', ['getCategoryStatistic', 'getIsDataLoad']),
   },
   methods: {
     ...mapActions('admin/info', ['apiCategoryStatistic']),
     onChange(item) {
       this.activeComponent = item
-      switch (item.component) {
-        case 'likes' :
-        case 'comments' :
-        case 'posts' :
-          this.apiCategoryStatistic(item.component)
-            .then(() => {
-              this.lineData = this.getCategoryStatistic.monthData
-              this.barData = this.getCategoryStatistic.hourData
-              this.titleData = {
-                title: 'Публикаций за все время:',
-                count: this.getCategoryStatistic.count,
-                img: `/static/img/statistics/${item.component}-count.svg`
-              }
-              this.componentName = 'statistics-line-bar'
-            })
-          break
-        default:
-          this.componentName = `statistics-${item.component}`
-          break
+      if (item.component !== 'main') {
+        this.apiCategoryStatistic(item.component)
+          .then(() => {
+            this.titleData = {
+              title: 'Публикаций за все время:',
+              count: this.getCategoryStatistic.count,
+              img: this.getCategoryStatistic.svgFilePath,
+            }
+          })
       }
     }
   },

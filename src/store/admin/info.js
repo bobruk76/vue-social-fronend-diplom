@@ -1,45 +1,41 @@
 import axios from 'axios'
-// import moment from 'moment'
-// import router from '@/router'
+
+const statisticsText = category => {
+  switch (category) {
+    case 'comments_count':
+      return 'Комментариев оставлено'
+    case 'likes_count':
+      return 'Лайков поставлено'
+    case 'posts_count':
+      return 'Публикаций создано'
+    case 'users_count':
+      return 'Пользователей зарегестрировано'
+  }
+};
+
+const svgFilePath = type => `/static/img/statistics/${type.replace('_', '-')}.svg`;
 
 export default {
   namespaced: true,
   state: {
     statistics: [],
     categoryStatistic: {},
-    usersStatistic: {},
-    isDataLoad: false
+    isDataLoad: false,
   },
   getters: {
     getIsDataLoad: s => s.isDataLoad,
     getCategoryStatistic: s => s.categoryStatistic,
-
     getStatistics: s => s.statistics,
-    getUsersStatistic: s => s.usersStatistic,
-
-    getSvgFilePath: s => type => `/static/img/statistics/${type.replace('_', '-')}.svg`,
-    getStatisticsText: s => type => {
-      switch (type) {
-        case 'comments_count':
-          return 'Комментариев оставлено'
-        case 'likes_count':
-          return 'Лайков поставлено'
-        case 'posts_count':
-          return 'Публикаций создано'
-        case 'users_count':
-          return 'Пользователей зарегестрировано'
-      }
-    },
   },
   mutations: {
     setStatistics: (s, payload) => s.statistics = Object.entries(payload).map(([key, value]) => ({
-      type: key,
+      title: statisticsText(key),
       count: value,
+      path: svgFilePath(key)
     })),
     setCategoryStatistic: (s, payload) => s.categoryStatistic = payload,
-    setUsersStatistic: (s, payload) => s.usersStatistic = payload,
-
     setIsDataLoad: (s, payload) => s.isDataLoad = payload,
+
   },
   actions: {
     async apiAllStatistics({commit}) {
@@ -52,12 +48,14 @@ export default {
         })
     },
 
-    async apiCategoryStatistic({commit}, category) {
+    async apiCategoryStatistic({state, commit}, category) {
+      commit('setIsDataLoad', false)
       await axios.get(`stat/${category}`)
-        .then(async response => {
-          const result = {
+        .then(response => {
+          let result = {
             count: response.data[`${category}_count`],
-            monthData: {
+            svgFilePath: svgFilePath(`${category}_count`),
+            lineData: {
               labels: [],
               datasets: [
                 {
@@ -67,83 +65,48 @@ export default {
                   fill: false,
                   tension: 0.2,
                   data: [],
-                }
+                },
               ]
             },
-            hourData: {
+            barData: {
               labels: [],
               datasets: [
                 {
-                  label: 'Время публикации (суточная диаграмма)',
+                  label: statisticsText(`${category}_count`),
                   backgroundColor: [],
                   data: [],
-                }
+                },
               ]
             }
           }
-          Object.entries(response.data[`${category}`]).map(([key, value]) => {
-            result.monthData.labels.push(key)
-            result.monthData.datasets[0].data.push(value)
-            result.monthData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
-          })
-          Object.entries(response.data[`${category}_by_hour`]).map(([key, value]) => {
-            result.hourData.labels.push(key)
-            result.hourData.datasets[0].data.push(value)
-            result.hourData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
-          })
-          commit(`setCategoryStatistic`, result)
+          if (category === 'users') {
+            let count = 0
+            Object.entries(response.data.yearsUsersStat).map(([key, value]) => {
+              result.lineData.labels.push(key)
+              result.lineData.datasets[0].data.push(value)
+              count += value
+              result.lineData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
+            })
+            result.lineData.datasets[0].data = result.lineData.datasets[0].data.map(el => (100 * el / count).toFixed(3))
+          } else {
+            Object.entries(response.data[`${category}`]).map(([key, value]) => {
+              result.lineData.labels.push(key)
+              result.lineData.datasets[0].data.push(value)
+              result.lineData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
+            })
+          }
+          Object.entries(response.data[(category === 'users') ? 'dynamic' : `${category}_by_hour`])
+            .map(([key, value]) => {
+              result.barData.labels.push(key)
+              result.barData.datasets[0].data.push(value)
+              result.barData.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
+            })
+
+          commit('setCategoryStatistic', result)
+          commit('setIsDataLoad', true)
+          result = {}
         }).catch(async error => {
           commit(`setCategoryStatistic`, {})
-          await Promise.reject(error)
-        })
-    },
-    async apiUsersStatistic({commit}) {
-      await axios.get(`stat/users`)
-        .then(async response => {
-          const result = {
-            usersCount: response.data.users_count,
-            dynamic: {
-              labels: [],
-              datasets: [
-                {
-                  label: '',
-                  backgroundColor: [],
-                  borderColor: 'green',
-                  fill: false,
-                  tension: 0.2,
-                  data: [],
-                }
-              ]
-            },
-            yearsUsersStat: {
-              labels: [],
-              datasets: [
-                {
-                  label: 'Распределение по возрасту',
-                  backgroundColor: [],
-                  data: [],
-                }
-              ]
-            }
-          }
-          Object.entries(response.data.dynamic).map(([key, value]) => {
-            result.dynamic.labels.push(key)
-            result.dynamic.datasets[0].data.push(value)
-            result.dynamic.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
-          })
-          let count = 0
-          Object.entries(response.data.yearsUsersStat).map(([key, value]) => {
-            result.yearsUsersStat.labels.push(key)
-            result.yearsUsersStat.datasets[0].data.push(value)
-            count += value
-            result.yearsUsersStat.datasets[0].backgroundColor.push("#" + ((1 << 24) * Math.random() | 0).toString(16))
-          })
-          result.yearsUsersStat.datasets[0].data = result.yearsUsersStat.datasets[0].data.map(el => (100 * el / count).toFixed(3))
-          commit('setUsersStatistic', result)
-          commit('setIsDataLoad', true)
-        }).catch(async error => {
-          commit('setUsersStatistic', {})
-          commit('setIsDataLoad', false)
           await Promise.reject(error)
         })
     },

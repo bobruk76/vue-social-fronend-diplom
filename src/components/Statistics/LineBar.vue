@@ -1,55 +1,61 @@
 <template lang="pug">
-  .posts-main
-    .posts-main__header
-      .posts-main__header-discr {{ titleData.count | numberFormat }}
-      .posts-main__header-title {{ titleData.title }}
-      .posts-main__header-img
-        simple-svg.posts-main__header-img-svg(:filepath="titleData.img")
-    template
-      h3.posts-main__line-title {{ lineData.datasets[0].label}}
-      statistics-line.posts-main__line(
+  .stats-main
+    .stats-main__header
+      .stats-main__header-discr {{ titleData.count | numberFormat }}
+      .stats-main__header-title {{ titleData.title }}
+      .stats-main__header-img
+        simple-svg.stats-main__header-img-svg(:filepath="titleData.img")
+    template(v-if='category!=="users"')
+      h3.stats-main__line-title {{ lineData.datasets[0].label}}
+      statistics-line.stats-main__line(
         :chart-data="lineData"
         :options="options"
         :styles="lineStyles"
-    )
-    statistics-bar.posts-main__line(
+      )
+    statistics-bar.stats-main__line(
       :chart-data="barData"
       :options="options"
       :styles="lineStyles"
     )
+    template.stats-main__doughnut(v-if='category==="users"')
+      h3.stats-main__doughnut-title Распределение по возрасту
+      statistics-doughnut(
+        :chart-data="lineData"
+        :options="options"
+        :styles="lineStyles"
+      )
 </template>
 
 <script>
 import StatisticsLine from '@/components/Statistics/Line'
 import StatisticsBar from '@/components/Statistics/Bar'
+import StatisticsDoughnut from '@/components/Statistics/Doughnut'
 import numberFormat from '@/helpers/numberFormat';
+
 export default {
   name: 'LineBar',
-  props: ['titleData', 'lineData', 'barData'],
-  components: {StatisticsLine, StatisticsBar},
-  filters: { numberFormat },
+  props: ['category', 'titleData', 'lineData', 'barData'],
+  components: {StatisticsLine, StatisticsBar, StatisticsDoughnut},
+  filters: {numberFormat},
   data: () => ({
     options: {
       responsive: true,
       maintainAspectRatio: false
+    },
+    lineStyles: {
+      width: '100%',
+      'max-height': '300px',
+      position: 'relative'
     }
   }),
-  computed: {
-    lineStyles() {
-      return {
-        width: '100%',
-        'max-height': '300px',
-        position: 'relative'
-      }
-    }
-  },
+  computed: {},
 }
 </script>
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl'
 
-.posts-main
+.stats-main
   font-family 'Open Sans'
   display flex
   flex-wrap wrap
@@ -57,6 +63,13 @@ export default {
   background-color #fff
   width 100%
   padding 0 20px
+
+  &__doughnut
+    width 50%
+
+    &-title
+      font-weight 700
+      font-size 20px
 
   &__header
     display flex
@@ -67,11 +80,9 @@ export default {
     height h = calc(100vh / 4)
     max-height 100px
     background-color eucalypt
-    //background-image url('/static/img/statistics/posts-count.svg')
-    //background-position: left center;
-    //background-repeat: no-repeat;
     margin-bottom 20px
     color #fff
+
     &-img
       display block
       align-items: center;
@@ -79,7 +90,6 @@ export default {
       width 10%
       max-width 100px
       aspect-ratio 1
-
 
 
     &-title
@@ -93,6 +103,7 @@ export default {
 
   &__line
     margin-bottom 20px
+
     &-title
       font-weight 700
       font-size 20px

@@ -14,11 +14,13 @@
         :options="options"
         :styles="lineStyles"
       )
-    statistics-bar.stats-main__line(
-      :chart-data="barData"
-      :options="options"
-      :styles="lineStyles"
-    )
+    .stats-main__bar
+      h3.stats-main__bar-title {{ barData.datasets[0].label}}
+      statistics-bar(
+        :chart-data="barData"
+        :options="options"
+        :styles="lineStyles"
+      )
     .stats-main__doughnut(v-if='category==="users"')
       h3.stats-main__doughnut-title Распределение по возрасту
       statistics-doughnut(
@@ -109,7 +111,8 @@ export default {
         font-size 39px
         padding-right 20px
 
-  &__line
+  &__line, &__bar
+    width 100%
     margin-bottom 20px
 
     &-title

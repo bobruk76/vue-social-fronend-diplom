@@ -40,7 +40,7 @@ export default {
         this.apiCategoryStatistic(item.component)
           .then(async () => {
             this.titleData = {
-              title: 'Публикаций за все время:',
+              title: this.getCategoryStatistic.title,
               count: this.getCategoryStatistic.count,
               img: this.getCategoryStatistic.svgFilePath,
             }

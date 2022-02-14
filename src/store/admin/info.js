@@ -52,6 +52,7 @@ export default {
           const result = {
             count: responseData[`${category}_count`],
             svgFilePath: svgFilePath(`${category}_count`),
+            title: statisticsText(`${category}_count`),
             lineData: {
               labels: [],
               datasets: [

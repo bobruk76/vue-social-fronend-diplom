@@ -19,11 +19,9 @@ export default {
   namespaced: true,
   state: {
     statistics: [],
-    categoryStatistic: {},
-    isDataLoad: false,
+    categoryStatistic: null,
   },
   getters: {
-    getIsDataLoad: s => s.isDataLoad,
     getCategoryStatistic: s => s.categoryStatistic,
     getStatistics: s => s.statistics,
   },
@@ -34,8 +32,6 @@ export default {
       path: svgFilePath(key)
     })),
     setCategoryStatistic: (s, payload) => s.categoryStatistic = payload,
-    setIsDataLoad: (s, payload) => s.isDataLoad = payload,
-
   },
   actions: {
     async apiAllStatistics({commit}) {
@@ -49,7 +45,7 @@ export default {
     },
 
     async apiCategoryStatistic({state, commit}, category) {
-      commit('setIsDataLoad', false)
+      commit('setCategoryStatistic', null)
       await axios.get(`stat/${category}`)
         .then(response => {
           const responseData = response.data
@@ -62,7 +58,7 @@ export default {
                 {
                   label: 'Динамика прироста',
                   backgroundColor: [],
-                  borderColor: 'green',
+                  borderColor: category ==='users' ? '#fff' : 'green',
                   fill: false,
                   tension: 0.2,
                   data: [],
@@ -104,8 +100,8 @@ export default {
             })
 
           commit('setCategoryStatistic', result)
-          commit('setIsDataLoad', true)
         }).catch(async error => {
+          commit('setCategoryStatistic', null)
           await Promise.reject(error)
         })
     },

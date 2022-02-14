@@ -2,7 +2,7 @@
   .stats-main
     .stats-main__header
       .stats-main__header-img
-        simple-svg.stats-main__header-img-svg(:filepath="titleData.img")
+        simple-svg.stats-main__header-img-svg(v-if='titleData.img' :filepath='titleData.img')
       .stats-main__header-content
         .stats-main__header-content-discr {{ titleData.count | numberFormat }}
         .stats-main__header-content-title {{ titleData.title }}

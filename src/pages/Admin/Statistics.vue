@@ -5,7 +5,7 @@
       .inner-page__main
         statistics-main(v-if="activeComponent.component==='main'")
         statistics-line-bar(
-          v-else-if="getIsDataLoad"
+          v-else-if="getCategoryStatistic && titleData"
           :line-data="getCategoryStatistic.lineData"
           :bar-data="getCategoryStatistic.barData"
           :title-data="titleData"
@@ -29,14 +29,12 @@ export default {
     titleData: null,
   }),
   computed: {
-    ...mapGetters('admin/info', ['getCategoryStatistic', 'getIsDataLoad']),
+    ...mapGetters('admin/info', ['getCategoryStatistic']),
   },
   methods: {
     ...mapActions('admin/info', ['apiCategoryStatistic']),
-    ...mapMutations('admin/info', ['setIsDataLoad']),
     onChange(item) {
-      this.setIsDataLoad(false)
-      this.titleData = {}
+      this.titleData = null
       this.activeComponent = item
       if (item.component !== 'main') {
         this.apiCategoryStatistic(item.component)

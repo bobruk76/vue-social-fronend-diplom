@@ -69,7 +69,7 @@ export default [{
     },
     component: () => import('@/pages/Auth/ChangeEmail.vue')
   },
-    {
+  {
     path: '/change-email-success',
     name: 'ChangeEmailSuccess',
     meta: {
@@ -95,6 +95,7 @@ export default [{
     meta: {
       layout: 'form',
       notRequiresAuth: true,
+      notWithoutAuth: true,
       title: 'Страница восстановления пароля'
     },
     component: () => import('@/pages/Auth/RecoveryPassword.vue')

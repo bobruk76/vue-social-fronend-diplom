@@ -27,7 +27,7 @@ export default {
     passwordTwo: ''
   }),
   methods: {
-    ...mapActions('profile/account', ['passwordSet']),
+    ...mapActions('profile/account', ['passwordRecoverySet']),
     ...mapActions('auth/api', ['logout']),
     submitHandler() {
       if (this.$v.$invalid) {
@@ -48,9 +48,9 @@ export default {
   },
   validations: {
     password: {required, minLength: minLength(8)},
-    passwordTwo: {required, sameAsPassword: sameAs('password')}
+    passwordTwo: {required, minLength: minLength(8), sameAsPassword: sameAs('password')}
   },
-  beforeCreate() {
+  created() {
     this.code = this.$route.query.code
     this.email = this.$route.query.email
   },

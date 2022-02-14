@@ -5,7 +5,7 @@
 
 <script>
 export default {
-  name: 'ForgotSuccess'
+  name: 'ChangePasswordSuccess'
 }
 </script>
 

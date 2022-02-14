@@ -90,6 +90,16 @@ export default [{
     component: () => import('@/pages/Auth/ChangePasswordSuccess.vue')
   },
   {
+    path: '/account/send_recovery_massage',
+    name: 'RecoveryPassword',
+    meta: {
+      layout: 'form',
+      notRequiresAuth: true,
+      title: 'Страница восстановления пароля'
+    },
+    component: () => import('@/pages/Auth/RecoveryPassword.vue')
+  },
+  {
     path: '/404',
     name: 'NotFoundPage',
     meta: {

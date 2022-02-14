@@ -52,7 +52,7 @@ export default {
         .catch(async error => {
           dispatch('global/alert/setAlert', {
             status: 'error',
-            text: 'Что-то пошло те так!'
+            text: 'Что-то пошло те так!(('
           }, {
             root: true
           })
@@ -73,6 +73,26 @@ export default {
         await Promise.reject(error)
       })
     },
+    async passwordRecoverySet({dispatch}, payload) {
+      await axios.get('account/password/recovery/complete',
+        {
+          params: {
+            ...payload,
+          }
+        })
+        .then(async () => {
+        })
+        .catch(async error => {
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Восстановить пароль не удалось! Попробуйте позже.'
+          }, {
+            root: true
+          })
+          await Promise.reject(error)
+        })
+    },
+
     async changeEmail({dispatch}, email) {
       await axios.put('account/email', email)
         .then(async response => {
@@ -97,7 +117,8 @@ export default {
             root: true
           })
         })
-        .catch(() => {
+        .catch(async error => {
+          await Promise.reject(error)
         })
         .then(() => {
           dispatch('apiNotificationsSettings')
@@ -109,7 +130,7 @@ export default {
         console.log(response.data.data)
         commit('setNotificationsSettings', response.data.data)
       }).catch(async error => {
-        console.error(error.response.data)
+        await Promise.reject(error)
       })
     }
   }

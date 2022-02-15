@@ -35,7 +35,11 @@ export default {
   },
   mounted() {
     if (this.$route.query.tab) this.setTabSelect(this.$route.query.tab)
-    this.$route.query.text ? this.searchAll(this.$route.query.text) : (this.hasSearchText = false)
+    if (this.$route.params.tags) {
+      this.hasSearchText = true
+    } else {
+      this.$route.query.text ? this.searchAll(this.$route.query.text) : (this.hasSearchText = false)
+    }
     document.body.onkeydown = e => {
       if (e.which === 13) this.hasSearchText = true
     }

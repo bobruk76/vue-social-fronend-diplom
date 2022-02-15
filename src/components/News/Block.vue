@@ -30,7 +30,7 @@
             template(v-else) Читать весь пост
         ul.news-block__content-tags
           li(v-for="(tag,index) in info.tags" :key="index")
-            router-link.news-block__content-tag(:to="{name: 'Search', query:{tab: 'news', text: '  '}, params: {tag: tag}}") {{`#${tag}`}}
+            router-link.news-block__content-tag(:to="{name: 'Search', query:{tab: 'news'}, params: {tags: [tag]}}") {{`#${tag}`}}
       .news-block__actions(v-if="!deffered && !admin")
         .news-block__actions-block
           like-comment(

@@ -5,6 +5,7 @@ export default {
   namespaced: true,
   state: {
     searchText: '',
+    searchTags: [],
     tabs: [{
       id: 'all',
       text: 'Всё'
@@ -24,6 +25,7 @@ export default {
   },
   getters: {
     searchText: s => s.searchText,
+    getSearchTags: s => s.searchTags,
     tabs: s => s.tabs,
     tabSelect: s => s.tabSelect,
     getResult: s => s.result,
@@ -32,6 +34,7 @@ export default {
   },
   mutations: {
     setSearchText: (s, value) => s.searchText = value,
+    setSearchTags: (s, value) => s.searchTags = value,
     setTabSelect: (s, id) => s.tabSelect = id,
     routePushWithQuery(state, id) {
       let query = {}
@@ -45,10 +48,9 @@ export default {
     setResult: (s, result) => s.result[result.id] = result.value
   },
   actions: {
-    clearSearch({
-      commit
-    }) {
+    clearSearch({commit}) {
       commit('setSearchText', '')
+      commit('setSearchTags', '')
       commit('setResult', {
         id: 'users',
         value: []
@@ -58,33 +60,25 @@ export default {
         value: []
       })
     },
-    changeTab({
-      commit
-    }, id) {
+    changeTab({commit}, id) {
       commit('setTabSelect', id)
       commit('routePushWithQuery', id)
     },
-    async searchUsers({
-      commit
-    }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `users/search?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        console.log("TCL: searchUsers -> response", response)
-        commit('setResult', {
-          id: 'users',
-          value: response.data.data
+    async searchUsers({commit}, payload) {
+      await axios.get(`users/search`,{
+        params: {
+          ...payload
+        }
+      }).then(async response => {
+          console.log("TCL: searchUsers -> response", response)
+          commit('setResult', {
+            id: 'users',
+            value: response.data.data
+          })
+        }).catch(async error => {
         })
-      }).catch(error => {})
     },
-    async searchNews({
-      commit
-    }, payload) {
+    async searchNews({commit}, payload) {
       if (!payload || !payload.text) {
         alert('введите текст в поиск')
         return false
@@ -96,18 +90,16 @@ export default {
       await axios({
         url: `post?${query.join('&')}`,
         method: 'GET'
-      }).then(response => {
+      }).then(async response => {
         console.log("TCL: searchNews -> response", response.data.data)
         commit('setResult', {
           id: 'news',
           value: response.data.data
         })
-      }).catch(error => {})
+      }).catch(error => {
+      })
     },
-    async searchAll({
-      dispatch,
-      commit
-    }, text) {
+    async searchAll({dispatch, commit}, text) {
       commit('setSearchText', text)
       await dispatch('searchUsers', {
         first_name: text

@@ -16,14 +16,14 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 import moment from 'moment'
 import AddTags from '@/components/News/AddTags'
+
 export default {
   name: 'SearchFilterNews',
-  components: { AddTags },
+  components: {AddTags},
   data: () => ({
-    tags: [],
     date_from: 'year',
     date_to: 0,
     offset: 0,
@@ -31,12 +31,13 @@ export default {
     author: ''
   }),
   computed: {
-    ...mapGetters('global/search', ['searchText'])
+    ...mapGetters('global/search', {searchText, tags: getSearchTags})
   },
   methods: {
     ...mapActions('global/search', ['searchNews']),
+    ...mapMutations('global/search', ['setSearchText', 'setSearchTags']),
     onChangeTags(tags) {
-      this.tags = tags
+      this.setSearchTags(tags)
     },
     onSearchNews() {
       this.searchNews({
@@ -52,6 +53,11 @@ export default {
   },
   mounted() {
     this.date_to = moment().valueOf()
+    if (this.$route.params.tags) {
+      this.setSearchTags(this.$route.params.tags)
+      this.setSearchText(`  `)
+      this.onSearchNews()
+    }
   }
 }
 </script>

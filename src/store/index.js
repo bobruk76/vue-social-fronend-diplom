@@ -7,6 +7,7 @@ import global from './global'
 import auth from './auth'
 import profile from './profile'
 import users from './users'
+import admin from './admin'
 import axios from "axios";
 
 export default new Vuex.Store({
@@ -15,28 +16,28 @@ export default new Vuex.Store({
     global,
     auth,
     profile,
-    users
+    users,
+    admin
   },
   state: {
-    code: 3675,
+    // code: 3675,
     captcha: {}
   },
   getters: {
-    getCode: s => s.code,
+    // getCode: s => s.code,
     getCaptcha: s => s.captcha,
   },
   actions: {
     async loadCaptcha({commit}) {
-      await axios({
-        url: `auth/captcha`,
-        method: 'GET'
-      }).then(async response => {
-        commit('setCaptcha', {
-          value: response.data
+      await axios.get('auth/captcha')
+        .then(async response => {
+          commit('setCaptcha', {
+            value: response.data
+          })
         })
-      }).catch((error) => {
-        console.error(error.data)
-      })
+        .catch((error) => {
+          console.error(error.response.data)
+        })
     },
   },
   mutations: {

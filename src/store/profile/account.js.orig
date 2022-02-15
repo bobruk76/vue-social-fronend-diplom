@@ -52,7 +52,11 @@ export default {
         .catch(async error => {
           dispatch('global/alert/setAlert', {
             status: 'error',
+<<<<<<< HEAD
             text: 'Что-то пошло те так!(('
+=======
+            text: 'Что-то пошло те так!'
+>>>>>>> master
           }, {
             root: true
           })
@@ -60,50 +64,35 @@ export default {
         })
     },
     async passwordSet({rootState}, password) {
-      await axios.put('account/password/set', {
+      let data = {
         token: rootState.auth.api.token,
         password
+      }
+      await axios({
+        url: 'account/password/set',
+        method: 'PUT',
+        data
       }).then(async response => {
-      }).catch(async error => {
-        await Promise.reject(error)
-      })
-    },
-    async prePasswordRecovery(payload) {
-      await axios.get('send_recovery_massage', {
-        params: {
-          email: payload.email,
-          code: payload.code,
-        }
-      }).then(async response => {
-        console.log(response)
       }).catch(async error => {
         await Promise.reject(error)
       })
     },
     async passwordRecoverySet({dispatch}, payload) {
-      dispatch('prePasswordRecovery', payload)
-        .then(
-          await axios.get('account/password/recovery/complete',
-            {
-              params: {
-                email: payload.email,
-                password: payload.password,
-              }
-            })
-            .then(async response => {
-              console.log(response)
-            })
-            .catch(async error => {
-              await Promise.reject(error)
-            })
-        )
+      await axios.get('account/password/recovery/complete',
+        {
+          params: {
+            ...payload,
+          }
+        })
+        .then(async () => {
+        })
         .catch(async error => {
-              dispatch('global/alert/setAlert', {
-                status: 'error',
-                text: 'Восстановить пароль не удалось! Попробуйте позже.'
-              }, {
-                root: true
-              })
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Восстановить пароль не удалось! Попробуйте позже.'
+          }, {
+            root: true
+          })
           await Promise.reject(error)
         })
     },
@@ -132,8 +121,12 @@ export default {
             root: true
           })
         })
+<<<<<<< HEAD
         .catch(async error => {
           await Promise.reject(error)
+=======
+        .catch(() => {
+>>>>>>> master
         })
         .then(() => {
           dispatch('apiNotificationsSettings')
@@ -145,7 +138,11 @@ export default {
         console.log(response.data.data)
         commit('setNotificationsSettings', response.data.data)
       }).catch(async error => {
+<<<<<<< HEAD
         await Promise.reject(error)
+=======
+        console.error(error.response.data)
+>>>>>>> master
       })
     }
   }

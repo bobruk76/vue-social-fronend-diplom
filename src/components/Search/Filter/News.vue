@@ -35,7 +35,7 @@ export default {
   },
   methods: {
     ...mapActions('global/search', ['searchNews']),
-    ...mapMutations('global/search', ['setSearchText', 'setSearchTags']),
+    ...mapMutations('global/search', ['setSearchTags']),
     onChangeTags(tags) {
       this.setSearchTags(tags)
     },
@@ -55,7 +55,6 @@ export default {
     this.date_to = moment().valueOf()
     if (this.$route.params.tags) {
       this.setSearchTags(this.$route.params.tags)
-      this.setSearchText(`  `)
       this.onSearchNews()
     }
   }

@@ -14,10 +14,7 @@ import PasswordField from '@/components/FormElements/PasswordField'
 import EmailField from '@/components/FormElements/EmailField'
 export default {
   name: 'AdminLogin',
-  components: {
-    PasswordField,
-    EmailField
-  },
+  components: {PasswordField, EmailField},
   data: () => ({
     email: '',
     password: ''

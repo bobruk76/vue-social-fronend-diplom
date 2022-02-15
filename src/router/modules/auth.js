@@ -69,25 +69,16 @@ export default [{
     },
     component: () => import('@/pages/Auth/ChangeEmail.vue')
   },
-    {
-    path: '/change-email-success',
-    name: 'ChangeEmailSuccess',
-    meta: {
-      layout: 'form',
-      notRequiresAuth: true,
-      title: 'Успешное изменение почтового ящика'
-    },
-    component: () => import('@/pages/Auth/ChangeEmailSuccess.vue')
-  },
   {
-    path: '/change-password-success',
-    name: 'ChangePasswordSuccess',
+    path: '/account/send_recovery_massage',
+    name: 'RecoveryPassword',
     meta: {
       layout: 'form',
       notRequiresAuth: true,
-      title: 'Успешное изменение пароля'
+      notWithoutAuth: true,
+      title: 'Страница восстановления пароля'
     },
-    component: () => import('@/pages/Auth/ChangePasswordSuccess.vue')
+    component: () => import('@/pages/Auth/RecoveryPassword.vue')
   },
   {
     path: '/404',

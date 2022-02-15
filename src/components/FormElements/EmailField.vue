@@ -4,13 +4,13 @@
       :id="id"
       v-model="email"
       name="email"
-      :class="{invalid: (v.$dirty && !v.required) || (v.$dirty && !v.email) || (!v.serverOk)}"
+      :class="{invalid: (v.$dirty && !v.required) || (v.$dirty && !v.email) || (!v.serverOk && v.serverOk)}"
       @change="v.$touch()"
       )
     label.form__label(:for="id") {{placeholder}}
     span.form__error(v-if="v.$dirty && !v.required") Введите Email
     span.form__error(v-else-if="v.$dirty && !v.email") Введите корректный Email
-    span.form__error(v-else-if="!v.serverOk") Такой email уже зарегистрирован
+    span.form__error(v-else-if="!v.serverOk && v.serverOk") Такой email уже зарегистрирован
 </template>
 
 <script>
@@ -21,11 +21,11 @@ export default {
   props: {
     value: {
       type: String,
-      default: ''
+      default: '',
     },
     v: {
       type: Object,
-      required: true
+      required: true,
     },
     id: {
       type: String,

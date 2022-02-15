@@ -32,7 +32,7 @@ export default {
       this.changeEmail({email: this.email})
         .then(() => {
           this.logout()
-          this.$router.push({name: 'ChangeEmailSuccess'})
+          this.$router.push({name: 'ShiftEmailSuccess'})
         })
         .catch(error => {
           console.error(error)

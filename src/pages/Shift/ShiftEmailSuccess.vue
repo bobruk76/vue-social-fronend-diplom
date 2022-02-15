@@ -10,14 +10,12 @@ export default {
 </script>
 
 <style lang="stylus">
-.success-shift-email {
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.success-shift-email
+  height 100%
+  display flex
+  justify-content center
+  align-items center
 
-  .simple-svg-wrapper {
-    width: 120px;
-  }
-}
+  .simple-svg-wrapper
+    width 120px
 </style>

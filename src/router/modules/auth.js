@@ -70,24 +70,24 @@ export default [{
     component: () => import('@/pages/Auth/ChangeEmail.vue')
   },
   {
-    path: '/change-email-success',
-    name: 'ChangeEmailSuccess',
+    path: '/shift-email-success',
+    name: 'ShiftEmailSuccess',
     meta: {
       layout: 'form',
       notRequiresAuth: true,
       title: 'Успешное изменение почтового ящика'
     },
-    component: () => import('@/pages/Auth/ChangeEmailSuccess.vue')
+    component: () => import('@/pages/Shift/ShiftEmailSuccess.vue')
   },
   {
-    path: '/change-password-success',
-    name: 'ChangePasswordSuccess',
+    path: '/shift-password-success',
+    name: 'ShiftEmailSuccess',
     meta: {
       layout: 'form',
       notRequiresAuth: true,
       title: 'Успешное изменение пароля'
     },
-    component: () => import('@/pages/Auth/ChangePasswordSuccess.vue')
+    component: () => import('@/pages/Shift/ShiftEmailSuccess.vue')
   },
   {
     path: '/account/send_recovery_massage',

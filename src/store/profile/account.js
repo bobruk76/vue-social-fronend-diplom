@@ -94,16 +94,16 @@ export default {
               console.log(response)
             })
             .catch(async error => {
+              await Promise.reject(error)
+            })
+        )
+        .catch(async error => {
               dispatch('global/alert/setAlert', {
                 status: 'error',
                 text: 'Восстановить пароль не удалось! Попробуйте позже.'
               }, {
                 root: true
               })
-              await Promise.reject(error)
-            })
-        )
-        .catch(async error => {
           await Promise.reject(error)
         })
     },

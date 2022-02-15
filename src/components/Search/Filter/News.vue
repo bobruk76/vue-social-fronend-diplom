@@ -10,7 +10,7 @@
         option(value="month") За последний месяц
         option(value="week") За последнюю неделю
     .search-filter__block.tags
-      add-tags(:tags="tags" @change-tags="onChangeTags")
+      add-tags(:tags="getSearchTags" @change-tags="onChangeTags")
     .search-filter__block.btn-news
       button-hover(@click.native="onSearchNews") Применить
 </template>
@@ -31,7 +31,7 @@ export default {
     author: ''
   }),
   computed: {
-    ...mapGetters('global/search', {searchText, tags: getSearchTags})
+    ...mapGetters('global/search', ['searchText', 'getSearchTags'])
   },
   methods: {
     ...mapActions('global/search', ['searchNews']),
@@ -47,7 +47,7 @@ export default {
           .valueOf(),
         date_to: this.date_to,
         author: this.author,
-        tag: this.tags,
+        tag: this.getSearchTags,
       })
     }
   },

@@ -2,42 +2,45 @@
   .add-tags
     input.add-tags__input(type="text" placeholder="Добавить тег..." v-model="tag" ref="input" @change="addTag")
     .add-tags__block
-      .add-tags__item(v-for="(tag,index) in tags" :key="index") {{'#'+tag}}
-        span.add-tags__delete(@click="deleteTag(index)") &#10005;
+      .add-tags__item(v-for="(tag,index) in getSearchTags" :key="index") {{'#'+tag}}
+        span.add-tags__delete(@click="delSearchTags(tag)") &#10005;
 </template>
 
 <script>
+import {mapGetters, mapMutations} from "vuex";
+
 export default {
   name: 'AddTags',
-  props: {
-    tags: Array
-  },
   data: () => ({
     tagsComponent: [],
     tag: ''
   }),
+  computed: {
+    ...mapGetters('global/search', ['getSearchTags'])
+  },
   methods: {
-    deleteTag(index) {
-      this.tagsComponent.splice(index, 1)
-      this.$emit('change-tags', this.tagsComponent)
-    },
+    ...mapMutations('global/search', ['setSearchTags', 'delSearchTags']),
+    // deleteTag(index) {
+    //   this.tagsComponent.splice(index, 1)
+    //
+    // },
     addTag() {
       if (this.tag.length <= 0) return
-      this.tagsComponent.push(this.tag)
+      this.setSearchTags(this.tag)
+      // this.tagsComponent.push(this.tag)
       this.tag = ''
-      this.$emit('change-tags', this.tagsComponent)
       setTimeout(() => {
         this.$refs.input.focus()
       }, 0)
     }
   },
   watch: {
-    tags() {
-      this.tagsComponent = this.tags
+    getSearchTags() {
+      this.tagsComponent = this.getSearchTags
     }
   },
   mounted() {
-    this.tagsComponent = this.tags
+    this.tagsComponent = this.getSearchTags
   }
 }
 </script>

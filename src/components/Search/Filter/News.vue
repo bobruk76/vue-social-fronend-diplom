@@ -10,7 +10,7 @@
         option(value="month") За последний месяц
         option(value="week") За последнюю неделю
     .search-filter__block.tags
-      add-tags(:tags="getSearchTags" @change-tags="onChangeTags")
+      add-tags(:tags="getSearchTags")
     .search-filter__block.btn-news
       button-hover(@click.native="onSearchNews") Применить
 </template>
@@ -36,9 +36,6 @@ export default {
   methods: {
     ...mapActions('global/search', ['searchNews']),
     ...mapMutations('global/search', ['setSearchTags']),
-    onChangeTags(tags) {
-      this.setSearchTags(tags)
-    },
     onSearchNews() {
       this.searchNews({
         text: this.searchText,
@@ -50,6 +47,13 @@ export default {
         tag: this.getSearchTags,
       })
     }
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (this.$route.params.tags) {
+      this.setSearchTags(this.$route.params.tags)
+      this.onSearchNews()
+    }
+    next()
   },
   mounted() {
     this.date_to = moment().valueOf()

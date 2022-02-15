@@ -34,7 +34,8 @@ export default {
   },
   mutations: {
     setSearchText: (s, value) => s.searchText = value,
-    setSearchTags: (s, value) => s.searchTags = value,
+    setSearchTags: (s, value) => s.searchTags.push(value),
+    delSearchTags: (s, value) => s.searchTags.pop(value),
     setTabSelect: (s, id) => s.tabSelect = id,
     routePushWithQuery(state, id) {
       let query = {}

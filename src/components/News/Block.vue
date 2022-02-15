@@ -30,7 +30,7 @@
             template(v-else) Читать весь пост
         ul.news-block__content-tags
           li(v-for="(tag,index) in info.tags" :key="index")
-            router-link.news-block__content-tag(:to="{name: 'Search', query:{tab: 'news'}, params: {tags: [tag]}}") {{`#${tag}`}}
+            router-link.news-block__content-tag(:to="{name: 'Search', query:{tab: 'news'}, params: {tags: tag}}") {{`#${tag}`}}
       .news-block__actions(v-if="!deffered && !admin")
         .news-block__actions-block
           like-comment(
@@ -362,16 +362,15 @@ export default {
   margin: 0 7px;
 }
 
-.news-block__actions {
-  display: flex;
-  align-items: flex-end;
-  margin: 25px 0;
-  padding-bottop: 20;
-}
+.news-block__actions
+  display flex
+  align-items flex-end
+  margin 25px 0
+  padding-bottop 20
 
-.news-block__actions-block
-  & + &
-    margin-left 30px
+  &-block
+    & + &
+      margin-left 30px
 
 .news-block__comments-quantity
   display flex
@@ -382,10 +381,10 @@ export default {
   color #000
   padding-bottom 20px
 
-  .news-block__comments-quantity-text
+  &-text
     padding-right 10px
 
-  .news-block__comments-quantity-more
+  &-more
     font-size 13px
     font-weight normal
     color eucalypt

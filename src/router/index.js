@@ -11,7 +11,7 @@ Vue.use(Router)
 const routes = [{
   path: '*',
   redirect: {
-    name: 'News'
+    name: 'NotFoundPage'
   }
 }].concat(authRoutes, shiftRoutes, userRoutes, adminRoutes)
 export default new Router({

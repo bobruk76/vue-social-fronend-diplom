@@ -30,7 +30,8 @@
             template(v-else) Читать весь пост
         ul.news-block__content-tags
           li(v-for="(tag,index) in info.tags" :key="index")
-            router-link.news-block__content-tag(:to="{name: 'Search', query:{tab: 'news'}, params: {tags: tag}}") {{`#${tag}`}}
+            a.news-block__content-tag(href="#" @click.prevent="goSearchPage(tag)") {{`#${tag}`}}
+
       .news-block__actions(v-if="!deffered && !admin")
         .news-block__actions-block
           like-comment(
@@ -81,7 +82,7 @@
 
 <script>
 import AddForm from '@/components/News/AddForm'
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
 import AddComment from '@/components/Comments/Add.vue'
@@ -138,6 +139,16 @@ export default {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     ...mapActions('profile/feeds', ['deleteFeeds']),
     ...mapActions('profile/comments', ['newComment']),
+    ...mapActions('global/search', ['searchNews']),
+    ...mapMutations('global/search', ['setSearchTags']),
+    goSearchPage(tag) {
+      if (this.$router.currentRoute.name === 'Search') {
+        this.setSearchTags(tag)
+        this.searchNews()
+      } else {
+        this.$router.push({name: 'Search', query: {tab: 'news'}, params: {tags: tag}})
+      }
+    },
     toggleText() {
       this.openText = !this.openText
     },

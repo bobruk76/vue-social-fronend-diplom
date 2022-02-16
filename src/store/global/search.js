@@ -86,12 +86,18 @@ export default {
       }).catch(async error => {
       })
     },
-    async searchNews({commit}, payload) {
+    async searchNews({commit, state}, payload) {
       let query = []
       payload &&
       Object.keys(payload).map(el => {
         payload[el] && query.push(`${el}=${payload[el]}`)
       })
+      if (state.searchTags.length >0) {
+        query.push(`tag=${state.searchTags.join(',')}`)
+      }
+      if (state.searchText.length >0) {
+        query.push(`text=${state.searchText}`)
+      }      
       await axios.get(`post?${query.join('&')}`)
         .then(async response => {
           commit('setResult', {

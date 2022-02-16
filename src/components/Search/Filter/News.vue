@@ -38,13 +38,11 @@ export default {
     ...mapMutations('global/search', ['setSearchTags']),
     onSearchNews() {
       this.searchNews({
-        text: this.searchText,
         date_from: moment()
           .subtract(1, this.date_from)
           .valueOf(),
         date_to: this.date_to,
         author: this.author,
-        tag: this.getSearchTags,
       })
     }
   },

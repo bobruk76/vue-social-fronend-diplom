@@ -34,8 +34,16 @@ export default {
   },
   mutations: {
     setSearchText: (s, value) => s.searchText = value,
-    setSearchTags: (s, value) => s.searchTags.push(value),
-    delSearchTags: (s, value) => s.searchTags.pop(value),
+    clearSearchTags: s => s.searchTags = [],
+    setSearchTags: (s, value) => {
+      if (typeof value === 'string') {
+        value = [value];
+      }
+      value.map(item => {
+        s.searchTags.push(item)
+      })
+    },
+    delSearchTags: (s, value) => s.searchTags = s.searchTags.filter(item => item !== value),
     setTabSelect: (s, id) => s.tabSelect = id,
     routePushWithQuery(state, id) {
       let query = {}
@@ -51,7 +59,7 @@ export default {
   actions: {
     clearSearch({commit}) {
       commit('setSearchText', '')
-      commit('setSearchTags', '')
+      commit('clearSearchTags')
       commit('setResult', {
         id: 'users',
         value: []
@@ -79,7 +87,7 @@ export default {
       })
     },
     async searchNews({commit}, payload) {
-            let query = []
+      let query = []
       payload &&
       Object.keys(payload).map(el => {
         payload[el] && query.push(`${el}=${payload[el]}`)

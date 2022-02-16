@@ -42,7 +42,7 @@ export default {
       })
         .then(() => {
           this.logout()
-          this.$router.push({name: 'ChangePasswordSuccess'})
+          this.$router.push({name: 'ShiftPasswordSuccess'})
         })
     }
   },

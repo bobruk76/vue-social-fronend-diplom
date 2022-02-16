@@ -5,6 +5,8 @@
         button.main-layout__search-btn
           simple-svg(:filepath="'/static/img/search.svg'")
         input.main-layout__search-input(type="text" placeholder="Поиск" :value="searchText" @input="setSearchText($event.target.value)")
+      .main-layout__push(@click="apiNotifications")
+        span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
         simple-svg(:filepath="'/static/img/push.svg'" :data-push="getNotificationsLength > 0 ? getNotificationsLength : false")
         push(:isOpen="isOpenPush" @close-push="togglePush")
@@ -36,6 +38,7 @@ export default {
     ...mapMutations('global/search', ['setSearchText']),
     ...mapActions('profile/info', ['apiInfo']),
     ...mapActions('global/search', ['searchAll']),
+    ...mapActions('profile/notifications', ['apiNotifications']),
     onSearch() {
       this.searchAll(this.searchText).then(() => {
         this.$router.push({ name: 'Search', query: { text: this.searchText } })
@@ -150,25 +153,28 @@ export default {
         left 7px
         padding-right 1px
 
-  &__user
-    display flex
-    align-items center
-    font-weight 600
-    font-size 15px
-    color #fff
+.main-layout__user {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  font-size: 15px;
+  color: #fff;
+}
 
-    &-pic
-      width 50px
-      height 50px
-      border-radius 50%
-      overflow hidden
-      margin-right 15px
-      flex none
+.main-layout__user-pic {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin-right: 15px;
+  flex: none;
 
-      img
-        width 100%
+  img {
+    width: 100%;
+  }
+}
 
-    &-post
-      margin-left 5px
+.main-layout__user-post
+  margin-left 5px
 
 </style>

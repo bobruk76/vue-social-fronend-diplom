@@ -29,7 +29,9 @@
             template(v-if="openText") Скрыть
             template(v-else) Читать весь пост
         ul.news-block__content-tags
-          li.news-block__content-tag(v-for="(tag,index) in info.tags" :key="index") {{'#'+tag}}
+          li(v-for="(tag,index) in info.tags" :key="index")
+            a.news-block__content-tag(href="#" @click.prevent="goSearchPage(tag)") {{`#${tag}`}}
+
       .news-block__actions(v-if="!deffered && !admin")
         .news-block__actions-block
           like-comment(
@@ -80,7 +82,7 @@
 
 <script>
 import AddForm from '@/components/News/AddForm'
-import {mapActions, mapGetters} from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 import moment from 'moment'
 import Comments from '@/components/Comments/Main.vue'
 import AddComment from '@/components/Comments/Add.vue'
@@ -137,6 +139,16 @@ export default {
     ...mapActions('global/likes', ['putLike', 'deleteLike']),
     ...mapActions('profile/feeds', ['deleteFeeds']),
     ...mapActions('profile/comments', ['newComment']),
+    ...mapActions('global/search', ['searchNews']),
+    ...mapMutations('global/search', ['setSearchTags']),
+    goSearchPage(tag) {
+      if (this.$router.currentRoute.name === 'Search') {
+        this.setSearchTags(tag)
+        this.searchNews()
+      } else {
+        this.$router.push({name: 'Search', query: {tab: 'news'}, params: {tags: tag}})
+      }
+    },
     toggleText() {
       this.openText = !this.openText
     },
@@ -361,16 +373,15 @@ export default {
   margin: 0 7px;
 }
 
-.news-block__actions {
-  display: flex;
-  align-items: flex-end;
-  margin: 25px 0;
-  padding-bottop: 20;
-}
+.news-block__actions
+  display flex
+  align-items flex-end
+  margin 25px 0
+  padding-bottop 20
 
-.news-block__actions-block
-  & + &
-    margin-left 30px
+  &-block
+    & + &
+      margin-left 30px
 
 .news-block__comments-quantity
   display flex
@@ -381,10 +392,10 @@ export default {
   color #000
   padding-bottom 20px
 
-  .news-block__comments-quantity-text
+  &-text
     padding-right 10px
 
-  .news-block__comments-quantity-more
+  &-more
     font-size 13px
     font-weight normal
     color eucalypt

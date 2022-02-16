@@ -1,4 +1,5 @@
-export default [{
+export default [
+  {
     path: '/shift-password',
     name: 'ShiftPassword',
     meta: {
@@ -7,6 +8,16 @@ export default [{
       title: 'Изменить пароль'
     },
     component: () => import('@/pages/Shift/ShiftPassword.vue')
+  },
+  {
+    path: '/shift-password-success',
+    name: 'ShiftPasswordSuccess',
+    meta: {
+      layout: 'form',
+      notRequiresAuth: true,
+      title: 'Успешное изменение Email'
+    },
+    component: () => import('@/pages/Shift/ShiftPasswordSuccess.vue')
   },
   {
     path: '/shift-email',

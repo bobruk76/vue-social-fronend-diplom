@@ -1,4 +1,5 @@
 import axios from 'axios'
+import qs from 'qs'
 
 export default {
   namespaced: true,
@@ -73,7 +74,8 @@ export default {
         params: {
           email: payload.email,
           code: payload.code,
-        }
+        },
+        paramsSerializer: (params) => qs.stringify(params),
       }).then(async response => {
         console.log(response)
       }).catch(async error => {
@@ -88,7 +90,8 @@ export default {
               params: {
                 email: payload.email,
                 password: payload.password,
-              }
+              },
+              paramsSerializer: (params) => qs.stringify(params),
             })
             .then(async response => {
               console.log(response)
@@ -98,12 +101,12 @@ export default {
             })
         )
         .catch(async error => {
-              dispatch('global/alert/setAlert', {
-                status: 'error',
-                text: 'Восстановить пароль не удалось! Попробуйте позже.'
-              }, {
-                root: true
-              })
+          dispatch('global/alert/setAlert', {
+            status: 'error',
+            text: 'Восстановить пароль не удалось! Попробуйте позже.'
+          }, {
+            root: true
+          })
           await Promise.reject(error)
         })
     },

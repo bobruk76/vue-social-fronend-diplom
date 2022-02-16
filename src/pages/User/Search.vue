@@ -8,16 +8,17 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from 'vuex'
+import {mapGetters, mapMutations, mapActions} from 'vuex'
 import SearchTabs from '@/components/Search/Tabs'
 import SearchAll from '@/components/Search/All'
 import SearchUsers from '@/components/Search/Users'
 import SearchNews from '@/components/Search/News'
 import SearchFilterUsers from '@/components/Search/Filter/Users'
 import SearchFilterNews from '@/components/Search/Filter/News'
+
 export default {
   name: 'Search',
-  components: { SearchTabs, SearchAll, SearchUsers, SearchNews, SearchFilterUsers, SearchFilterNews },
+  components: {SearchTabs, SearchAll, SearchUsers, SearchNews, SearchFilterUsers, SearchFilterNews},
   data: () => ({
     hasSearchText: true
   }),
@@ -35,7 +36,11 @@ export default {
   },
   mounted() {
     if (this.$route.query.tab) this.setTabSelect(this.$route.query.tab)
-    this.$route.query.text ? this.searchAll(this.$route.query.text) : (this.hasSearchText = false)
+    if (this.$route.params.tags) {
+      this.hasSearchText = true
+    } else {
+      this.$route.query.text ? this.searchAll(this.$route.query.text) : (this.hasSearchText = false)
+    }
     document.body.onkeydown = e => {
       if (e.which === 13) this.hasSearchText = true
     }

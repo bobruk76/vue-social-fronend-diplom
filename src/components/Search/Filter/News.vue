@@ -10,20 +10,20 @@
         option(value="month") За последний месяц
         option(value="week") За последнюю неделю
     .search-filter__block.tags
-      add-tags(:tags="tags" @change-tags="onChangeTags")
+      add-tags(:tags="getSearchTags")
     .search-filter__block.btn-news
       button-hover(@click.native="onSearchNews") Применить
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex'
+import {mapActions, mapGetters, mapMutations} from 'vuex'
 import moment from 'moment'
 import AddTags from '@/components/News/AddTags'
+
 export default {
   name: 'SearchFilterNews',
-  components: { AddTags },
+  components: {AddTags},
   data: () => ({
-    tags: [],
     date_from: 'year',
     date_to: 0,
     offset: 0,
@@ -31,27 +31,34 @@ export default {
     author: ''
   }),
   computed: {
-    ...mapGetters('global/search', ['searchText'])
+    ...mapGetters('global/search', ['searchText', 'getSearchTags'])
   },
   methods: {
     ...mapActions('global/search', ['searchNews']),
-    onChangeTags(tags) {
-      this.tags = tags
-    },
+    ...mapMutations('global/search', ['setSearchTags']),
     onSearchNews() {
       this.searchNews({
-        text: this.searchText,
         date_from: moment()
           .subtract(1, this.date_from)
           .valueOf(),
         date_to: this.date_to,
         author: this.author,
-        tag: this.tags,
       })
     }
   },
+  beforeRouteUpdate(to, from, next) {
+    if (this.$route.params.tags) {
+      this.setSearchTags(this.$route.params.tags)
+      this.onSearchNews()
+    }
+    next()
+  },
   mounted() {
     this.date_to = moment().valueOf()
+    if (this.$route.params.tags) {
+      this.setSearchTags(this.$route.params.tags)
+      this.onSearchNews()
+    }
   }
 }
 </script>

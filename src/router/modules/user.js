@@ -1,6 +1,12 @@
 export default [
   {
     path: '/',
+    redirect: {
+      name: 'News'
+    }
+  },
+  {
+    path: '/news',
     name: 'News',
     meta: {
       layout: 'main',

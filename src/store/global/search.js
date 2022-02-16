@@ -40,7 +40,9 @@ export default {
         value = [value];
       }
       value.map(item => {
-        s.searchTags.push(item)
+        if (!s.searchTags.includes(item)) {
+          s.searchTags.push(item)
+        }
       })
     },
     delSearchTags: (s, value) => s.searchTags = s.searchTags.filter(item => item !== value),
@@ -97,7 +99,7 @@ export default {
       }
       if (state.searchText.length >0) {
         query.push(`text=${state.searchText}`)
-      }      
+      }
       await axios.get(`post?${query.join('&')}`)
         .then(async response => {
           commit('setResult', {

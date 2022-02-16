@@ -153,28 +153,25 @@ export default {
         left 7px
         padding-right 1px
 
-.main-layout__user {
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  font-size: 15px;
-  color: #fff;
-}
+  &__user
+    display flex
+    align-items center
+    font-weight 600
+    font-size 15px
+    color #fff
 
-.main-layout__user-pic {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 15px;
-  flex: none;
+    &-pic
+      width 50px
+      height 50px
+      border-radius 50%
+      overflow hidden
+      margin-right 15px
+      flex none
 
-  img {
-    width: 100%;
-  }
-}
+      img
+        width 100%
 
-.main-layout__user-post
-  margin-left 5px
+    &-post
+      margin-left 5px
 
 </style>

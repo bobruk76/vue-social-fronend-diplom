@@ -7,7 +7,10 @@
         input.main-layout__search-input(type="text" placeholder="Поиск" :value="searchText" @input="setSearchText($event.target.value)")
 
       .main-layout__weather(v-if="getWeather")
-        span.main-layout__weather-state {{ getWeather.description }}
+        .main-layout__weather-title
+          img.main-layout__weather-img(:src="getWeather.icon" :alt="getWeather.city")
+          span.main-layout__weather-city {{ getWeather.city }} {{ getWeather.temp }}
+        .main-layout__weather-state {{ getWeather.description }}
 
       .main-layout__push(@click="apiNotifications")
         span.main-layout__push-reload &#x21bb;
@@ -86,6 +89,21 @@ export default {
 
     @media (max-width: breakpoint-xxl)
       left sidebar-width-xl
+
+  &__weather
+    display flex
+    flex-direction row
+    flex-wrap wrap
+    &-title
+      height 100px
+      overflow hidden
+      margin-right 15px
+      flex none
+      &-img
+        width 30%
+
+    &-state
+      width 100%
 
   &__search
     display flex

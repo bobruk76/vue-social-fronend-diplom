@@ -39,10 +39,9 @@ export default {
           if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
             commit('setNotifications', response.data.data)
           }
-          // добавить когда будет прод
-          // setTimeout(() => {
-          //   dispatch('apiNotifications')
-          // }, 5000)
+          setTimeout(() => {
+            dispatch('apiNotifications')
+          }, 5000)
         })
         .catch(() => {
         })

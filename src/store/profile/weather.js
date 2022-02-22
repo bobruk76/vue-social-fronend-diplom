@@ -23,7 +23,7 @@ export default {
         .then(() => {
           setTimeout(() => {
             dispatch('apiFetchWeather')
-          }, 5000)
+          }, 300000)
         })
     },
   }

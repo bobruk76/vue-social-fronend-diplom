@@ -8,8 +8,8 @@
 
       .main-layout__weather(v-if="getWeather")
         .main-layout__weather-title
-          img.main-layout__weather-img(:src="getWeather.icon" :alt="getWeather.city")
-          span.main-layout__weather-city {{ getWeather.city }} {{ getWeather.temp }}
+          img.main-layout__weather-title-img(:src="getWeather.icon" :alt="getWeather.city")
+          span.main-layout__weather-title-city {{ getWeather.city }} {{ getWeather.temp }}
         .main-layout__weather-state {{ getWeather.description }}
 
       .main-layout__push(@click="apiNotifications")
@@ -95,12 +95,13 @@ export default {
     flex-direction row
     flex-wrap wrap
     &-title
-      height 100px
+      height 30%
       overflow hidden
       margin-right 15px
       flex none
       &-img
-        width 30%
+        max-height 30%
+        max-width 30%
 
     &-state
       width 100%

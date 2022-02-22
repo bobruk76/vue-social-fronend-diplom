@@ -12,5 +12,5 @@ docker build -t vuejs-zerone .
 ```
  - запустить:
 ```
-docker run -it -p 8080:80 --rm --name vuejs-zerone
+docker run -it -p 8080:8080 --rm --name vuejs-zerone
 ```

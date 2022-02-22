@@ -5,6 +5,10 @@
         button.main-layout__search-btn
           simple-svg(:filepath="'/static/img/search.svg'")
         input.main-layout__search-input(type="text" placeholder="Поиск" :value="searchText" @input="setSearchText($event.target.value)")
+
+      .main-layout__weather(v-if="getWeather")
+        span.main-layout__weather-state {{ getWeather.description }}
+
       .main-layout__push(@click="apiNotifications")
         span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
@@ -30,6 +34,7 @@ export default {
     ...mapGetters('global/search', ['searchText']),
     ...mapGetters('profile/info', ['getInfo']),
     ...mapGetters('profile/notifications', ['getNotificationsLength']),
+    ...mapGetters('profile/weather', ['getWeather']),
     isAdminPage() {
       return this.$route.path.indexOf('admin') !== -1
     }
@@ -39,6 +44,7 @@ export default {
     ...mapActions('profile/info', ['apiInfo']),
     ...mapActions('global/search', ['searchAll']),
     ...mapActions('profile/notifications', ['apiNotifications']),
+    ...mapActions('profile/weather', ['apiFetchWeather']),
     onSearch() {
       this.searchAll(this.searchText).then(() => {
         this.$router.push({ name: 'Search', query: { text: this.searchText } })
@@ -50,6 +56,7 @@ export default {
   },
   mounted() {
     if (!this.getInfo) this.apiInfo()
+    if (!this.getWeather) this.apiFetchWeather()
   }
 }
 </script>

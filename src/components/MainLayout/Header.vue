@@ -12,11 +12,11 @@
           span.main-layout__weather-title-city {{ getWeather.city }} {{ getWeather.temp }}
         .main-layout__weather-state {{ getWeather.description }}
 
-      .main-layout__push(@click="apiNotifications")
-        span.main-layout__push-reload &#x21bb;
+      //.main-layout__push(@click="apiNotifications")
+      //  span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
         simple-svg(:filepath="'/static/img/push.svg'" :data-push="getNotificationsLength > 0 ? getNotificationsLength : false")
-        push(:isOpen="isOpenPush" @close-push="togglePush")
+        //push(:isOpen="isOpenPush" @close-push="togglePush")
     router-link.main-layout__user(v-if="getInfo" :to="{name: 'Profile'}")
       .main-layout__user-pic
         img(:src="getInfo.photo" :alt="getInfo.fullName")
@@ -36,7 +36,7 @@ export default {
   computed: {
     ...mapGetters('global/search', ['searchText']),
     ...mapGetters('profile/info', ['getInfo']),
-    ...mapGetters('profile/notifications', ['getNotificationsLength']),
+    ...mapGetters('profile/notifications', ['getNotificationsLength', 'getNotificationsGroup']),
     ...mapGetters('profile/weather', ['getWeather']),
     isAdminPage() {
       return this.$route.path.indexOf('admin') !== -1
@@ -59,7 +59,8 @@ export default {
   },
   mounted() {
     if (!this.getInfo) this.apiInfo()
-    if (!this.getWeather) this.apiFetchWeather()
+    this.apiFetchWeather()
+    this.apiNotifications()
   }
 }
 </script>
@@ -92,7 +93,6 @@ export default {
 
   &__weather
     display flex
-    flex-direction row
     flex-wrap wrap
     &-title
       height 30%
@@ -111,7 +111,7 @@ export default {
     align-items center
     width 100%
     max-width 350px
-    margin-right auto
+    margin-right 10px
 
   &__search-btn
     margin-right 10px

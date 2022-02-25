@@ -8,10 +8,10 @@ export default {
     stompClient: '',
   },
   mutations: {
-    setStompClient: (s, value) => s.stompClient = value,
+    setStompClient: (state, value) => state.stompClient = value
   },
   actions: {
-    connection({state, commit}, payload) {
+    connection({commit}, payload) {
       commit('setStompClient', Stomp.overTCP(socket))
       const headers = {
         Authorization: state.token,
@@ -24,6 +24,13 @@ export default {
       }, (error) => {
         console.log(error)
       })
+    },
+    send({state}, payload) {
+      console.log("Send message:" + payload.message);
+      if (state.stompClient && state.stompClient.connected) {
+        const msg = {name: this.message};
+        state.stompClient.send(`/topic/messages/${payload.id}`, JSON.stringify(msg), {});
+      }
     },
   },
 

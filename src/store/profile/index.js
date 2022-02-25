@@ -6,6 +6,7 @@ import dialogs from './dialogs'
 import comments from './comments'
 import notifications from './notifications'
 import websocket from './websocket'
+import weather from './weather'
 
 export default {
   namespaced: true,
@@ -17,6 +18,7 @@ export default {
     dialogs,
     comments,
     notifications,
-    websocket
+    websocket,
+    weather,
   }
 }

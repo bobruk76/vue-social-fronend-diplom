@@ -23,6 +23,7 @@ export default {
     notifications: []
   },
   getters: {
+    getNotificationsTextType: type => notificationsTextType(type),
     getNotifications: s => s.notifications,
     getNotificationsGroup: s => {
       const result = s.notifications.reduce((r, el) => {

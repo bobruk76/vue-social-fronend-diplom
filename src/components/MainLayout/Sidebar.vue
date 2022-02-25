@@ -9,7 +9,7 @@
         v-for="(item,index) in info" :key="index"
         :exact="item.exact"
         :to="item.link"
-        :class="{'main-layout__link--im': item.link.name, 'big': unreadedMessages >= 100}"
+        :class="{'main-layout__link--im': item.dataPush, 'big': unreadedMessages >= 100}"
         :data-push="item.dataPush"
       )
         img(:src="`/static/img/sidebar/admin/${item.icon}.png`" :alt="item.text" v-if="isAdminPage")
@@ -40,7 +40,13 @@ export default {
     info() {
       const result = this.getSidebarById(this.isAdminPage ? 'admin' : 'user').map((item) => ({
         ...item,
-        dataPush: 3,
+        dataPush: item.link.name === 'Im'
+          ? this.getNotificationsGroup['MESSAGE']
+          : item.link.name === 'Friends'
+            ? (this.getNotificationsGroup['FRIEND_REQUEST'] || 0) + (this.getNotificationsGroup['FRIEND_BIRTHDAY'] || 0)
+            : item.link.name === 'News'
+              ? (this.getNotificationsGroup['POST_COMMENT'] || 0) + (this.getNotificationsGroup['COMMENT_COMMENT'] || 0)
+              : null
         // this.getNotificationsGroup.keys()
         // item.link.name
         // :data-push="item.link.name === 'Im' ? unreadedMessages : false"

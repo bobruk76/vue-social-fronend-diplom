@@ -1,8 +1,10 @@
+import axios from 'axios'
 import SockJS from 'sockjs-client'
 import Stomp from 'stompjs'
 
-const socket = new SockJS('http://localhost:8080/socket')
+const socket = new SockJS('/socket')
 export default {
+  namespaced: true,
   state: {
     token: localStorage.getItem('user-token') || '',
     stompClient: '',
@@ -26,9 +28,9 @@ export default {
       })
     },
     send({state}, payload) {
-      console.log("Send message:" + payload.message);
+      console.log("Send message:" + payload.message_text);
       if (state.stompClient && state.stompClient.connected) {
-        const msg = {name: this.message};
+        const msg = {name: this.message_text};
         state.stompClient.send(`/topic/messages/${payload.id}`, JSON.stringify(msg), {});
       }
     },

@@ -48,9 +48,6 @@ export default {
     isUserViewHistory: false,
     fetching: false
   }),
-  mounted() {
-    this.follow = true
-  },
   watch: {
     messages() {
       if (this.follow) this.setVirtualListToBottom()
@@ -83,9 +80,11 @@ export default {
   },
   methods: {
     ...mapActions('profile/dialogs', ['postMessage', 'loadOlderMessages']),
+    ...mapActions('profile/websocket', ['send', 'connection']),
     ...mapGetters('profile/dialogs', ['isHistoryEndReached']),
     onSubmitMessage() {
-      this.postMessage({id: this.info.id, message_text: this.mes})
+      // this.postMessage({id: this.info.id, message_text: this.mes})
+      this.send({id: this.info.id, message_text: this.mes})
       this.mes = ''
     },
     async onScrollToTop() {
@@ -126,7 +125,11 @@ export default {
         this.$refs.vsl.scrollToBottom()
       }
     }
-  }
+  },
+  mounted() {
+    this.follow = true
+    this.connection({id: this.info.id})
+  },
 }
 </script>
 

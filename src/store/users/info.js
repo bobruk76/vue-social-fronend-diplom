@@ -38,10 +38,14 @@ export default {
     getWall: s => s.wall,
     getWallPostedLength: s => s.wall.filter(el => el.type === 'POSTED').length,
     getWallQueuedLength: s => s.wall.filter(el => el.type === 'QUEUED').length,
-    getUserById: (s, id) => s.usersList.find(el => el.id === id)[0]
+    getUsersList: s => s.usersList
   },
   mutations: {
-    addUserToList: (s, info) => s.usersList.push(info),
+    addUserToList: (s, info) => {
+      if (s.usersList.indexOf(info) === -1) {
+        s.usersList.push(info)
+      }
+    },
     setInfo: (s, info) => s.info = info,
     setWall: (s, wall) => s.wall = wall,
     setWallById: (s, payload) => s.wall[s.wall.indexOf(s.wall.find(el => el.id === payload.id))] = payload.value,
@@ -55,7 +59,7 @@ export default {
   actions: {
     async apiInfo({commit}, id) {
       await axios.get(`users/${id}`)
-        .then(async response => {
+        .then(response => {
           commit('setInfo', response.data.data)
           commit('addUserToList', response.data.data)
         })
@@ -85,7 +89,7 @@ export default {
           id,
           value: response.data.data
         })
-      }).catch(error => {
+      }).catch(() => {
       })
     },
     async apiCommentsById({

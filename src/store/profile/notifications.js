@@ -39,14 +39,14 @@ export default {
   actions: {
     async apiNotifications({commit, dispatch, rootGetters}) {
       await axios.get('notifications')
-        .then(async response => {
+        .then(response => {
           // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
-          const result = response.data.data.map((item) => {
+          let result = response.data.data.map((item) => {
+            console.log(item.id)
             dispatch('users/info/apiInfo', item.id, {root: true})
             return {
               ...item,
               notificationsTextType: notificationsTextType(item.type),
-              entity_author: rootGetters['users/info/getUserById'](item.id) || {},
             } || {}
           })
           commit('setNotifications', result)

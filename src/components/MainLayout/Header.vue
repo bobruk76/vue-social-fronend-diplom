@@ -36,6 +36,7 @@ export default {
   computed: {
     ...mapGetters('global/search', ['searchText']),
     ...mapGetters('profile/info', ['getInfo']),
+    ...mapGetters('users/info', ['getUsersList']),
     ...mapGetters('profile/notifications', ['getNotificationsLength', 'getNotificationsGroup']),
     ...mapGetters('profile/weather', ['getWeather']),
     isAdminPage() {

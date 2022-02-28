@@ -5,27 +5,30 @@
       .push__list(ref="list")
         .push__item(v-for="info in getNotifications.slice(0,10) || []" :key="info.id")
           .push__img
-            img(:src="info.entity_author.photo" :alt="info.entity_author.first_name")
+            img(:src="fetchUserInfo(info.id).photo" :alt="fetchUserInfo(info.id).first_name")
+            //img(:src="info.entity_author.photo" :alt="info.entity_author.first_name")
           p.push__content
-            router-link.push__content-name(:to="getRouteByNotification(info)")
-              | {{info.entity_author.first_name + ' ' + info.entity_author.last_name}}
-              |
-              | {{info.notificationsTextType}}
+            //router-link.push__content-name(:to="getRouteByNotification(info)")
+              //| {{info.entity_author.first_name + ' ' + info.entity_author.last_name}}
+              //|
+              //| {{info.notificationsTextType}}
             span.push__content-preview  «{{info.info}}»
           span.push__time {{info.sent_time | moment('from')}}
       router-link.push__btn(:to="{name: 'Push'}" v-if="getNotificationsLength > 1") Показать все ({{getNotificationsLength}})
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
-import { getRouteByNotification } from '@/utils/notifications.utils.js';
+import {mapGetters, mapActions} from 'vuex'
+import {getRouteByNotification} from '@/utils/notifications.utils.js';
+
 export default {
   name: 'Push',
   props: {
     isOpen: Boolean
   },
   computed: {
-    ...mapGetters('profile/notifications', ['getNotifications', 'getNotificationsLength'])
+    ...mapGetters('profile/notifications', ['getNotifications', 'getNotificationsLength']),
+    ...mapGetters('users/info', ['getUsersList']),
   },
   watch: {
     isOpen(val) {
@@ -34,15 +37,20 @@ export default {
         this.readNotifications()
       }
     }
-  },
+  }
+  ,
   methods: {
     ...mapActions('profile/notifications', ['apiNotifications', 'readNotifications']),
+    fetchUserInfo(id) {
+      return this.getUsersList.filter(el => el.id === id)[0] || {}
+    },
     getRouteByNotification,
     closePush() {
       if (!this.isOpen) return
       this.$emit('close-push')
     }
-  },
+  }
+  ,
   mounted() {
     if (this.getNotificationsLength === 0) this.apiNotifications()
     if (window.innerHeight - this.$refs.wrap.getBoundingClientRect().top - this.$refs.wrap.offsetHeight < 0) {
@@ -133,7 +141,7 @@ export default {
   padding: 35px 0;
   margin: 0 40px;
 
-  &+& {
+  & + & {
     border-top: 1px solid #E7E7E7;
   }
 }

@@ -40,22 +40,21 @@ export default {
     async apiNotifications({commit, dispatch, rootGetters}) {
       await axios.get('notifications')
         .then(async response => {
-          let result = response.data.data.map((item) => {
+          // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
+          const result = response.data.data.map((item) => {
             dispatch('users/info/apiInfo', item.id, {root: true})
             return {
               ...item,
-              notificationsTextType:  notificationsTextType(item.type),
+              notificationsTextType: notificationsTextType(item.type),
               entity_author: rootGetters['users/info/getInfo'],
-            }
+            } || {}
           })
           // console.log(response.data.data)
-          // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
-          //
-          // }
           commit('setNotifications', result)
-          setTimeout(() => {
-            dispatch('apiNotifications')
-          }, 5000)
+          // setTimeout(() => {
+          //   dispatch('apiNotifications')
+          // }, 5000)
+          // }
         })
         .catch(() => {
         })

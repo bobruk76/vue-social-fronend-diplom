@@ -7,7 +7,8 @@ export default {
   state: {
     info: null,
     wall: [],
-    users: null
+    users: null,
+    usersList: [],
   },
   getters: {
     getInfo(state) {
@@ -37,43 +38,45 @@ export default {
     getWall: s => s.wall,
     getWallPostedLength: s => s.wall.filter(el => el.type === 'POSTED').length,
     getWallQueuedLength: s => s.wall.filter(el => el.type === 'QUEUED').length,
+    getUserById: (s, id) => s.usersList.find(el => el.id === id)[0]
   },
   mutations: {
+    addUserToList: (s, info) => s.usersList.push(info),
     setInfo: (s, info) => s.info = info,
     setWall: (s, wall) => s.wall = wall,
     setWallById: (s, payload) => s.wall[s.wall.indexOf(s.wall.find(el => el.id === payload.id))] = payload.value,
     setCommentsById: (s, payload) => {
       s.wall[s.wall.indexOf(s.wall.find(el => el.id === payload.post_id))].comments = payload.value
       s.wall.push('dog-nail')
-      s.wall.splice(-1,1)
+      s.wall.splice(-1, 1)
     },
     setUsersInfo: (s, info) => s.users = info
   },
   actions: {
-    async apiInfo({
-      commit
-    }, id) {
-      await axios({
-        url: `users/${id}`,
-        method: 'GET'
-      }).then(response => {
-        commit('setInfo', response.data.data)
-      }).catch(error => {})
+    async apiInfo({commit}, id) {
+      await axios.get(`users/${id}`)
+        .then(async response => {
+          commit('setInfo', response.data.data)
+          commit('addUserToList', response.data.data)
+        })
+        .catch(() => {
+        })
     },
     async apiWall({
-      commit
-    }, {id, offset, itemPerPage}) {
+                    commit
+                  }, {id, offset, itemPerPage}) {
       console.log('fetch wall', id)
       await axios({
-        url: `users/${id}/wall${offset ? '?offset='+offset : ''}${itemPerPage ? '&itemPerPage='+itemPerPage : ''}`,
+        url: `users/${id}/wall${offset ? '?offset=' + offset : ''}${itemPerPage ? '&itemPerPage=' + itemPerPage : ''}`,
         method: 'GET'
       }).then(response => {
         commit('setWall', response.data.data)
-      }).catch(error => {})
+      }).catch(error => {
+      })
     },
     async apiWallById({
-      commit
-    }, id) {
+                        commit
+                      }, id) {
       await axios({
         url: `post/${id}`,
         method: 'GET'
@@ -82,28 +85,31 @@ export default {
           id,
           value: response.data.data
         })
-      }).catch(error => {})
+      }).catch(error => {
+      })
     },
     async apiCommentsById({
-      commit
-    }, id) {
+                            commit
+                          }, id) {
       await axios({
         url: `post/${id}/comments`,
         method: 'GET'
       }).then(response => {
         commit('setCommentsById', response.data.data)
-      }).catch(error => {})
+      }).catch(error => {
+      })
     },
     async userInfoId({
-      commit, dispatch
-    }, id) {
+                       commit, dispatch
+                     }, id) {
       await axios({
         url: `users/${id}`,
         method: 'GET'
       }).then(async response => {
         await dispatch('apiWall', {id})
         commit('setUsersInfo', response.data.data)
-      }).catch(error => {})
+      }).catch(() => {
+      })
     }
   }
 }

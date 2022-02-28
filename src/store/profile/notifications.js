@@ -46,15 +46,10 @@ export default {
             return {
               ...item,
               notificationsTextType: notificationsTextType(item.type),
-              entity_author: rootGetters['users/info/getInfo'],
+              entity_author: rootGetters['users/info/getUserById'](item.id) || {},
             } || {}
           })
-          // console.log(response.data.data)
           commit('setNotifications', result)
-          // setTimeout(() => {
-          //   dispatch('apiNotifications')
-          // }, 5000)
-          // }
         })
         .catch(() => {
         })

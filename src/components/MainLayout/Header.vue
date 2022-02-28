@@ -16,7 +16,7 @@
       //  span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
         simple-svg(:filepath="'/static/img/push.svg'" :data-push="getNotificationsLength > 0 ? getNotificationsLength : false")
-        //push(:isOpen="isOpenPush" @close-push="togglePush")
+        push(:isOpen="isOpenPush" @close-push="togglePush")
     router-link.main-layout__user(v-if="getInfo" :to="{name: 'Profile'}")
       .main-layout__user-pic
         img(:src="getInfo.photo" :alt="getInfo.fullName")

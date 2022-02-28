@@ -42,7 +42,6 @@ export default {
         .then(response => {
           // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
           let result = response.data.data.map((item) => {
-            console.log(item.id)
             dispatch('users/info/apiInfo', item.id, {root: true})
             return {
               ...item,

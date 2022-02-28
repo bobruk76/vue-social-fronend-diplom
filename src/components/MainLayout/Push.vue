@@ -8,10 +8,10 @@
             img(:src="fetchUserInfo(info.id).photo" :alt="fetchUserInfo(info.id).first_name")
             //img(:src="info.entity_author.photo" :alt="info.entity_author.first_name")
           p.push__content
-            //router-link.push__content-name(:to="getRouteByNotification(info)")
-              //| {{info.entity_author.first_name + ' ' + info.entity_author.last_name}}
-              //|
-              //| {{info.notificationsTextType}}
+            router-link.push__content-name(:to="getRouteByNotification(info)")
+              | {{fetchUserInfo(info.id).first_name + ' ' + fetchUserInfo(info.id).last_name}}
+              |
+              | {{info.notificationsTextType}}
             span.push__content-preview  «{{info.info}}»
           span.push__time {{info.sent_time | moment('from')}}
       router-link.push__btn(:to="{name: 'Push'}" v-if="getNotificationsLength > 1") Показать все ({{getNotificationsLength}})

@@ -42,7 +42,7 @@ export default {
   },
   mutations: {
     addUserToList: (s, info) => {
-      if (s.usersList.indexOf(info) === -1) {
+      if (!s.usersList.map(el => el.id).includes(info.id)) {
         s.usersList.push(info)
       }
     },

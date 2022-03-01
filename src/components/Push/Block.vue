@@ -1,29 +1,35 @@
 <template lang="pug">
   .push-block
     .push__img
-      img(:src="info.photo" :alt="info.entity_author.first_name")
+      img(:src="fetchUserInfo(info.id).photo" :alt="fetchUserInfo(info.id).first_name")
+      //img(:src="info.photo" :alt="info.entity_author.first_name")
     p.push__content
       router-link.push__content-name(:to="getRouteByNotification(info)")
-        | {{info.entity_author.first_name + ' ' + info.entity_author.last_name}}
+        | {{fetchUserInfo(info.id).first_name + ' ' + fetchUserInfo(info.id).last_name}}
         |
-        | {{getNotificationsTextType(info.event_type)}}
+        | {{info.notificationsTextType}}
       span.push__content-preview «{{info.info}}»
     span.push__time {{info.sent_time | moment('from')}}
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
-import { getRouteByNotification } from '@/utils/notifications.utils.js'
+import {mapGetters} from 'vuex'
+import {getRouteByNotification} from '@/utils/notifications.utils.js'
+
 export default {
   name: 'PushBlock',
   props: {
     info: Object
   },
   computed: {
-    ...mapGetters('profile/notifications', ['getNotificationsTextType'])
+        ...mapGetters('users/info', ['getUsersList']),
+    // ...mapGetters('profile/notifications', ['getNotificationsTextType'])
   },
   methods: {
-    getRouteByNotification
+    getRouteByNotification,
+    fetchUserInfo(id) {
+      return this.getUsersList.filter(el => el.id === id)[0] || {}
+    },
   }
 }
 </script>
@@ -35,7 +41,7 @@ export default {
   box-shadow: 0px 2px 60px rgba(0, 0, 0, 0.1);
   display: flex;
 
-  &+& {
+  & + & {
     margin-top: 20px;
   }
 

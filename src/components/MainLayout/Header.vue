@@ -5,8 +5,15 @@
         button.main-layout__search-btn
           simple-svg(:filepath="'/static/img/search.svg'")
         input.main-layout__search-input(type="text" placeholder="Поиск" :value="searchText" @input="setSearchText($event.target.value)")
-      .main-layout__push(@click="apiNotifications")
-        span.main-layout__push-reload &#x21bb;
+
+      .main-layout__weather(v-if="getWeather")
+        .main-layout__weather-title
+          img.main-layout__weather-title-img(:src="getWeather.icon" :alt="getWeather.city")
+          span.main-layout__weather-title-city {{ getWeather.city }} {{ getWeather.temp }}
+        .main-layout__weather-state {{ getWeather.description }}
+
+      //.main-layout__push(@click="apiNotifications")
+      //  span.main-layout__push-reload &#x21bb;
       .main-layout__push(@click="togglePush")
         simple-svg(:filepath="'/static/img/push.svg'" :data-push="getNotificationsLength > 0 ? getNotificationsLength : false")
         push(:isOpen="isOpenPush" @close-push="togglePush")
@@ -29,7 +36,9 @@ export default {
   computed: {
     ...mapGetters('global/search', ['searchText']),
     ...mapGetters('profile/info', ['getInfo']),
-    ...mapGetters('profile/notifications', ['getNotificationsLength']),
+    ...mapGetters('users/info', ['getUsersList']),
+    ...mapGetters('profile/notifications', ['getNotificationsLength', 'getNotificationsGroup']),
+    ...mapGetters('profile/weather', ['getWeather']),
     isAdminPage() {
       return this.$route.path.indexOf('admin') !== -1
     }
@@ -39,6 +48,7 @@ export default {
     ...mapActions('profile/info', ['apiInfo']),
     ...mapActions('global/search', ['searchAll']),
     ...mapActions('profile/notifications', ['apiNotifications']),
+    ...mapActions('profile/weather', ['apiFetchWeather']),
     onSearch() {
       this.searchAll(this.searchText).then(() => {
         this.$router.push({ name: 'Search', query: { text: this.searchText } })
@@ -50,6 +60,8 @@ export default {
   },
   mounted() {
     if (!this.getInfo) this.apiInfo()
+    this.apiFetchWeather()
+    // this.apiNotifications()
   }
 }
 </script>
@@ -80,12 +92,27 @@ export default {
     @media (max-width: breakpoint-xxl)
       left sidebar-width-xl
 
+  &__weather
+    display flex
+    flex-wrap wrap
+    &-title
+      height 30%
+      overflow hidden
+      margin-right 15px
+      flex none
+      &-img
+        max-height 30%
+        max-width 30%
+
+    &-state
+      width 100%
+
   &__search
     display flex
     align-items center
     width 100%
     max-width 350px
-    margin-right auto
+    margin-right 10px
 
   &__search-btn
     margin-right 10px
@@ -153,28 +180,25 @@ export default {
         left 7px
         padding-right 1px
 
-.main-layout__user {
-  display: flex;
-  align-items: center;
-  font-weight: 600;
-  font-size: 15px;
-  color: #fff;
-}
+  &__user
+    display flex
+    align-items center
+    font-weight 600
+    font-size 15px
+    color #fff
 
-.main-layout__user-pic {
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  overflow: hidden;
-  margin-right: 15px;
-  flex: none;
+    &-pic
+      width 50px
+      height 50px
+      border-radius 50%
+      overflow hidden
+      margin-right 15px
+      flex none
 
-  img {
-    width: 100%;
-  }
-}
+      img
+        width 100%
 
-.main-layout__user-post
-  margin-left 5px
+    &-post
+      margin-left 5px
 
 </style>

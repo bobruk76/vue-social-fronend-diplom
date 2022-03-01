@@ -5,7 +5,13 @@
       .main-layout__admin-logo(v-if="isAdminPage")
         simple-svg(:filepath="'/static/img/logo-admin.svg'")
     nav.main-layout__nav
-      router-link.main-layout__link(v-for="(item,index) in info" :key="index" :exact="item.exact" :to="item.link" :class="{'main-layout__link--im': item.link.name === 'Im', 'big': unreadedMessages >= 100}" :data-push="item.link.name === 'Im' ? unreadedMessages : false")
+      router-link.main-layout__link(
+        v-for="(item,index) in info" :key="index"
+        :exact="item.exact"
+        :to="item.link"
+        :class="{'main-layout__link--im': item.dataPush, 'big': unreadedMessages >= 100}"
+        :data-push="item.dataPush"
+      )
         img(:src="`/static/img/sidebar/admin/${item.icon}.png`" :alt="item.text" v-if="isAdminPage")
         simple-svg(:filepath="`/static/img/sidebar/${item.icon}.svg`" v-else)
         span {{item.text}}
@@ -20,25 +26,40 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
+
 export default {
   name: 'MainLayoutSidebar',
   computed: {
     ...mapGetters('global/menu', ['getSidebarById']),
     ...mapGetters('profile/dialogs', ['unreadedMessages']),
+    ...mapGetters('profile/notifications', ['getNotificationsGroup']),
     isAdminPage() {
       return this.$route.path.indexOf('admin') !== -1
     },
     info() {
-      return this.getSidebarById(this.isAdminPage ? 'admin' : 'user')
-    }
+      const result = this.getSidebarById(this.isAdminPage ? 'admin' : 'user').map((item) => ({
+        ...item,
+        dataPush: item.link.name === 'Im'
+          ? this.getNotificationsGroup['MESSAGE']
+          : item.link.name === 'Friends'
+            ? (this.getNotificationsGroup['FRIEND_REQUEST'] || 0) + (this.getNotificationsGroup['FRIEND_BIRTHDAY'] || 0)
+            : item.link.name === 'News'
+              ? (this.getNotificationsGroup['POST_COMMENT'] || 0) + (this.getNotificationsGroup['COMMENT_COMMENT'] || 0)
+              : null
+        // this.getNotificationsGroup.keys()
+        // item.link.name
+        // :data-push="item.link.name === 'Im' ? unreadedMessages : false"
+      }))
+      return result
+    },
   },
   methods: {
     ...mapActions('auth/api', ['logout']),
     ...mapActions('profile/dialogs', ['apiUnreadedMessages']),
     onLogout() {
       this.logout().then(() => {
-        this.$router.push({ name: 'Login' })
+        this.$router.push({name: 'Login'})
       })
     }
   },

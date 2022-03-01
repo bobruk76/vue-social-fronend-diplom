@@ -5,12 +5,14 @@ export default {
   namespaced: true,
   state: {
     info: null,
+    email: null,
     countries: [],
     cities: [],
   },
   getters: {
     getCountries: state => state.countries,
     getCities: state => state.cities,
+    getEmail: s => s.email,
     getInfo(state) {
       if (!state.info) return
       let result = {
@@ -22,11 +24,20 @@ export default {
     }
   },
   mutations: {
+    setEmail: (s, value) => s.email = value,
     setInfo: (s, info) => s.info = info,
     setCountries: (state, value) => state.countries = value,
     setCities: (state, value) => state.cities = value,
   },
   actions: {
+    async apiFetchEmail({commit}) {
+      await axios.get('users/email')
+        .then(async response => {
+          commit('setEmail', response.data)
+        })
+        .catch(() => {
+        })
+    },
     async apiFetchCountries({commit}) {
       await axios.get('platform/countries')
         .then(async response => {
@@ -42,7 +53,8 @@ export default {
           params: {country}
         }).then(async response => {
         commit('setCities', response.data.data)
-      }).catch(() => {})
+      }).catch(() => {
+      })
     },
     async apiInfo({commit}) {
       await axios({
@@ -76,12 +88,11 @@ export default {
     }
     ,
     async deleteInfo() {
-      await axios({
-        url: 'users/me',
-        method: 'DELETE'
-      }).then(() => {
-      }).catch(() => {
-      })
+      await axios.delete('users/me')
+        .then(async response => {
+        })
+        .catch(async error => {
+        })
     }
   }
 }

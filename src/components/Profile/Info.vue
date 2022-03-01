@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import {mapGetters, mapActions} from 'vuex'
 import Modal from '@/components/Modal'
 
 export default {
   name: 'ProfileInfo',
-  components: { Modal },
+  components: {Modal},
   props: {
     me: Boolean,
     online: Boolean,
@@ -65,10 +65,10 @@ export default {
     },
     btnVariantInfo() {
       return this.blocked
-        ? { variant: 'red', text: 'Разблокировать' }
+        ? {variant: 'red', text: 'Разблокировать'}
         : this.friend
-        ? { variant: 'red', text: 'Удалить из друзей' }
-        : { variant: 'white', text: 'Добавить в друзья' }
+          ? {variant: 'red', text: 'Удалить из друзей'}
+          : {variant: 'white', text: 'Добавить в друзья'}
     }
   },
   methods: {
@@ -117,7 +117,7 @@ export default {
     },
     onSentMessage() {
       if (this.blocked) return false
-      this.$router.push({ name: 'Im', query: { userId: this.info.id } })
+      this.$router.push({name: 'Im', query: {userId: this.info.id}})
     }
   }
 }
@@ -226,7 +226,7 @@ export default {
   display: flex;
   font-size: 15px;
 
-  &+& {
+  & + & {
     margin-top: 5px;
   }
 

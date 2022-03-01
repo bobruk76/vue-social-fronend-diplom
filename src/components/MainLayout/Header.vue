@@ -61,7 +61,7 @@ export default {
   mounted() {
     if (!this.getInfo) this.apiInfo()
     this.apiFetchWeather()
-    this.apiNotifications()
+    // this.apiNotifications()
   }
 }
 </script>

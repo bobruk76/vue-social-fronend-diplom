@@ -59,7 +59,7 @@ export default {
   actions: {
     async apiInfo({commit}, id) {
       await axios.get(`users/${id}`)
-        .then(response => {
+        .then(async response => {
           commit('setInfo', response.data.data)
           commit('addUserToList', response.data.data)
         })
@@ -103,17 +103,14 @@ export default {
       }).catch(error => {
       })
     },
-    async userInfoId({
-                       commit, dispatch
-                     }, id) {
-      await axios({
-        url: `users/${id}`,
-        method: 'GET'
-      }).then(async response => {
-        await dispatch('apiWall', {id})
-        commit('setUsersInfo', response.data.data)
-      }).catch(() => {
-      })
+    async userInfoId({commit, dispatch}, id) {
+      await axios.get(`users/${id}`)
+        .then(async response => {
+          await dispatch('apiWall', {id})
+          commit('setUsersInfo', response.data.data)
+        })
+        .catch(() => {
+        })
     }
   }
 }

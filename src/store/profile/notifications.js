@@ -42,7 +42,9 @@ export default {
         .then(response => {
           // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
           let result = response.data.data.map((item) => {
-            dispatch('users/info/apiInfo', item.id, {root: true})
+            if (!rootGetters['users/info/getUsersList'].map(el => el.id).includes(item.id)) {
+              dispatch('users/info/apiInfo', item.id, {root: true})
+            }
             return {
               ...item,
               notificationsTextType: notificationsTextType(item.type),
@@ -50,15 +52,17 @@ export default {
           })
           commit('setNotifications', result)
         })
-        .catch(() => {
+        .catch(async error => {
+          await Promise.reject(error)
         })
     },
     async readNotifications() {
-      await axios.put('notifications?all=true')
-        .then(async response => {
-        })
-        .catch(() => {
-        })
+      await axios.put('notifications?all=true', {
+        all: true
+      }).then(async response => {
+      }).catch(async error => {
+        await Promise.reject(error)
+      })
     }
   }
 }

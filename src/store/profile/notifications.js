@@ -23,7 +23,7 @@ export default {
     notifications: []
   },
   getters: {
-    getNotifications: s => s.notifications,
+    getNotifications: s => s.notifications || [],
     getNotificationsGroup: s => {
       const result = s.notifications.reduce((r, el) => {
         r[el.type] = (r[el.type] || 0) + 1

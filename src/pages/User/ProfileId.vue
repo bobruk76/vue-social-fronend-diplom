@@ -2,7 +2,7 @@
   .profile.inner-page(v-if="getUsersInfo")
     .inner-page__main
       .profile__info
-        profile-info(:info="getUsersInfo" :blocked="isBlocked" :friend="getUsersInfo.is_friend" :online="getUsersInfo.is_onlined")
+        profile-info(:info="getUsersInfo" :blocked="isBlocked" :friend="isFriend" :online="getUsersInfo.is_onlined")
       .profile__news
         .profile__tabs
           span.profile__tab.active Публикации {{getUsersInfo.first_name}} ({{getWall.length}})
@@ -39,7 +39,16 @@ export default {
         }
       })
       return result
-    }
+    },
+    isFriend() {
+      let result = false
+      this.getResultById('friends').map(el => {
+        if (el.id == this.$route.params.id) {
+          result = true
+        }
+      })
+      return result
+    },
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {

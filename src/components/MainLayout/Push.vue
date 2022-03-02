@@ -34,7 +34,7 @@ export default {
     isOpen(val) {
       if (val) {
         this.$refs.list.scrollTop = 0
-        this.readNotifications()
+        // this.readNotifications()
       }
     }
   }
@@ -59,6 +59,9 @@ export default {
     window.onscroll = () => {
       this.closePush()
     }
+  },
+  beforeDestroy() {
+    this.readNotifications()
   }
 }
 </script>

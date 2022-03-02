@@ -1,6 +1,7 @@
 import axios from 'axios'
 import moment from 'moment'
 import {sort} from 'semver'
+import {mapGetters} from "vuex";
 
 const mergeIncomingMessages = ({commit, state}, response) => {
   const fromServerNewFirst = response.data.data
@@ -25,7 +26,8 @@ export default {
     dialogsLoaded: false,
     activeId: null,
     oldLastKnownMessageId: null,
-    isHistoryEndReached: false
+    isHistoryEndReached: false,
+    status: null // online or offline
   },
   getters: {
     oldestKnownMessageId: s => (s.messages.length > 0 ? s.messages[0]['id'] : null),
@@ -36,7 +38,8 @@ export default {
     unreadedMessages: s => s.unreadedMessages,
     hasOpenedDialog: s => dialogId => !!s.dialogs.find(el => el.id == dialogId),
     isHistoryEndReached: s => s.isHistoryEndReached,
-    messages: s => s.messages
+    messages: s => s.messages,
+    getStatus: s => s.status,
   },
   mutations: {
     setUnreadedMessages: (s, unread) => (s.unreadedMessages = unread),
@@ -52,7 +55,8 @@ export default {
       state.messages = []
       state.isHistoryEndReached = false
     },
-    markEndOfHistory: s => (s.isHistoryEndReached = true)
+    markEndOfHistory: s => (s.isHistoryEndReached = true),
+    setStatus: (s, payload) => s.status = payload
   },
   actions: {
     closeDialog({commit}) {
@@ -195,6 +199,16 @@ export default {
         .catch(error => {
           console.error(error)
         })
-    }
+    },
+    async apiSetStatus({commit, rootGetters}, payload) {
+      const id =rootGetters['profile/info/getInfo']
+      await axios.get(`dialogs/${id}/activity/${payload.userId}`)
+        .then(async response => {
+          commit('setStatus', response.data)
+        })
+        .catch(error => {
+          console.error(error)
+        })
+    },
   }
 }

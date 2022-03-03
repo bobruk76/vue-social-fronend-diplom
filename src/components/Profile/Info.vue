@@ -39,6 +39,7 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
 import Modal from '@/components/Modal'
+import moment from "moment";
 
 export default {
   name: 'ProfileInfo',
@@ -58,7 +59,7 @@ export default {
   computed: {
     ...mapGetters('profile/dialogs', ['dialogs', 'getStatus']),
     statusText() {
-      return this.online ? 'онлайн' : 'не в сети'
+      return this.online ? 'онлайн' : `был в сети ${moment(this.getStatus.last_activity).fromNow()}`
     },
     blockedText() {
       return this.blocked ? 'Пользователь заблокирован' : 'Заблокировать'
@@ -120,7 +121,7 @@ export default {
       this.$router.push({name: 'Im', query: {userId: this.info.id}})
     }
   },
-  mounted() {
+  beforeCreate() {
     this.intervalForSetStatus = setInterval(() => {
       this.apiSetStatus({
         userId: this.$route.params.id

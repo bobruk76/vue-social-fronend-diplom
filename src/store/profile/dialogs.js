@@ -27,7 +27,7 @@ export default {
     activeId: null,
     oldLastKnownMessageId: null,
     isHistoryEndReached: false,
-    status: null // online or offline
+    status: {} // online or offline
   },
   getters: {
     oldestKnownMessageId: s => (s.messages.length > 0 ? s.messages[0]['id'] : null),
@@ -201,10 +201,10 @@ export default {
         })
     },
     async apiSetStatus({commit, rootGetters}, payload) {
-      const id =rootGetters['profile/info/getInfo']
+      const id = rootGetters['profile/info/getInfo'].id
       await axios.get(`dialogs/${id}/activity/${payload.userId}`)
         .then(async response => {
-          commit('setStatus', response.data)
+          commit('setStatus', response.data.data)
         })
         .catch(error => {
           console.error(error)

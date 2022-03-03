@@ -27,7 +27,7 @@ export default {
     activeId: null,
     oldLastKnownMessageId: null,
     isHistoryEndReached: false,
-    status: {} // online or offline
+    status: null // online or offline
   },
   getters: {
     oldestKnownMessageId: s => (s.messages.length > 0 ? s.messages[0]['id'] : null),
@@ -206,8 +206,8 @@ export default {
         .then(async response => {
           commit('setStatus', response.data.data)
         })
-        .catch(error => {
-          console.error(error)
+        .catch(() => {
+          commit('setStatus', null)
         })
     },
   }

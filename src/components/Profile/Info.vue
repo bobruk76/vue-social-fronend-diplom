@@ -37,7 +37,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 import Modal from '@/components/Modal'
 import moment from "moment";
 
@@ -59,7 +59,7 @@ export default {
   computed: {
     ...mapGetters('profile/dialogs', ['dialogs', 'getStatus']),
     statusText() {
-      return this.online ? 'онлайн' : `был в сети ${moment(this.getStatus.last_activity).fromNow()}`
+      return this.online ? 'онлайн' : `был в сети ${this.getStatus ? moment(this.getStatus.last_activity).fromNow() : ''}`
     },
     blockedText() {
       return this.blocked ? 'Пользователь заблокирован' : 'Заблокировать'
@@ -77,6 +77,7 @@ export default {
     ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends']),
     ...mapActions('profile/dialogs', ['createDialogWithUser', 'apiLoadAllDialogs', 'apiSetStatus']),
     ...mapActions('users/info', ['apiInfo']),
+    ...mapMutations('profile/dialogs', ['setStatus']),
     blockedUser() {
       if (this.blocked) return
       this.modalText = `Вы уверены, что хотите заблокировать пользователя ${this.info.fullName}`
@@ -129,7 +130,8 @@ export default {
     }, 5000)
   },
   beforeDestroy() {
-    window.clearInterval(this.intervalForSetStatus);
+    window.clearInterval(this.intervalForSetStatus)
+    this.setStatus(null)
   },
 }
 </script>

@@ -37,8 +37,9 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 import Modal from '@/components/Modal'
+import moment from "moment";
 
 export default {
   name: 'ProfileInfo',
@@ -56,9 +57,9 @@ export default {
     modalType: 'deleteFriend'
   }),
   computed: {
-    ...mapGetters('profile/dialogs', ['dialogs']),
+    ...mapGetters('profile/dialogs', ['dialogs', 'getStatus']),
     statusText() {
-      return this.online ? 'онлайн' : 'не в сети'
+      return this.online ? 'онлайн' : `был в сети ${this.getStatus ? moment(this.getStatus.last_activity).fromNow() : ''}`
     },
     blockedText() {
       return this.blocked ? 'Пользователь заблокирован' : 'Заблокировать'
@@ -74,8 +75,9 @@ export default {
   methods: {
     ...mapActions('users/actions', ['apiBlockUser', 'apiUnblockUser']),
     ...mapActions('profile/friends', ['apiAddFriends', 'apiDeleteFriends']),
-    ...mapActions('profile/dialogs', ['createDialogWithUser', 'apiLoadAllDialogs']),
+    ...mapActions('profile/dialogs', ['createDialogWithUser', 'apiLoadAllDialogs', 'apiSetStatus']),
     ...mapActions('users/info', ['apiInfo']),
+    ...mapMutations('profile/dialogs', ['setStatus']),
     blockedUser() {
       if (this.blocked) return
       this.modalText = `Вы уверены, что хотите заблокировать пользователя ${this.info.fullName}`
@@ -119,7 +121,18 @@ export default {
       if (this.blocked) return false
       this.$router.push({name: 'Im', query: {userId: this.info.id}})
     }
-  }
+  },
+  beforeCreate() {
+    this.intervalForSetStatus = setInterval(() => {
+      this.apiSetStatus({
+        userId: this.$route.params.id
+      })
+    }, 5000)
+  },
+  beforeDestroy() {
+    window.clearInterval(this.intervalForSetStatus)
+    this.setStatus(null)
+  },
 }
 </script>
 

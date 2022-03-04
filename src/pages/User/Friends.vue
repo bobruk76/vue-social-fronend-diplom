@@ -3,7 +3,7 @@
     .inner-page__main
       .friends__header
         h2.friends__title Мои друзья ({{ countFriends }})
-          a.friends__more(href="#" @click.prevent="showFriends('allFriends')" v-if="countFriends>getFriendsPerPage" )
+          a.friends__title_more(href="#" @click.prevent="showFriends('allFriends')" v-if="countFriends>getFriendsPerPage" )
             template(v-if="isShow.allFriends") скрыть
             template(v-else) показать
         .friends__search
@@ -30,11 +30,12 @@
 
       .friends__header
         h2.friends__title Исходящие заявки ({{ countRequestsOut }})
-          a.friends__more(href="#" @click.prevent="showFriends('allRequestsOut')" v-if="countRequestsOut>0")
+          a.friends__title_more(href="#" @click.prevent="showFriends('allRequestsOut')" v-if="countRequestsOut>0")
             template(v-if="isShow.allRequestsOut") скрыть
             template(v-else) показать
       .friends__list
         friends-block(requests-out v-for="(friend,index) in requestsOut" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
+        a.friends-block.friends__list_more(href="#" @click.prevent="apiRequestsOut" v-show="isShow.allRequestsOut") >>
 
       .friends__header
         h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
@@ -46,7 +47,7 @@
 
       .friends__header
         h2.friends__title Подписки ({{ countSubscriptions }})
-          a.friends__more(href="#" @click.prevent="showFriends('allSubscriptions')" v-if="countSubscriptions>0")
+          a.friends__title_more(href="#" @click.prevent="showFriends('allSubscriptions')" v-if="countSubscriptions>0")
             template(v-if="isShow.allSubscriptions") скрыть
             template(v-else) показать
       .friends__list
@@ -54,7 +55,7 @@
 
       .friends__header
         h2.friends__title Подписчики ({{ countSubscribers }})
-          a.friends__more(href="#" @click.prevent="showFriends('allSubscribers')" v-if="countSubscribers>0")
+          a.friends__title_more(href="#" @click.prevent="showFriends('allSubscribers')" v-if="countSubscribers>0")
             template(v-if="isShow.allSubscribers") скрыть
             template(v-else) показать
       .friends__list
@@ -131,7 +132,7 @@ export default {
     },
   },
   methods: {
-    ...mapActions('profile/friends', ['apiFriends']),
+    ...mapActions('profile/friends', ['apiFriends', 'apiRequestsOut']),
     showFriends(value) {
       this.isShow[value] = !this.isShow[value]
     }
@@ -145,11 +146,15 @@ export default {
 </script>
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl'
-.friends__title
-  .friends__more
-    padding-left 10px
-    font-size 20px
-    font-weight normal
-    color eucalypt
-
+.friends
+  &__title
+    &_more
+      padding-left 10px
+      font-size 20px
+      font-weight normal
+      color eucalypt
+  &__list
+    &_more
+      font-size 50px
+      color eucalypt
 </style>

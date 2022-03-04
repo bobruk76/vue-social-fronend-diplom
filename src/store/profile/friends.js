@@ -3,16 +3,17 @@ import axios from 'axios'
 export default {
   namespaced: true,
   state: {
+    offsetFriends: 0,
+    itemPerPageFriends: 5,
+
+    offsetRequestsOut: 0,
+    itemPerPageRequestsOut: 5,
+
     friendsPerPage: 1,
     result: {
       friends: [],
-      offsetFriends: 0,
-      itemPerPageFriends: 5,
-
       requestsIn: [],
       requestsOut: [],
-      offsetRequestsOut: 0,
-      itemPerPageRequestsOut: 5,
       blocked: [],
       recommendations: [],
       subscriptions: [],
@@ -117,20 +118,19 @@ export default {
       }).catch(() => {
       })
     },
-    async apiRequestsOut({commit, state}, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/requests/out?${query.join('&')}`,
-        method: 'GET'
+    async apiRequestsOut({commit, state}) {
+      await axios.get('friends/requests/out', {
+        params: {
+          'offset': state.offsetRequestsOut,
+          'item_per_page': state.itemPerPageRequestsOut,
+        }
       })
         .then(async response => {
           commit('setResult', {
             id: 'requestsOut',
             value: response.data.data
           })
+          commit('incrementOffset', 'offsetRequestsOut')
         })
         .catch(() => {
         })

@@ -22,7 +22,7 @@
     "pug": "^2.0.3",
     "pug-loader": "^2.4.0",
     "qs": "^6.10.3",
-    "sockjs-client": "^1.5.2",
+    "sockjs-client": "^1.6.0",
     "stompjs": "^2.3.3",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",

@@ -16,7 +16,7 @@ export default {
     connection({commit}, payload) {
       commit('setStompClient', Stomp.overTCP(socket))
       const headers = {
-        Authorization: state.token,
+        token: state.token,
       }
       state.stompClient.connect(headers, frame => {
         console.log('Connected: ' + frame);

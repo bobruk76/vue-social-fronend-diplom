@@ -95,6 +95,7 @@ export default {
   &__weather
     display flex
     flex-wrap wrap
+    margin-left auto
     &-title
       height 30%
       overflow hidden

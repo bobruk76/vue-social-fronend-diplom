@@ -6,8 +6,13 @@ export default {
     friendsPerPage: 1,
     result: {
       friends: [],
+      offsetFriends: 0,
+      itemPerPageFriends: 5,
+
       requestsIn: [],
       requestsOut: [],
+      offsetRequestsOut: 0,
+      itemPerPageRequestsOut: 5,
       blocked: [],
       recommendations: [],
       subscriptions: [],
@@ -19,35 +24,35 @@ export default {
     getFriendsPerPage: s => s.friendsPerPage
   },
   mutations: {
+    incrementOffset: (s, param) => s[param]++,
     setResult: (s, payload) => s.result[payload.id] = payload.value,
     setFriendsPerPage: (s, payload) => s.friendsPerPage = payload.value,
   },
   actions: {
-    async apiFriends({
-                       commit, dispatch
-                     }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
+    async apiFriends({commit, dispatch, state}, payload = null) {
+      await axios.get('friends', {
+        params: {
+          ...payload,
+          offset: state.offsetFriends,
+          item_per_page: state.itemPerPageFriends,
+        }
       })
-      await axios({
-        url: `friends?${query.join('&')}`,
-        method: 'GET'
-      }).then(async response => {
-        commit('setResult', {
-          id: 'friends',
-          value: response.data.data
+        .then(async response => {
+          commit('setResult', {
+            id: 'friends',
+            value: response.data.data
+          })
         })
-      }).catch(error => {
-
-      }).then(() => {
-        dispatch('apiRequestsIn');
-        dispatch('apiRequestsOut');
-        dispatch('apiBlockedFriends');
-        dispatch('apiRecommendations');
-        dispatch('apiSubscriptions');
-        dispatch('apiSubscribers');
-      })
+        .catch(() => {
+        })
+        .then(() => {
+          dispatch('apiRequestsIn');
+          dispatch('apiRequestsOut');
+          dispatch('apiBlockedFriends');
+          dispatch('apiRecommendations');
+          dispatch('apiSubscriptions');
+          dispatch('apiSubscribers');
+        })
     },
     async apiDeleteFriends({dispatch}, id) {
       await axios.delete(`friends/${id}`
@@ -112,9 +117,7 @@ export default {
       }).catch(() => {
       })
     },
-    async apiRequestsOut({
-                           commit
-                         }, payload) {
+    async apiRequestsOut({commit, state}, payload) {
       let query = []
       payload && Object.keys(payload).map(el => {
         payload[el] && query.push(`${el}=${payload[el]}`)
@@ -122,13 +125,15 @@ export default {
       await axios({
         url: `friends/requests/out?${query.join('&')}`,
         method: 'GET'
-      }).then(response => {
-        commit('setResult', {
-          id: 'requestsOut',
-          value: response.data.data
-        })
-      }).catch(error => {
       })
+        .then(async response => {
+          commit('setResult', {
+            id: 'requestsOut',
+            value: response.data.data
+          })
+        })
+        .catch(() => {
+        })
     },
     async apiBlockedFriends({
                               commit

@@ -138,13 +138,13 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.apiFriends();
+      vm.apiFriends()
     })
   },
 }
 </script>
 <style lang="stylus">
-@import '../../assets/stylus/base/vars.styl';
+@import '../../assets/stylus/base/vars.styl'
 .friends__title
   .friends__more
     padding-left 10px

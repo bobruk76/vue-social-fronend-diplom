@@ -40,32 +40,30 @@ export default {
   beforeRouteEnter(to, from, next) {
     next(vm => {
       vm.apiNotifications()
-      vm.readNotifications()
+      // vm.readNotifications()
     })
-  }
+  },
+  beforeDestroy() {
+    this.readNotifications()
+  },
 }
 </script>
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
 
-.page-push {
-  @media (max-width: breakpoint-xl) {
-    flex-direction: column;
+.page-push
+  @media (max-width: breakpoint-xl)
+    flex-direction column
 
-    .inner-page__aside {
-      display: block;
-      max-width: 100%;
-      order: -1;
+    .inner-page__aside
+      display block
+      max-width 100%
+      order -1
 
-      .aside-filter__item {
-        text-align: center;
-      }
-    }
+      .aside-filter__item
+        text-align center
 
-    .inner-page__main {
-      margin-right: 0;
-    }
-  }
-}
+    .inner-page__main
+      margin-right 0
 </style>

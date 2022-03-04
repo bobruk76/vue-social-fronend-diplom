@@ -132,14 +132,14 @@ export default {
     },
   },
   methods: {
-    ...mapActions('profile/friends', ['apiFriends', 'apiRequestsOut']),
+    ...mapActions('profile/friends', ['apiAllLists', 'apiFriends', 'apiRequestsOut']),
     showFriends(value) {
       this.isShow[value] = !this.isShow[value]
     }
   },
   beforeRouteEnter(to, from, next) {
     next(vm => {
-      vm.apiFriends()
+      vm.apiAllLists()
     })
   },
 }

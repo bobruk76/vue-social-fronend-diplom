@@ -30,6 +30,15 @@ export default {
     setFriendsPerPage: (s, payload) => s.friendsPerPage = payload.value,
   },
   actions: {
+    async apiAllLists({dispatch}) {
+      dispatch('apiFriends')
+      dispatch('apiRequestsIn')
+      dispatch('apiRequestsOut')
+      dispatch('apiBlockedFriends')
+      dispatch('apiRecommendations')
+      dispatch('apiSubscriptions')
+      dispatch('apiSubscribers')
+    },
     async apiFriends({commit, dispatch, state}, payload = null) {
       await axios.get('friends', {
         params: {
@@ -45,14 +54,6 @@ export default {
           })
         })
         .catch(() => {
-        })
-        .then(() => {
-          dispatch('apiRequestsIn');
-          dispatch('apiRequestsOut');
-          dispatch('apiBlockedFriends');
-          dispatch('apiRecommendations');
-          dispatch('apiSubscriptions');
-          dispatch('apiSubscribers');
         })
     },
     async apiDeleteFriends({dispatch}, id) {

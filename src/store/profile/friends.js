@@ -1,15 +1,48 @@
 import axios from 'axios'
 
+const pathRequest = type => {
+  switch (type) {
+    case 'requestsOut':
+      return 'friends/requests/out'
+  }
+}
+
 export default {
   namespaced: true,
   state: {
-    offsetFriends: 0,
-    itemPerPageFriends: 5,
-
-    offsetRequestsOut: 0,
-    itemPerPageRequestsOut: 5,
 
     friendsPerPage: 1,
+
+    total: {
+      friends: 0,
+      requestsIn: 0,
+      requestsOut: 0,
+      blocked: 0,
+      recommendations: 0,
+      subscriptions: 0,
+      subscribers: 0
+    },
+
+    offset: {
+      friends: 0,
+      requestsIn: 0,
+      requestsOut: 0,
+      blocked: 0,
+      recommendations: 0,
+      subscriptions: 0,
+      subscribers: 0
+    },
+
+    itemPerPage: {
+      friends: 5,
+      requestsIn: 5,
+      requestsOut: 5,
+      blocked: 5,
+      recommendations: 5,
+      subscriptions: 5,
+      subscribers: 5
+    },
+
     result: {
       friends: [],
       requestsIn: [],
@@ -21,12 +54,14 @@ export default {
     },
   },
   getters: {
+    getState: s => s,
     getResultById: s => id => s.result[id],
     getFriendsPerPage: s => s.friendsPerPage
   },
   mutations: {
-    incrementOffset: (s, param) => s[param]++,
+    changeOffset: (s, payload) => s.offset[payload.param] = s.offset[payload.param] + payload.d,
     setResult: (s, payload) => s.result[payload.id] = payload.value,
+    setTotal: (s, payload) => s.total[payload.id] = payload.value,
     setFriendsPerPage: (s, payload) => s.friendsPerPage = payload.value,
   },
   actions: {
@@ -39,6 +74,7 @@ export default {
       dispatch('apiSubscriptions')
       dispatch('apiSubscribers')
     },
+
     async apiFriends({commit, dispatch, state}, payload = null) {
       await axios.get('friends', {
         params: {
@@ -56,6 +92,7 @@ export default {
         .catch(() => {
         })
     },
+
     async apiDeleteFriends({dispatch}, id) {
       await axios.delete(`friends/${id}`
       ).then(async response => {
@@ -119,11 +156,19 @@ export default {
       }).catch(() => {
       })
     },
-    async apiRequestsOut({commit, state}) {
-      await axios.get('friends/requests/out', {
+
+
+    async apiRequestsOut({commit, state}, deltaPage = null) {
+      if (deltaPage) {
+        commit('changeOffset', {
+          param: 'requestsOut',
+          d: deltaPage
+        })
+      }
+      await axios.get(pathRequest('requestsOut'), {
         params: {
-          'offset': state.offsetRequestsOut,
-          'item_per_page': state.itemPerPageRequestsOut,
+          'offset': state.offset.requestsOut,
+          'item_per_page': state.itemPerPage.requestsOut,
         }
       })
         .then(async response => {
@@ -131,11 +176,16 @@ export default {
             id: 'requestsOut',
             value: response.data.data
           })
-          commit('incrementOffset', 'offsetRequestsOut')
+          commit('setTotal', {
+            id: 'requestsOut',
+            value: response.data.total
+          })
         })
         .catch(() => {
         })
     },
+
+
     async apiBlockedFriends({
                               commit
                             }, payload) {

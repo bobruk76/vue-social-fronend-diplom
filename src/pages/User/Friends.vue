@@ -35,7 +35,9 @@
             template(v-else) показать
       .friends__list
         friends-block(requests-out v-for="(friend,index) in requestsOut" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
-        a.friends-block.friends__list_more(href="#" @click.prevent="apiRequestsOut" v-show="isShow.allRequestsOut") >>
+        .friends-block
+          a.friends__list_more(href="#" @click.prevent="apiRequestsOut(deltaPage=-1)" v-show="isShow.allRequestsOut") <<
+          a.friends__list_more(href="#" @click.prevent="apiRequestsOut(deltaPage=1)" v-show="isShow.allRequestsOut") >>
 
       .friends__header
         h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
@@ -85,7 +87,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters('profile/friends', ['getResultById', 'getFriendsPerPage']),
+    ...mapGetters('profile/friends', ['getResultById', 'getFriendsPerPage', 'getState']),
     friends() {
       return this.first_name.length === 0
         ? this.getResultById('friends')
@@ -154,6 +156,8 @@ export default {
       font-weight normal
       color eucalypt
   &__list
+    .friends-block
+      justify-content space-evenly
     &_more
       font-size 50px
       color eucalypt

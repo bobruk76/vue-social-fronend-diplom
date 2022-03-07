@@ -1,28 +1,44 @@
 <template lang="pug">
-  .friends__header
-    h2.friends__title {{ getTitleById('requestsOut') }} ({{ getTotalById('requestsOut') }})
-      a.friends__title_more(href="#" @click.prevent="showFriends('allRequestsOut')" v-if="getTotalById('requestsOut')>0")
-        template(v-if="isShow.allRequestsOut") скрыть
-        template(v-else) показать
-  .friends__list
-    friends-block(requests-out v-for="(friend,index) in getResultById('requestsOut')" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
-    .friends-block(v-show="isShow.allRequestsOut")
-      a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList: 'requestsOut'})" v-show="getOffsetById('requestsOut')!=0") <<
-      a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList: 'requestsOut'})" v-show="showNextById('requestsOut')" ) >>
+  .friends
+    .friends__header
+      h2.friends__title {{ getTitleById(typeList) }} ({{ getTotalById(typeList) }})
+        a.friends__title_more(href="#" @click.prevent="setIsShowAll(typeList)" v-if="getTotalById(typeList)>0")
+          template(v-if="getIsShowAll(typeList)") скрыть
+          template(v-else) показать
+      slot(name="search")
+    .friends__list
+      friends-block(
+        :requests-out="typeList==='requestsOut'"
+        :friend="typeList==='friend'"
+        :blocked="typeList==='blocked'"
+        :requests-in="typeList==='requestsIn'"
+        :subscriptions="typeList==='subscriptions'"
+        v-for="(friend,index) in getResultById(typeList)"
+        :key="friend.id"
+        :info="friend"
+        v-show="getIsShowAll(typeList)"
+      )
+      .friends-block(v-show="getIsShowAll(typeList)")
+        a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList})" v-show="getOffsetById(typeList)!=0") <<
+        a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList})" v-show="showNextById(typeList)" ) >>
 </template>
 
 <script>
 import FriendsBlock from '@/components/Friends/Block'
-import {mapActions, mapGetters} from "vuex"
+import {mapActions, mapGetters, mapMutations} from "vuex"
 
 export default {
   name: "List",
+  props: {
+    typeList: '',
+  },
   components: {FriendsBlock},
   computed: {
-    ...mapGetters('profile/friends', ['getTitleById', 'showNextById', 'getTotalById', 'getResultById', 'getOffsetById']),
+    ...mapGetters('profile/friends', ['getTitleById', 'getIsShowAll', 'showNextById', 'getTotalById', 'getResultById', 'getOffsetById', 'getFriendsPerPage']),
   },
   methods: {
     ...mapActions('profile/friends', ['apiFetchList']),
+    ...mapMutations('profile/friends', ['setIsShowAll']),
   },
 }
 </script>

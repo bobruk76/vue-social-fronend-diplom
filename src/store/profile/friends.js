@@ -91,16 +91,6 @@ export default {
     setFriendsPerPage: (s, payload) => s.friendsPerPage = payload.value,
   },
   actions: {
-    async apiAllLists({dispatch}) {
-      dispatch('apiFriends')
-      dispatch('apiRequestsIn')
-      dispatch('apiRequestsOut')
-      dispatch('apiBlockedFriends')
-      dispatch('apiRecommendations')
-      dispatch('apiSubscriptions')
-      dispatch('apiSubscribers')
-    },
-
     async apiFetchList({commit, state}, payload) {
       if (payload.deltaPage) {
         commit('changeOffset', {
@@ -153,6 +143,16 @@ export default {
       dispatch('apiFetchList', {deltaPage, typeList: 'friends'})
     },
 
+    apiAllLists({dispatch}) {
+      dispatch('apiFriends')
+      dispatch('apiRequestsIn')
+      dispatch('apiRequestsOut')
+      dispatch('apiBlockedFriends')
+      dispatch('apiRecommendations')
+      dispatch('apiSubscriptions')
+      dispatch('apiSubscribers')
+    },
+
     async apiAddFriends({dispatch}, id) {
       await axios.post(`friends/${id}`
       ).then(async response => {
@@ -165,7 +165,7 @@ export default {
       }).catch(() => {
 
       }).then(() => {
-        dispatch('apiFriends');
+        dispatch('apiAllLists');
       })
     },
 

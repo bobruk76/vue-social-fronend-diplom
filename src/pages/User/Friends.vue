@@ -1,67 +1,22 @@
 <template lang="pug">
   .friends.inner-page
     .inner-page__main
-      .friends__header
-        h2.friends__title Мои друзья ({{ countFriends }})
-          a.friends__title_more(href="#" @click.prevent="showFriends('allFriends')" v-if="countFriends>getFriendsPerPage" )
-            template(v-if="isShow.allFriends") скрыть
-            template(v-else) показать
-        .friends__search
-          .friends__search-icon
-            simple-svg(:filepath="'/static/img/search.svg'")
-          input.friends__search-input(placeholder="Начните вводить имя друга..." v-model="first_name")
-      .friends__list
-        friends-block(
-          friend
-          v-for="(friend,index) in friends"
-          :key="friend.id"
-          :info="friend"
-          :blocked="false"
-          v-show="(index < getFriendsPerPage) || isShow.allFriends"
-        )
+      friends-list(typeList="friends")
+        template(slot="search")
+          .friends__search
+            .friends__search-icon
+              simple-svg(:filepath="'/static/img/search.svg'")
+            input.friends__search-input(placeholder="Начните вводить имя друга..." v-model="first_name")
 
-      .friends__header
-        h2.friends__title Входящие заявки ({{ countRequestsIn }})
-          a.friends__more(href="#" @click.prevent="showFriends('allRequestsIn')" v-if="countRequestsIn>0" )
-            template(v-if="isShow.allRequestsIn") скрыть
-            template(v-else) показать
-      .friends__list
-        friends-block(requests-in :friend="false" v-for="(friend,index) in requestsIn" :key="friend.id" :info="friend" v-show="isShow.allRequestsIn")
+      friends-list(typeList="requestsIn")
 
-      .friends__header
-        h2.friends__title {{ getTitleById('requestsOut') }} ({{ getTotalById('requestsOut') }})
-          a.friends__title_more(href="#" @click.prevent="setIsShowAll('requestsOut')" v-if="getTotalById('requestsOut')>0")
-            template(v-if="getIsShowAll('requestsOut')") скрыть
-            template(v-else) показать
-      .friends__list
-        friends-block(requests-out v-for="(friend,index) in getResultById('requestsOut')" :key="friend.id" :info="friend" v-show="getIsShowAll('requestsOut')")
-        .friends-block(v-show="getIsShowAll('requestsOut')")
-          a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList: 'requestsOut'})" v-show="getOffsetById('requestsOut')!=0") <<
-          a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList: 'requestsOut'})" v-show="showNextById('requestsOut')" ) >>
+      friends-list(typeList="requestsOut")
 
-      .friends__header
-        h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
-          a.friends__title_more(href="#" @click.prevent="showFriends('allBlockedFriends')" v-if="countBlockedFriends>0")
-            template(v-if="isShow.allBlockedFriends") скрыть
-            template(v-else) показать
-      .friends__list
-        friends-block(blocked v-for="(friend,index) in blockedFriends" :key="friend.id" :info="friend" v-show="isShow.allBlockedFriends")
+      friends-list(typeList="blocked")
 
-      .friends__header
-        h2.friends__title Подписки ({{ countSubscriptions }})
-          a.friends__title_more(href="#" @click.prevent="showFriends('allSubscriptions')" v-if="countSubscriptions>0")
-            template(v-if="isShow.allSubscriptions") скрыть
-            template(v-else) показать
-      .friends__list
-        friends-block(subscriptions v-for="(friend,index) in subscriptions" :key="friend.id" :info="friend" v-show="isShow.allSubscriptions")
+      friends-list(typeList="subscriptions")
 
-      .friends__header
-        h2.friends__title Подписчики ({{ countSubscribers }})
-          a.friends__title_more(href="#" @click.prevent="showFriends('allSubscribers')" v-if="countSubscribers>0")
-            template(v-if="isShow.allSubscribers") скрыть
-            template(v-else) показать
-      .friends__list
-        friends-block(v-for="(friend,index) in subscribers" :key="friend.id" :info="friend" v-show="isShow.allSubscribers")
+      friends-list(typeList="subscribers")
 
     .inner-page__aside
       friends-possible
@@ -70,64 +25,19 @@
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex'
 import FriendsPossible from '@/components/Friends/Possible'
-import FriendsBlock from '@/components/Friends/Block'
+import FriendsList from '@/components/Friends/List'
 
 export default {
   name: 'Friends',
-  components: {FriendsPossible, FriendsBlock},
+  components: {FriendsPossible, FriendsList},
   data: () => ({
     first_name: '',
     isShow: {
       allFriends: false,
-      allBlockedFriends: false,
-      allRequestsIn: false,
-      allRequestsOut: false,
-      allSubscriptions: false,
-      allSubscribers: false,
     },
   }),
   computed: {
     ...mapGetters('profile/friends', ['getTitleById', 'getIsShowAll' ,'showNextById', 'getTotalById', 'getResultById', 'getOffsetById', 'getFriendsPerPage']),
-    friends() {
-      return this.first_name.length === 0
-        ? this.getResultById('friends')
-        : this.getResultById('friends').filter(
-          el => el.first_name.toLowerCase().indexOf(this.first_name.toLowerCase()) !== -1
-        )
-    },
-    countFriends() {
-      return this.friends.length;
-    },
-    blockedFriends() {
-      return this.getResultById('blocked')
-    },
-    countBlockedFriends() {
-      return this.blockedFriends.length;
-    },
-    requestsIn() {
-      return this.getResultById('requestsIn');
-    },
-    countRequestsIn() {
-      return this.requestsIn.length;
-    },
-
-
-    subscriptions() {
-      return this.getResultById('subscriptions');
-    },
-    countSubscriptions() {
-      return this.subscriptions
-        ? this.subscriptions.length
-        : 0;
-    },
-    subscribers() {
-      return this.getResultById('subscribers');
-    },
-    countSubscribers() {
-      return this.subscribers
-        ? this.subscribers.length
-        : 0;
-    },
   },
   methods: {
     ...mapActions('profile/friends', ['apiAllLists', 'apiFriends', 'apiFetchList']),

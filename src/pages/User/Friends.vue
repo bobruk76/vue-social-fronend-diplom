@@ -29,15 +29,15 @@
         friends-block(requests-in :friend="false" v-for="(friend,index) in requestsIn" :key="friend.id" :info="friend" v-show="isShow.allRequestsIn")
 
       .friends__header
-        h2.friends__title Исходящие заявки ({{ getTotalById('requestsOut') }})
-          a.friends__title_more(href="#" @click.prevent="showFriends('allRequestsOut')" v-if="getTotalById('requestsOut')>0")
-            template(v-if="isShow.allRequestsOut") скрыть
+        h2.friends__title {{ getTitleById('requestsOut') }} ({{ getTotalById('requestsOut') }})
+          a.friends__title_more(href="#" @click.prevent="setIsShowAll('requestsOut')" v-if="getTotalById('requestsOut')>0")
+            template(v-if="getIsShowAll('requestsOut')") скрыть
             template(v-else) показать
       .friends__list
-        friends-block(requests-out v-for="(friend,index) in getResultById('requestsOut')" :key="friend.id" :info="friend" v-show="isShow.allRequestsOut")
-        .friends-block(v-show="isShow.allRequestsOut")
-          a.friends__list_more(href="#" @click.prevent="apiRequestsOut(deltaPage=-1)" v-show="getOffsetById('requestsOut')!=0") <<
-          a.friends__list_more(href="#" @click.prevent="apiRequestsOut(deltaPage=1)" v-show="showNextById('requestsOut')" ) >>
+        friends-block(requests-out v-for="(friend,index) in getResultById('requestsOut')" :key="friend.id" :info="friend" v-show="getIsShowAll('requestsOut')")
+        .friends-block(v-show="getIsShowAll('requestsOut')")
+          a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList: 'requestsOut'})" v-show="getOffsetById('requestsOut')!=0") <<
+          a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList: 'requestsOut'})" v-show="showNextById('requestsOut')" ) >>
 
       .friends__header
         h2.friends__title Заблокированные пользователи ({{ countBlockedFriends }})
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions, mapMutations} from 'vuex'
 import FriendsPossible from '@/components/Friends/Possible'
 import FriendsBlock from '@/components/Friends/Block'
 
@@ -87,7 +87,7 @@ export default {
     },
   }),
   computed: {
-    ...mapGetters('profile/friends', ['showNextById', 'getTotalById', 'getResultById', 'getOffsetById', 'getFriendsPerPage', 'getState']),
+    ...mapGetters('profile/friends', ['getTitleById', 'getIsShowAll' ,'showNextById', 'getTotalById', 'getResultById', 'getOffsetById', 'getFriendsPerPage']),
     friends() {
       return this.first_name.length === 0
         ? this.getResultById('friends')
@@ -130,7 +130,8 @@ export default {
     },
   },
   methods: {
-    ...mapActions('profile/friends', ['apiAllLists', 'apiFriends', 'apiRequestsOut']),
+    ...mapActions('profile/friends', ['apiAllLists', 'apiFriends', 'apiFetchList']),
+    ...mapMutations('profile/friends', ['setIsShowAll']),
     showFriends(value) {
       this.isShow[value] = !this.isShow[value]
     }

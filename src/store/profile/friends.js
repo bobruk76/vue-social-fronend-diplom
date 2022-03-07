@@ -1,21 +1,21 @@
 import axios from 'axios'
 
-const pathRequest = type => {
+const friendsLists = type => {
   switch (type) {
     case 'friends':
-      return 'friends'
+      return {path: 'friends', title: 'Мои друзья'}
     case 'requestsOut':
-      return 'friends/requests/out'
+      return {path: 'friends/requests/out', title: 'Исходящие заявки'}
     case 'requestsIn':
-      return 'friends/requests/in'
+      return {path: 'friends/requests/in', title: 'Входящие заявки'}
     case 'blocked':
-      return 'friends/blocked'
+      return {path: 'friends/blocked', title: 'Заблокированные пользователи'}
     case 'subscriptions':
-      return 'friends/subscriptions'
+      return {path: 'friends/subscriptions', title: 'Подписки'}
     case 'recommendations':
-      return 'friends/recommendations'
+      return {path: 'friends/recommendations', title: 'Подписчики'}
     case 'subscribers':
-      return 'friends/subscribers'
+      return {path: 'friends/subscribers', title: 'Рекомендации'}
   }
 }
 
@@ -64,17 +64,27 @@ export default {
       subscriptions: [],
       subscribers: []
     },
+
+    isShowAll: {
+      friends: false,
+      blocked: false,
+      requestsIn: false,
+      requestsOut: false,
+      subscriptions: false,
+      subscribers: false,
+    },
   },
   getters: {
-    getState: s => s,
+    getTitleById: s => type => friendsLists(type).title,
     getResultById: s => id => s.result[id],
     getTotalById: s => id => s.total[id],
     showNextById: s => id => s.total[id]>(s.itemPerPage[id]*(s.offset[id]+1)),
-
+    getIsShowAll: s => id => s.isShowAll[id],
     getOffsetById: s => id => s.offset[id],
     getFriendsPerPage: s => s.friendsPerPage
   },
   mutations: {
+    setIsShowAll: (s, id) => s.isShowAll[id] = !s.isShowAll[id],
     changeOffset: (s, payload) => s.offset[payload.param] = s.offset[payload.param] + payload.d,
     setResult: (s, payload) => s.result[payload.id] = payload.value,
     setTotal: (s, payload) => s.total[payload.id] = payload.value,
@@ -98,7 +108,7 @@ export default {
           d: payload.deltaPage
         })
       }
-      await axios.get(pathRequest(payload.typeList), {
+      await axios.get(friendsLists(payload.typeList).path, {
         params: {
           'offset': state.offset[payload.typeList],
           'item_per_page': state.itemPerPage[payload.typeList],

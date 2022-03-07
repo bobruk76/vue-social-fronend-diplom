@@ -2,8 +2,20 @@ import axios from 'axios'
 
 const pathRequest = type => {
   switch (type) {
+    case 'friends':
+      return 'friends'
     case 'requestsOut':
       return 'friends/requests/out'
+    case 'requestsIn':
+      return 'friends/requests/in'
+    case 'blocked':
+      return 'friends/blocked'
+    case 'subscriptions':
+      return 'friends/subscriptions'
+    case 'recommendations':
+      return 'friends/recommendations'
+    case 'subscribers':
+      return 'friends/subscribers'
   }
 }
 
@@ -56,6 +68,10 @@ export default {
   getters: {
     getState: s => s,
     getResultById: s => id => s.result[id],
+    getTotalById: s => id => s.total[id],
+    showNextById: s => id => s.total[id]>(s.itemPerPage[id]*(s.offset[id]+1)),
+
+    getOffsetById: s => id => s.offset[id],
     getFriendsPerPage: s => s.friendsPerPage
   },
   mutations: {
@@ -75,54 +91,58 @@ export default {
       dispatch('apiSubscribers')
     },
 
-    async apiFriends({commit, dispatch, state}, payload = null) {
-      await axios.get('friends', {
+    async apiFetchList({commit, state}, payload) {
+      if (payload.deltaPage) {
+        commit('changeOffset', {
+          param: payload.typeList,
+          d: payload.deltaPage
+        })
+      }
+      await axios.get(pathRequest(payload.typeList), {
         params: {
-          ...payload,
-          offset: state.offsetFriends,
-          item_per_page: state.itemPerPageFriends,
+          'offset': state.offset[payload.typeList],
+          'item_per_page': state.itemPerPage[payload.typeList],
         }
       })
         .then(async response => {
           commit('setResult', {
-            id: 'friends',
+            id: payload.typeList,
             value: response.data.data
+          })
+          commit('setTotal', {
+            id: payload.typeList,
+            value: response.data.total
           })
         })
         .catch(() => {
         })
     },
-
-    async apiDeleteFriends({dispatch}, id) {
-      await axios.delete(`friends/${id}`
-      ).then(async response => {
-        dispatch('global/alert/setAlert', {
-          status: 'success',
-          text: 'Пользователь удален из друзей'
-        }, {
-          root: true
-        })
-      }).catch(() => {
-
-      }).then(() => {
-        dispatch('apiFriends');
-      })
+    async apiRequestsOut({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'requestsOut'})
     },
-    async apiDeleteRequest({dispatch}, id) {
-      await axios.delete(`friends/requests/${id}`
-      ).then(async response => {
-        dispatch('global/alert/setAlert', {
-          status: 'success',
-          text: 'Заявка на добавление в друзья отозвана'
-        }, {
-          root: true
-        })
-      }).catch(error => {
-
-      }).then(() => {
-        dispatch('apiFriends');
-      })
+    async apiBlockedFriends({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'blocked'})
     },
+    async apiSubscriptions({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'subscriptions'})
+    },
+
+    async apiRecommendations({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'subscriptions'})
+    },
+
+    async apiSubscribers({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'subscriptions'})
+    },
+
+    async apiRequestsIn({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'requestsIn'})
+    },
+
+    async apiFriends({dispatch}, deltaPage = null) {
+      dispatch('apiFetchList', {deltaPage, typeList: 'friends'})
+    },
+
     async apiAddFriends({dispatch}, id) {
       await axios.post(`friends/${id}`
       ).then(async response => {
@@ -138,108 +158,39 @@ export default {
         dispatch('apiFriends');
       })
     },
-    async apiRequestsIn({
-                          commit
-                        }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/requests/in?${query.join('&')}`,
-        method: 'GET'
-      }).then(async response => {
-        commit('setResult', {
-          id: 'requestsIn',
-          value: response.data.data
+
+    async apiDeleteFriends({dispatch}, id) {
+      await axios.delete(`friends/${id}`
+      ).then(async response => {
+        dispatch('global/alert/setAlert', {
+          status: 'success',
+          text: 'Пользователь удален из друзей'
+        }, {
+          root: true
         })
       }).catch(() => {
+
+      }).then(() => {
+        dispatch('apiAllLists');
       })
     },
 
-
-    async apiRequestsOut({commit, state}, deltaPage = null) {
-      if (deltaPage) {
-        commit('changeOffset', {
-          param: 'requestsOut',
-          d: deltaPage
-        })
-      }
-      await axios.get(pathRequest('requestsOut'), {
-        params: {
-          'offset': state.offset.requestsOut,
-          'item_per_page': state.itemPerPage.requestsOut,
-        }
-      })
-        .then(async response => {
-          commit('setResult', {
-            id: 'requestsOut',
-            value: response.data.data
-          })
-          commit('setTotal', {
-            id: 'requestsOut',
-            value: response.data.total
-          })
-        })
-        .catch(() => {
-        })
-    },
-
-
-    async apiBlockedFriends({
-                              commit
-                            }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/blocked?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        commit('setResult', {
-          id: 'blocked',
-          value: response.data.data
+    async apiDeleteRequest({dispatch}, id) {
+      await axios.delete(`friends/requests/${id}`
+      ).then(async response => {
+        dispatch('global/alert/setAlert', {
+          status: 'success',
+          text: 'Заявка на добавление в друзья отозвана'
+        }, {
+          root: true
         })
       }).catch(error => {
+
+      }).then(() => {
+        dispatch('apiAllLists');
       })
     },
-    async apiRecommendations({
-                               commit
-                             }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/recommendations?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        commit('setResult', {
-          id: 'recommendations',
-          value: response.data.data
-        })
-      }).catch(error => {
-      })
-    },
-    async apiSubscriptions({
-                             commit
-                           }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/subscriptions?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        commit('setResult', {
-          id: 'subscriptions',
-          value: response.data.data
-        })
-      }).catch(error => {
-      })
-    },
+
     async apiDeleteSubscriptions({dispatch}, id) {
       await axios.delete(`friends/subscriptions/${id}`
       ).then(async response => {
@@ -251,26 +202,9 @@ export default {
         })
       }).catch(() => {
       }).then(() => {
-        dispatch('apiFriends');
+        dispatch('apiAllLists');
       })
     },
-    async apiSubscribers({
-                           commit
-                         }, payload) {
-      let query = []
-      payload && Object.keys(payload).map(el => {
-        payload[el] && query.push(`${el}=${payload[el]}`)
-      })
-      await axios({
-        url: `friends/subscribers?${query.join('&')}`,
-        method: 'GET'
-      }).then(response => {
-        commit('setResult', {
-          id: 'subscribers',
-          value: response.data.data
-        })
-      }).catch(error => {
-      })
-    },
+
   }
 }

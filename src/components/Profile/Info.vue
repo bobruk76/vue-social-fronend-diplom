@@ -123,11 +123,13 @@ export default {
     }
   },
   beforeCreate() {
-    this.intervalForSetStatus = setInterval(() => {
-      this.apiSetStatus({
-        userId: this.$route.params.id
-      })
-    }, 5000)
+    if (this.$route.params.id) {
+      this.intervalForSetStatus = setInterval(() => {
+        this.apiSetStatus({
+          userId: this.$route.params.id
+        })
+      }, 5000)
+    }
   },
   beforeDestroy() {
     window.clearInterval(this.intervalForSetStatus)

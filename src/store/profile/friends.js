@@ -12,10 +12,10 @@ const friendsLists = type => {
       return {path: 'friends/blocked', title: 'Заблокированные пользователи'}
     case 'subscriptions':
       return {path: 'friends/subscriptions', title: 'Подписки'}
-    case 'recommendations':
-      return {path: 'friends/recommendations', title: 'Подписчики'}
     case 'subscribers':
-      return {path: 'friends/subscribers', title: 'Рекомендации'}
+      return {path: 'friends/subscribers', title: 'Подписчики'}
+    case 'recommendations':
+      return {path: 'friends/recommendations', title: 'Рекомендации'}
   }
 }
 
@@ -128,7 +128,7 @@ export default {
     },
 
     async apiRecommendations({dispatch}, deltaPage = null) {
-      dispatch('apiFetchList', {deltaPage, typeList: 'subscriptions'})
+      dispatch('apiFetchList', {deltaPage, typeList: 'recommendations'})
     },
 
     async apiSubscribers({dispatch}, deltaPage = null) {

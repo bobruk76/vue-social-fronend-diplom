@@ -18,7 +18,7 @@
         :info="friend"
         v-show="getIsShowAll(typeList)"
       )
-      .friends-block(v-show="getIsShowAll(typeList)")
+      .friends-block(v-show="(getOffsetById(typeList)!=0) || showNextById(typeList) && getIsShowAll(typeList)")
         a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList})" v-show="getOffsetById(typeList)!=0") <<
         a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList})" v-show="showNextById(typeList)" ) >>
 </template>

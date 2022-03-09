@@ -53,29 +53,26 @@ export default {
 
 <style lang="stylus">
 @import '../../assets/stylus/base/vars.styl';
+.search
+  &__tabs
+    background #fff
+    box-shadow standart-boxshadow
+    position fixed
+    top header-height
+    left sidebar-width
+    right 0
+    padding 0 20px
+    z-index 10
 
-.search__tabs {
-  background: #fff;
-  box-shadow: standart-boxshadow;
-  position: fixed;
-  top: header-height;
-  left: sidebar-width;
-  right: 0;
-  padding: 0 20px;
-  z-index: 10;
+    @media (max-width: breakpoint-xxl)
+      left sidebar-width-xl
 
-  @media (max-width: breakpoint-xxl) {
-    left: sidebar-width-xl;
-  }
-}
+  &__main
+    padding 100px 40px 50px
+    height 100%
+    overflow-y auto
 
-.search__main {
-  padding: 100px 40px 50px;
-  height: 100%;
-  overflow-y: auto;
+    &.high
+      padding-top 250px
 
-  &.high {
-    padding-top: 250px;
-  }
-}
 </style>

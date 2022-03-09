@@ -114,9 +114,7 @@ export default {
       await dispatch('searchUsers', {
         first_name: text
       })
-      await dispatch('searchNews', {
-        text
-      })
+      await dispatch('searchNews',{})
     }
   }
 }

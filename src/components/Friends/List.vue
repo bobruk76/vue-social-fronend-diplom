@@ -19,8 +19,9 @@
         v-show="getIsShowAll(typeList)"
       )
       .friends-block(v-show="(getOffsetById(typeList)!=0) || showNextById(typeList) && getIsShowAll(typeList)")
-        a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList})" v-show="getOffsetById(typeList)!=0") <<
-        a.friends__list_more(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList})" v-show="showNextById(typeList)" ) >>
+        a.friends__list_more.friends__list_more_arrow_left(href="#" @click.prevent="apiFetchList({deltaPage: -1, typeList})" v-show="getOffsetById(typeList)!=0")
+        a.friends__list_more.friends__list_more_arrow_right(href="#" @click.prevent="apiFetchList({deltaPage: 1, typeList})" v-show="showNextById(typeList)" )
+
 </template>
 
 <script>
@@ -53,10 +54,20 @@ export default {
       color eucalypt
 
   &__list
+    display flex
+    flex-wrap wrap
     &_more
-      font-size 50px
-      color eucalypt
+      &_arrow_right
+        width 65px
+        height 65px
+        background url('/static/img/arrow-r.png') center no-repeat
+        background-size 65px
+      &_arrow_left
+        width 65px
+        height 65px
+        background url('/static/img/arrow-l.png') center no-repeat
+        background-size 65px
 
-    .friends-block
-      justify-content space-evenly
+  &-block
+    justify-content space-evenly
 </style>

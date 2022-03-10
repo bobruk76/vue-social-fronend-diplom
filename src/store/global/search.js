@@ -21,6 +21,21 @@ export default {
       users: [],
       news: []
     },
+
+    total: {
+      users: 0,
+      news: 0
+    },
+
+    offset: {
+      users: 0,
+      news: 0
+    },
+
+    itemPerPage: {
+      users: 6,
+      news: 6
+    },
     status: '',
   },
   getters: {
@@ -30,7 +45,8 @@ export default {
     tabSelect: s => s.tabSelect,
     getResult: s => s.result,
     getResultById: s => id => s.result[id],
-    getStatus: s => s.status
+    getStatus: s => s.status,
+    getIsShowMoreById: s => id => s.total[id] > s.result[id].length,
   },
   mutations: {
     setSearchText: (s, value) => s.searchText = value,
@@ -56,7 +72,15 @@ export default {
         query
       })
     },
-    setResult: (s, result) => s.result[result.id] = result.value
+    setResult: (s, payload) => s.result[payload.id] = payload.value,
+    setTotal: (s, payload) => s.total[payload.param] = payload.value,
+
+    changeOffset: (s, payload) => s.offset[payload.param] = s.offset[payload.param] + payload.d,
+    addToList: (s, payload) => payload.list.map(el => {
+      if (!s.result[payload.param].includes(el)) {
+        s.result[payload.param].push(el)
+      }
+    }),
   },
   actions: {
     clearSearch({commit}) {
@@ -75,17 +99,28 @@ export default {
       commit('setTabSelect', id)
       commit('routePushWithQuery', id)
     },
-    async searchUsers({commit}, payload) {
+
+    async searchUsers({state, commit}, payload) {
       await axios.get(`users/search`, {
         params: {
-          ...payload
+          ...payload,
+          'offset': state.offset.users,
+          'limit': state.itemPerPage.users,
         }
       }).then(async response => {
-        commit('setResult', {
-          id: 'users',
-          value: response.data.data
+        commit('addToList', {
+          param: 'users',
+          list: response.data.data
         })
-      }).catch(async error => {
+        commit('setTotal', {
+          param: 'users',
+          value: response.data.total
+        })
+        commit('changeOffset', {
+          param: 'users',
+          d: 1
+        })
+      }).catch(async () => {
       })
     },
     async searchNews({commit, state}, payload) {
@@ -94,10 +129,10 @@ export default {
       Object.keys(payload).map(el => {
         payload[el] && query.push(`${el}=${payload[el]}`)
       })
-      if (state.searchTags.length >0) {
+      if (state.searchTags.length > 0) {
         query.push(`tag=${state.searchTags.join(',')}`)
       }
-      if (state.searchText.length >0) {
+      if (state.searchText.length > 0) {
         query.push(`text=${state.searchText}`)
       }
       await axios.get(`post?${query.join('&')}`)
@@ -114,7 +149,7 @@ export default {
       await dispatch('searchUsers', {
         first_name: text
       })
-      await dispatch('searchNews',{})
+      await dispatch('searchNews', {})
     }
   }
 }

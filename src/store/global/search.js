@@ -108,6 +108,7 @@ export default {
           'limit': state.itemPerPage.users,
         }
       }).then(async response => {
+
         commit('addToList', {
           param: 'users',
           list: response.data.data
@@ -118,8 +119,9 @@ export default {
         })
         commit('changeOffset', {
           param: 'users',
-          d: 1
+          d: response.data.total === 0 ? 0 : 1
         })
+        
       }).catch(async () => {
       })
     },
@@ -144,10 +146,10 @@ export default {
         }).catch(async error => {
         })
     },
-    async searchAll({dispatch, commit}, text) {
+    async searchAll({state, dispatch, commit}, text) {
       commit('setSearchText', text)
       await dispatch('searchUsers', {
-        first_name: text
+        first_name: state.searchText
       })
       await dispatch('searchNews', {})
     }

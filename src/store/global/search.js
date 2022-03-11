@@ -157,10 +157,15 @@ export default {
         })
     },
     async searchAll({state, dispatch, commit}, text) {
+      dispatch('clearSearch')
       commit('setSearchText', text)
-      await dispatch('searchUsers', {
-        first_name: state.searchText
+      commit('setQuery', {
+        param: 'users',
+        value: {
+          first_name: state.searchText,
+        }
       })
+      await dispatch('searchUsers')
       await dispatch('searchNews', {})
     }
   }

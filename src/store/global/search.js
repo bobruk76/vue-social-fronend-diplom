@@ -32,6 +32,11 @@ export default {
       news: 0
     },
 
+    query: {
+      users: null,
+      news: null
+    },
+
     itemPerPage: {
       users: 6,
       news: 6
@@ -39,6 +44,7 @@ export default {
     status: '',
   },
   getters: {
+    getQuery: s => s.query,
     searchText: s => s.searchText,
     getSearchTags: s => s.searchTags,
     tabs: s => s.tabs,
@@ -74,8 +80,9 @@ export default {
     },
     setResult: (s, payload) => s.result[payload.id] = payload.value,
     setTotal: (s, payload) => s.total[payload.param] = payload.value,
-
+    setQuery: (s, payload) => s.query[payload.param] = payload.value,
     changeOffset: (s, payload) => s.offset[payload.param] = s.offset[payload.param] + payload.d,
+    clearOffset: (s, payload) => s.offset[payload.param] = 0,
     addToList: (s, payload) => payload.list.map(el => {
       if (!s.result[payload.param].includes(el)) {
         s.result[payload.param].push(el)
@@ -94,16 +101,19 @@ export default {
         id: 'news',
         value: []
       })
+      commit('clearOffset', {
+        param: 'users'
+      })
     },
     changeTab({commit}, id) {
       commit('setTabSelect', id)
       commit('routePushWithQuery', id)
     },
 
-    async searchUsers({state, commit}, payload) {
+    async searchUsers({state, commit}) {
       await axios.get(`users/search`, {
         params: {
-          ...payload,
+          ...state.query.users,
           'offset': state.offset.users,
           'limit': state.itemPerPage.users,
         }
@@ -121,7 +131,7 @@ export default {
           param: 'users',
           d: response.data.total === 0 ? 0 : 1
         })
-        
+
       }).catch(async () => {
       })
     },

@@ -23,6 +23,19 @@ export default {
         state.stompClient.subscribe(`/topic/messages/${payload.id}`, msg => {
           console.log(msg)
         }, headers)
+
+        state.stompClient.subscribe('/user/topic/messages', msg => {
+          msg.forEach(m => m(JSON.parse(message.body)))
+        }, headers)
+
+        state.stompClient.subscribe('/user/topic/unreaded', msg => {
+          msg.forEach(m => m(JSON.parse(message.body)))
+        }, headers)
+
+        state.stompClient.subscribe('/user/topic/notifications', notification => {
+          notification.forEach(m => m(JSON.parse(message.body)))
+        }, headers)
+
       }, (error) => {
         console.log(error)
       })

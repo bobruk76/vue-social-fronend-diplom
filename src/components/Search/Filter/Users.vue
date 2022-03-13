@@ -12,8 +12,8 @@
         select.select.search-filter__select(v-model.number="age_from")
           option(value="null" disabled) От
           option(value="31") От 31
-          option(value="32") От 32 
-          option(value="33") От 33 
+          option(value="32") От 32
+          option(value="33") От 33
         span.search__age-defis —
         select.select.search-filter__select(v-model.number="age_to")
           option(value="null" disabled) До
@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex'
+import {mapMutations, mapActions} from 'vuex'
+
 export default {
   name: 'SearchFilterUsers',
   data: () => ({
@@ -52,10 +53,23 @@ export default {
     itemPerPage: 20
   }),
   methods: {
-    ...mapActions('global/search', ['searchUsers']),
+    ...mapActions('global/search', ['searchUsers', 'clearSearch']),
+    ...mapMutations('global/search', ['setQuery']),
     onSearchUsers() {
-      let { first_name, last_name, age_from, age_to, country, city } = this
-      this.searchUsers({ first_name, last_name, age_from, age_to, country, city })
+      this.clearSearch()
+      let {first_name, last_name, age_from, age_to, country, city} = this
+      this.setQuery({
+        param: 'users',
+        value: {
+          first_name: this.first_name,
+          last_name: this.last_name,
+          age_from: this.age_from,
+          age_to: this.age_to,
+          country: this.country,
+          city: this.city,
+        }
+      })
+      this.searchUsers()
     }
   }
 }

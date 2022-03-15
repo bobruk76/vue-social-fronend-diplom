@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     ...mapActions('profile/dialogs', ['postMessage', 'loadOlderMessages']),
-    ...mapActions('profile/websocket', ['send', 'connection']),
     ...mapGetters('profile/dialogs', ['isHistoryEndReached']),
     onSubmitMessage() {
       // this.postMessage({id: this.info.id, message_text: this.mes})
@@ -128,7 +127,6 @@ export default {
   },
   mounted() {
     this.follow = true
-    this.connection({id: this.info.id})
   },
 }
 </script>

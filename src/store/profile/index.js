@@ -17,6 +17,6 @@ export default {
     dialogs,
     comments,
     notifications,
-    weather
+    weather,
   }
 }

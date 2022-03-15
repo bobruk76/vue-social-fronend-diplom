@@ -48,9 +48,6 @@ export default {
     isUserViewHistory: false,
     fetching: false
   }),
-  mounted() {
-    this.follow = true
-  },
   watch: {
     messages() {
       if (this.follow) this.setVirtualListToBottom()
@@ -126,7 +123,10 @@ export default {
         this.$refs.vsl.scrollToBottom()
       }
     }
-  }
+  },
+  mounted() {
+    this.follow = true
+  },
 }
 </script>
 

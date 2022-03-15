@@ -123,10 +123,12 @@ export default {
           param: 'users',
           list: response.data.data
         })
+
         commit('setTotal', {
           param: 'users',
           value: response.data.total
         })
+
         commit('changeOffset', {
           param: 'users',
           d: response.data.total === 0 ? 0 : 1
@@ -159,6 +161,7 @@ export default {
     async searchAll({state, dispatch, commit}, text) {
       dispatch('clearSearch')
       commit('setSearchText', text)
+
       commit('setQuery', {
         param: 'users',
         value: {

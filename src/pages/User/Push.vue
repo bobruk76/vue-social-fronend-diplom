@@ -1,7 +1,7 @@
 <template lang="pug">
   .page-push.inner-page
     .inner-page__main(v-if="getNotificationsLength > 0")
-      push-block(v-for="info in filterNotifications" :key="info.id" :info="info")
+      push-block(v-for="info in filterNotifications" :key="_uid" :info="info")
     .inner-page__aside
       push-sidebar(v-model="activeFilter" @change-push-sidebar="onChangeFilter")
 </template>

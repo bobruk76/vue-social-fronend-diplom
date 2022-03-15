@@ -2,7 +2,7 @@
   .aside-filter
     h2.aside-filter__title Оповещения
     ul.aside-filter__list
-      li.aside-filter__item(v-for="item in list" :key="item" :class="{active: item === value}" @click="changePushSidebar(item)") {{item}}
+      li.aside-filter__item(v-for="item in list" :key="_uid" :class="{active: item === value}" @click="changePushSidebar(item)") {{item}}
 </template>
 
 <script>

@@ -3,7 +3,7 @@
     .push__overlay(@click.stop="closePush")
     .push__wrap(:class="{open: isOpen}" ref="wrap")
       .push__list(ref="list")
-        .push__item(v-for="info in getNotifications.slice(0,10) || []" :key="info.id")
+        .push__item(v-for="info in getNotifications.slice(0,10) || []" :key="_uid")
           .push__img
             img(:src="fetchUserInfo(info.id).photo" :alt="fetchUserInfo(info.id).first_name")
             //img(:src="info.entity_author.photo" :alt="info.entity_author.first_name")

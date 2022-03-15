@@ -82,8 +82,7 @@ export default {
     ...mapActions('profile/dialogs', ['postMessage', 'loadOlderMessages']),
     ...mapGetters('profile/dialogs', ['isHistoryEndReached']),
     onSubmitMessage() {
-      // this.postMessage({id: this.info.id, message_text: this.mes})
-      this.send({id: this.info.id, message_text: this.mes})
+      this.postMessage({id: this.info.id, message_text: this.mes})
       this.mes = ''
     },
     async onScrollToTop() {

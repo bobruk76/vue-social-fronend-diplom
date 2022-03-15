@@ -1,7 +1,7 @@
 <script>
 import {mapGetters, mapActions} from 'vuex'
-import Stomp from "webstomp-client"
-import SockJS from "sockjs-client"
+import Stomp from 'webstomp-client'
+import SockJS from 'sockjs-client'
 
 // const INTERVAL_DIALOG_MS = 2000;
 const INTERVAL_NOTIFICATIONS_MS = 10000;
@@ -25,20 +25,20 @@ export default {
       this.stompClient.connect({token},
         frame => {
           this.connected = true
-          // console.log('Connected: ' + frame)
+          console.log('Connected: ' + frame)
 
-          // this.stompClient.subscribe('/user/topic/messages', messages => {
-          //   console.log('messages:',messages)
-          //
-          // })
-          //
-          // this.stompClient.subscribe('/user/topic/unreaded', unreaded => {
-          //   console.log('unreaded:',unreaded)
-          //
-          // })
+          this.stompClient.subscribe('/user/topic/messages', tick => {
+            console.log('messages:', tick.body)
 
-          this.stompClient.subscribe('/user/topic/notifications', notification => {
-            console.log('notification:', notification)
+          })
+
+          this.stompClient.subscribe('/user/topic/unreaded', tick => {
+            console.log('unreaded:', tick.body)
+
+          })
+
+          this.stompClient.subscribe('/user/topic/notifications', tick => {
+            console.log('notification:', tick.body)
 
           })
 

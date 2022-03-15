@@ -39,7 +39,7 @@ export default {
   actions: {
     async apiNotifications({commit, dispatch, rootGetters}) {
       await axios.get('notifications')
-        .then(response => {
+        .then(async response => {
           // if (`${response.data.data.map(z => z.sent_time)}` !== `${state.notifications.map(z => z.sent_time)}`) {
           let result = response.data.data.map((item) => {
             if (!rootGetters['users/info/getUsersList'].map(el => el.id).includes(item.id)) {

@@ -48,6 +48,7 @@ export default {
             return {
               ...item,
               notificationsTextType: notificationsTextType(item.type),
+              uid: this._uid
             } || {}
           })
           commit('setNotifications', result)

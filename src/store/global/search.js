@@ -123,10 +123,12 @@ export default {
           param: 'users',
           list: response.data.data
         })
+
         commit('setTotal', {
           param: 'users',
           value: response.data.total
         })
+
         commit('changeOffset', {
           param: 'users',
           d: response.data.total === 0 ? 0 : 1
